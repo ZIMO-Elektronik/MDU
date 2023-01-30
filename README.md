@@ -1,5 +1,7 @@
 # MDU
 
+[![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)
+
 <img src="data/images/logo.png" width="15%" align="right">
 
 MDU is an acronym for Multi Decoder Update, a protocol for firmware and ZPP updates over the rail. The protocol is currently supported in the form documented here by the following products:

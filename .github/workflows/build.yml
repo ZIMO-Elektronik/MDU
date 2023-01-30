@@ -1,0 +1,11 @@
+name: build
+
+on: [push]
+
+jobs:
+  linux-gcc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: cmake -Bbuild
+      - run: cmake --build build --target MDU
