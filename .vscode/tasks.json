@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "CMake MDUTests",
+      "type": "shell",
+      "isBackground": true,
+      "command": "cmake -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Debug"
+    },
+    {
+      "label": "Ninja MDUTests",
+      "type": "shell",
+      "isBackground": true,
+      "command": "ninja -C build MDUTests"
+    },
+    {
+      "label": "Run MDUTests",
+      "type": "shell",
+      "isBackground": true,
+      "command": "./build/tests/MDUTests"
+    },
+    {
+      "label": "Run dot",
+      "type": "shell",
+      "isBackground": true,
+      "command": "dot -Tpng ./data/binary_search.dot > ./data/images/binary_search.png; dot -Tpng ./data/data_packet.dot > ./data/images/data_packet.png; dot -Tpng ./data/ping.dot > ./data/images/ping.png"
+    }
+  ]
+}

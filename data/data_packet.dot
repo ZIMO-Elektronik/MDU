@@ -1,0 +1,50 @@
+digraph {
+  start[shape=square, label="packet start"];
+  sync_bits[label="≥10 one bits"];
+  start_bit[shape=diamond, label="zero bit?"];
+  start->sync_bits->start_bit;
+
+  {rank = same sync_bits sync_bits_text};
+  sync_bits_text[shape=none, label="An MDU data packet is identified and synchronized to the byte boundaries with a sequence\lof one bits. Command stations must send at least 14 one bits in a row. Decoders must be able\lto receive a packet with ≥10 one bits.\l"]
+
+  data_bits[label="8 data bits"];
+  start_bit->data_bits[label="true"];
+  start_bit->sync_bits[label="false", tailport=w, headport=w, weight=0];
+
+  {rank = same start_bit start_bit_text};
+  start_bit_text[shape=none, label="The packet start bit is a zero bit immediately following the sync bits. The start bit completes\lthe synchronization and indicates to the decoder that the following bits belong to the first\lbyte of the packet.\l"];
+
+  {rank = same data_bits data_bits_text};
+  data_bits_text[shape=none, label="8 bits of user data follow, the meaning of which depends on the command package.\l"];
+
+  end_bit[shape=diamond, label="one bit?"];
+  data_bits->end_bit;
+  end_bit->data_bits[label="false", tailport=w, headport=w, weight=0];
+  ackreq_bits0_1[label="ackreq bits 0-1"]
+  end_bit->ackreq_bits0_1[label="true"];
+
+  {rank = same ackreq_bits0_1 ackreq_bits0_1_text};
+  ackreq_bits0_1_text[shape=none, label="The first two acknowledgment bits can be used by command stations to carry out a\lreference current measurement. No ackbits may be sent during this time.\l"];
+
+  ackreq_bits2_4[label="ackreq bits 2-4 (channel 1)"]
+  ackreq_bits0_1->ackreq_bits2_4;
+
+  {rank = same ackreq_bits2_4 ackreq_bits2_4_text};
+  ackreq_bits2_4_text[shape=none, label="Channel 1 can be used by decoders to report back transmission and checksum errors.\l"];
+
+  ackreq_bits5[label="ackreq bit 5"]
+  ackreq_bits2_4->ackreq_bits5;
+
+  ackreq_bits6_8[label="ackreq bits 6-8 (channel 2)"]
+  ackreq_bits5->ackreq_bits6_8;
+
+  {rank = same ackreq_bits6_8 ackreq_bits6_8_text};
+  ackreq_bits6_8_text[shape=none, label="Channel 2 can be used by decoders to report back data. The exact meaning of the\lacknowledgement can be found in the detailed description of the respective command\lpackages.\l"];  
+
+  ackreq_bit[shape=diamond, label="ackreq bit?"];
+  ackreq_bits6_8->ackreq_bit;
+  ackreq_bit->ackreq_bit[label="true"];
+
+  ende[shape=square, label="packet end"];
+  ackreq_bit->ende[label="false"];
+}
