@@ -16,22 +16,30 @@ TEST_F(ReceiveZppTest, exit_when_end_address_check_succeeds) {
   std::array<uint8_t, 64uz> zpp_data;
   std::iota(begin(zpp_data), end(zpp_data), 0u);
 
-  Expectation write_zpp{EXPECT_CALL(*base_, writeZpp(_, _))
-                          .Times(Exactly(1))
-                          .WillRepeatedly(Return(true))};
+  {
+    Expectation validate_zpp{EXPECT_CALL(*base_, zppValid(_, _))
+                               .Times(Exactly(1))
+                               .WillRepeatedly(Return(true))};
+    auto packet{make_zpp_valid_query_packet("SP", 0uz)};
+    Receive(packet.timingsWithoutAckreq());
+    Execute();
+    Receive(packet.timingsAckreqOnly());
+  }
 
   {
+    Expectation write_zpp{EXPECT_CALL(*base_, writeZpp(_, _))
+                            .Times(Exactly(1))
+                            .WillRepeatedly(Return(true))};
     auto packet{make_zpp_update_packet(0u, zpp_data)};
     Receive(packet.timingsWithoutAckreq());
     Execute();
     Receive(packet.timingsAckreqOnly());
   }
 
-  Expectation end_zpp{EXPECT_CALL(*base_, endZpp())
-                        .Times(Exactly(1))
-                        .WillRepeatedly(Return(true))};
-
   {
+    Expectation end_zpp{EXPECT_CALL(*base_, endZpp())
+                          .Times(Exactly(1))
+                          .WillRepeatedly(Return(true))};
     auto packet{make_zpp_update_end_packet(0u, size(zpp_data))};
     Receive(packet.timingsWithoutAckreq());
     Execute();
@@ -52,6 +60,16 @@ TEST_F(ReceiveZppTest, erase_zpp_when_end_address_check_fails) {
   std::iota(begin(zpp_data), end(zpp_data), 0u);
 
   Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(6))};
+
+  {
+    Expectation validate_zpp{EXPECT_CALL(*base_, zppValid(_, _))
+                               .Times(Exactly(1))
+                               .WillRepeatedly(Return(true))};
+    auto packet{make_zpp_valid_query_packet("SP", 0uz)};
+    Receive(packet.timingsWithoutAckreq());
+    Execute();
+    Receive(packet.timingsAckreqOnly());
+  }
 
   {
     Expectation write_zpp{EXPECT_CALL(*base_, writeZpp(_, _))

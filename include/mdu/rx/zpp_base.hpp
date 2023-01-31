@@ -32,11 +32,12 @@ struct ZppMixin {
 private:
   /// Check if ZPP is valid
   ///
-  /// \param  zpp_id    ZPP ID
-  /// \param  zpp_size  ZPP size
-  /// \return true      ZPP is valid
-  /// \return false     ZPP is not valid
-  virtual bool zppValid(std::string_view zpp_id, size_t zpp_size) const = 0;
+  /// \param  zpp_id          ZPP ID
+  /// \param  zpp_flash_size  ZPP flash size
+  /// \return true            ZPP is valid
+  /// \return false           ZPP is not valid
+  virtual bool zppValid(std::string_view zpp_id,
+                        size_t zpp_flash_size) const = 0;
 
   /// Check if loadcode is valid
   ///

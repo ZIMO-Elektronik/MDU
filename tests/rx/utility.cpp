@@ -50,6 +50,18 @@ make_firmware_update_packet(uint32_t addr,
   return packet;
 }
 
+PacketBuilder make_zpp_valid_query_packet(std::string_view zpp_id,
+                                          size_t zpp_flash_size) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::ZppValidQuery)
+    .data(zpp_id)
+    .data(zpp_flash_size)
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
 PacketBuilder
 make_zpp_lc_dc_query_packet(std::span<uint8_t const, 4uz> developer_code) {
   PacketBuilder packet;

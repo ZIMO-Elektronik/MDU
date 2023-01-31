@@ -13,12 +13,24 @@ bool operator==(span<uint8_t const, 4uz> lhs, span<uint8_t const, 4uz> rhs) {
 }  // namespace std
 
 TEST_F(ReceiveZppTest, loadcode_valid) {
-  Expectation loadcode_valid{
-    EXPECT_CALL(*base_, loadcodeValid({developer_code_}))
-      .Times(Exactly(1))
-      .WillRepeatedly(Return(true))};
-  auto packet{make_zpp_lc_dc_query_packet(developer_code_)};
-  Receive(packet.timingsWithoutAckreq());
-  Execute();
-  Receive(packet.timingsAckreqOnly());
+  {
+    Expectation validate_zpp{EXPECT_CALL(*base_, zppValid(_, _))
+                               .Times(Exactly(1))
+                               .WillRepeatedly(Return(true))};
+    auto packet{make_zpp_valid_query_packet("SP", 0uz)};
+    Receive(packet.timingsWithoutAckreq());
+    Execute();
+    Receive(packet.timingsAckreqOnly());
+  }
+
+  {
+    Expectation loadcode_valid{
+      EXPECT_CALL(*base_, loadcodeValid({developer_code_}))
+        .Times(Exactly(1))
+        .WillRepeatedly(Return(true))};
+    auto packet{make_zpp_lc_dc_query_packet(developer_code_)};
+    Receive(packet.timingsWithoutAckreq());
+    Execute();
+    Receive(packet.timingsAckreqOnly());
+  }
 }

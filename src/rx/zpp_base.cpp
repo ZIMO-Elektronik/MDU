@@ -23,8 +23,8 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
   switch (cmd) {
     case Command::ZppValidQuery: {
       std::string_view zpp_id{std::bit_cast<char*>(&packet.data[4uz]), 2uz};
-      auto const zpp_size{data2uint32(&packet.data[6uz])};
-      return executeValidQuery(zpp_id, zpp_size);
+      auto const zpp_flash_size{data2uint32(&packet.data[6uz])};
+      return executeValidQuery(zpp_id, zpp_flash_size);
     }
     case Command::ZppExit: return executeExit(false);
     case Command::ZppExitReset: return executeExit(true);
@@ -59,12 +59,13 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
 
 /// Execute ZppValidQuery command
 ///
-/// \param  zpp_id    ZPP ID
-/// \param  zpp_size  ZPP size
-/// \return true      Transmit ackbit in channel2
-/// \return false     Do not transmit ackbit in channel2
-bool ZppMixin::executeValidQuery(std::string_view zpp_id, size_t zpp_size) {
-  zpp_valid_ = zppValid(zpp_id, zpp_size);
+/// \param  zpp_id          ZPP ID
+/// \param  zpp_flash_size  ZPP flash size
+/// \return true            Transmit ackbit in channel2
+/// \return false           Do not transmit ackbit in channel2
+bool ZppMixin::executeValidQuery(std::string_view zpp_id,
+                                 size_t zpp_flash_size) {
+  zpp_valid_ = zppValid(zpp_id, zpp_flash_size);
   return !zpp_valid_;
 }
 

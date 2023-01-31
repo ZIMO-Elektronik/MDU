@@ -15,6 +15,11 @@ PacketBuilder& PacketBuilder::data(std::span<uint8_t const> chunk) {
   return *this;
 }
 
+PacketBuilder& PacketBuilder::data(std::string_view sv) {
+  data_.insert(end(data_), cbegin(sv), cend(sv));
+  return *this;
+}
+
 PacketBuilder& PacketBuilder::crc8(std::optional<uint8_t> overwrite_crc8) {
   return data(overwrite_crc8.value_or(mdu::crc8(data_)));
 }

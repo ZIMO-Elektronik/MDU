@@ -24,7 +24,7 @@ private:
   bool writeCv(uint32_t addr, uint8_t value) const final {}
 
   // Check if ZPP is valid
-  bool zppValid(std::string_view zpp_id, size_t zpp_size) const final {}
+  bool zppValid(std::string_view zpp_id, size_t zpp_flash_size) const final {}
 
   // Check if loadcode is valid
   bool loadcodeValid(std::span<uint8_t const, 4uz> developer_code) const final {

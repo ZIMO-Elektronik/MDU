@@ -4,6 +4,7 @@
 #include <mdu/mdu.hpp>
 #include <optional>
 #include <span>
+#include <string_view>
 #include <vector>
 
 class PacketBuilder {
@@ -26,6 +27,7 @@ public:
   }
 
   PacketBuilder& data(std::span<uint8_t const> chunk);
+  PacketBuilder& data(std::string_view sv);
 
   // CRC
   PacketBuilder& crc8(std::optional<uint8_t> overwrite_crc8 = {});
