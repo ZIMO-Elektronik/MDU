@@ -61,9 +61,9 @@ struct FirmwareMixin {
       }
       case Command::FirmwareUpdate: {
         auto const address{data2uint32(&packet.data[4uz])};
-        auto const bytes_count{packet.bytes_count - sizeof(Command) -
-                               sizeof(address) - sizeof(Crc32)};
-        assert(bytes_count == 64uz);
+        auto const size{packet.size - sizeof(Command) - sizeof(address) -
+                        sizeof(Crc32)};
+        assert(size == 64uz);
         std::span<uint8_t const, 64uz> chunk{&packet.data[8uz], 64uz};
         return executeUpdate(address, chunk);
       }

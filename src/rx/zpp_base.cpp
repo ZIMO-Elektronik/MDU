@@ -44,9 +44,9 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
     }
     case Command::ZppUpdate: {
       auto const address{data2uint32(&packet.data[4uz])};
-      auto const bytes_count{packet.bytes_count - sizeof(Command) -
-                             sizeof(address) - sizeof(Crc32)};
-      return executeUpdate(address, {&packet.data[8uz], bytes_count});
+      auto const size{packet.size - sizeof(Command) - sizeof(address) -
+                      sizeof(Crc32)};
+      return executeUpdate(address, {&packet.data[8uz], size});
     }
     case Command::ZppUpdateEnd: {
       auto const begin_addr{data2uint32(&packet.data[4uz])};

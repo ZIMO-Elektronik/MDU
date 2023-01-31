@@ -186,8 +186,8 @@ protected:
     if (bit_count_ >= 8uz) {
       crc8_.next(byte_);
       crc32_.next(byte_);
-      auto& [data, bytes_count]{*end(queue_)};
-      data[bytes_count++] = byte_;
+      auto& [data, size]{*end(queue_)};
+      data[size++] = byte_;
       bit_count_ = byte_ = 0u;
     }
     return !bit_count_;
@@ -195,7 +195,7 @@ protected:
 
   /// Reset
   void reset() {
-    bit_count_ = ackreqbit_count_ = end(queue_)->bytes_count = byte_ = 0u;
+    bit_count_ = ackreqbit_count_ = end(queue_)->size = byte_ = 0u;
     nack(true);
     ack(false);
     crc8_.reset();
@@ -291,14 +291,13 @@ protected:
   void executePing(Packet const& packet) {
     uint32_t serial_number{};
     uint32_t decoder_id{};
-    if (packet.bytes_count < 9uz)
+    if (packet.size < 9uz)
       decoder_id = packet.data[4uz] ? packet.data[4uz] << 24u |
                                         (cfg_.decoder_id & 0x00FF'FFFFu)
                                     : 0u;
     else {
       serial_number = data2uint32(&packet.data[4uz]);
-      if (packet.bytes_count >= 12uz)
-        decoder_id = data2uint32(&packet.data[8uz]);
+      if (packet.size >= 12uz) decoder_id = data2uint32(&packet.data[8uz]);
     }
     executePing(serial_number, decoder_id);
   }

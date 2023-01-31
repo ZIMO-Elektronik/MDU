@@ -24,7 +24,7 @@ struct Packet {
   std::array<uint8_t,
              sizeof(Command) + sizeof(uint32_t) + 256uz + sizeof(Crc32)>
     data{};
-  size_t bytes_count{};
+  size_t size{};
 };
 
 /// Packet to command
