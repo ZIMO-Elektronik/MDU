@@ -5,7 +5,7 @@
 using namespace ::testing;
 
 TEST_F(ReceiveZppTest, exit_when_nothing_was_written) {
-  Expectation exit_sound{EXPECT_CALL(*base_, exitZpp(false)).Times(Exactly(1))};
+  Expectation exit_zpp{EXPECT_CALL(*base_, exitZpp(false)).Times(Exactly(1))};
   auto packet{make_zpp_exit_packet()};
   Receive(packet.timingsWithoutAckreq());
   Execute();
@@ -13,34 +13,41 @@ TEST_F(ReceiveZppTest, exit_when_nothing_was_written) {
 }
 
 TEST_F(ReceiveZppTest, exit_when_end_address_check_succeeds) {
-  std::array<uint8_t, 64uz> sound_data;
-  std::iota(begin(sound_data), end(sound_data), 0u);
+  std::array<uint8_t, 64uz> zpp_data;
+  std::iota(begin(zpp_data), end(zpp_data), 0u);
 
-  Expectation write_sound{EXPECT_CALL(*base_, writeZpp(_, _))
+  {
+    Expectation validate_zpp{EXPECT_CALL(*base_, zppValid(_, _))
+                               .Times(Exactly(1))
+                               .WillRepeatedly(Return(true))};
+    auto packet{make_zpp_valid_query_packet("SP", 0uz)};
+    Receive(packet.timingsWithoutAckreq());
+    Execute();
+    Receive(packet.timingsAckreqOnly());
+  }
+
+  {
+    Expectation write_zpp{EXPECT_CALL(*base_, writeZpp(_, _))
                             .Times(Exactly(1))
                             .WillRepeatedly(Return(true))};
-
-  {
-    auto packet{make_zpp_update_packet(0u, sound_data)};
+    auto packet{make_zpp_update_packet(0u, zpp_data)};
     Receive(packet.timingsWithoutAckreq());
     Execute();
     Receive(packet.timingsAckreqOnly());
   }
 
-  Expectation end_sound{EXPECT_CALL(*base_, endZpp())
+  {
+    Expectation end_zpp{EXPECT_CALL(*base_, endZpp())
                           .Times(Exactly(1))
                           .WillRepeatedly(Return(true))};
-
-  {
-    auto packet{make_zpp_update_end_packet(0u, size(sound_data))};
+    auto packet{make_zpp_update_end_packet(0u, size(zpp_data))};
     Receive(packet.timingsWithoutAckreq());
     Execute();
     Receive(packet.timingsAckreqOnly());
   }
 
   {
-    Expectation exit_sound{
-      EXPECT_CALL(*base_, exitZpp(false)).Times(Exactly(1))};
+    Expectation exit_zpp{EXPECT_CALL(*base_, exitZpp(false)).Times(Exactly(1))};
     auto packet{make_zpp_exit_packet()};
     Receive(packet.timingsWithoutAckreq());
     Execute();
@@ -48,24 +55,34 @@ TEST_F(ReceiveZppTest, exit_when_end_address_check_succeeds) {
   }
 }
 
-TEST_F(ReceiveZppTest, erase_sound_when_end_address_check_fails) {
-  std::array<uint8_t, 64uz> sound_data;
-  std::iota(begin(sound_data), end(sound_data), 0u);
+TEST_F(ReceiveZppTest, erase_zpp_when_end_address_check_fails) {
+  std::array<uint8_t, 64uz> zpp_data;
+  std::iota(begin(zpp_data), end(zpp_data), 0u);
 
   Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(6))};
 
   {
-    Expectation write_sound{EXPECT_CALL(*base_, writeZpp(_, _))
-                              .Times(Exactly(1))
-                              .WillRepeatedly(Return(true))};
-    auto packet{make_zpp_update_packet(0u, sound_data)};
+    Expectation validate_zpp{EXPECT_CALL(*base_, zppValid(_, _))
+                               .Times(Exactly(1))
+                               .WillRepeatedly(Return(true))};
+    auto packet{make_zpp_valid_query_packet("SP", 0uz)};
     Receive(packet.timingsWithoutAckreq());
     Execute();
     Receive(packet.timingsAckreqOnly());
   }
 
   {
-    Expectation end_sound{EXPECT_CALL(*base_, endZpp()).Times(Exactly(0))};
+    Expectation write_zpp{EXPECT_CALL(*base_, writeZpp(_, _))
+                            .Times(Exactly(1))
+                            .WillRepeatedly(Return(true))};
+    auto packet{make_zpp_update_packet(0u, zpp_data)};
+    Receive(packet.timingsWithoutAckreq());
+    Execute();
+    Receive(packet.timingsAckreqOnly());
+  }
+
+  {
+    Expectation end_zpp{EXPECT_CALL(*base_, endZpp()).Times(Exactly(0))};
     auto packet{make_zpp_update_end_packet(0u, 42u)};
     Receive(packet.timingsWithoutAckreq());
     Execute();
@@ -73,11 +90,10 @@ TEST_F(ReceiveZppTest, erase_sound_when_end_address_check_fails) {
   }
 
   {
-    Expectation exit_sound{
-      EXPECT_CALL(*base_, exitZpp(false)).Times(Exactly(0))};
-    Expectation erase_sound{EXPECT_CALL(*base_, eraseZpp(0u, size(sound_data)))
-                              .Times(Exactly(1))
-                              .WillRepeatedly(Return(true))};
+    Expectation exit_zpp{EXPECT_CALL(*base_, exitZpp(false)).Times(Exactly(0))};
+    Expectation erase_zpp{EXPECT_CALL(*base_, eraseZpp(0u, size(zpp_data)))
+                            .Times(Exactly(1))
+                            .WillRepeatedly(Return(true))};
     auto packet{make_zpp_exit_packet()};
     Receive(packet.timingsWithoutAckreq());
     Execute();

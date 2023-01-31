@@ -27,16 +27,17 @@ struct ZppMixin {
   /// Dtor
   virtual constexpr ~ZppMixin() = default;
 
-  bool execute(Command command, Packet const& packet, uint32_t);
+  bool execute(Command cmd, Packet const& packet, uint32_t);
 
 private:
   /// Check if ZPP is valid
   ///
-  /// \param  zpp_id    ZPP ID
-  /// \param  zpp_size  ZPP size
-  /// \return true      ZPP is valid
-  /// \return false     ZPP is not valid
-  virtual bool zppValid(std::string_view zpp_id, size_t zpp_size) const = 0;
+  /// \param  zpp_id          ZPP ID
+  /// \param  zpp_flash_size  ZPP flash size
+  /// \return true            ZPP is valid
+  /// \return false           ZPP is not valid
+  virtual bool zppValid(std::string_view zpp_id,
+                        size_t zpp_flash_size) const = 0;
 
   /// Check if loadcode is valid
   ///
@@ -82,7 +83,8 @@ private:
 
   std::optional<uint32_t> first_addr_{};
   std::optional<uint32_t> last_addr_{};
-  bool addrs_valid_{};
+  bool addrs_valid_ : 1 {};
+  bool zpp_valid_ : 1 {};
 };
 
 }  // namespace detail

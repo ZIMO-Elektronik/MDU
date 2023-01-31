@@ -9,6 +9,8 @@ PacketBuilder make_config_transfer_rate_packet(mdu::TransferRate transfer_rate);
 PacketBuilder make_busy_packet();
 PacketBuilder make_firmware_update_packet(uint32_t addr,
                                           std::span<uint8_t const, 64uz> chunk);
+PacketBuilder make_zpp_valid_query_packet(std::string_view zpp_id,
+                                          size_t zpp_flash_size);
 PacketBuilder
 make_zpp_lc_dc_query_packet(std::span<uint8_t const, 4uz> developer_code);
 PacketBuilder make_zpp_update_packet(uint32_t addr,
