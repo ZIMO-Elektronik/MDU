@@ -33,11 +33,11 @@ uint32_t slow_crc32(uint32_t sum, unsigned char const* p, uint32_t len) {
   return sum;
 }
 
-constexpr std::array<uint8_t, 4u> zeros{};
+constexpr std::array<uint8_t, 4uz> zeros{};
 
 }  // namespace
 
-static_assert(sizeof(mdu::Crc32) == 4u);
+static_assert(sizeof(mdu::Crc32) == 4uz);
 
 TEST(Crc32, old_fucked_up_pseudo_crc32_matches_new_one) {
   std::string_view str{"Hello World"};

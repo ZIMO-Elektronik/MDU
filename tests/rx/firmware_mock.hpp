@@ -12,7 +12,7 @@ struct FirmwareMock : mdu::rx::FirmwareBase {
   MOCK_METHOD(bool, eraseFirmware, (uint32_t, uint32_t), (const));
   MOCK_METHOD(bool,
               writeFirmware,
-              (uint32_t, (std::span<uint8_t const, 64u>)),
+              (uint32_t, (std::span<uint8_t const, 64uz>)),
               (const));
   MOCK_METHOD(void, exitFirmware, (), (const));
 };

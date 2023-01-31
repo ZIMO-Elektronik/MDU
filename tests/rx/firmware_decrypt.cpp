@@ -73,7 +73,7 @@ auto zsu2initialization_vector(std::filesystem::path zsu_path) {
              return std::stoull(tmp);
            })};
   auto tmp{*begin(ivs)};
-  std::array<uint8_t, 8u> iv;
+  std::array<uint8_t, 8uz> iv;
   for (auto i{8u}; i-- > 0u;) {
     iv[i] = tmp & 0xFFu;
     tmp >>= 8u;
@@ -112,7 +112,7 @@ std::vector<uint8_t> zsu2bin(std::filesystem::path zsu_path) {
   std::optional<std::vector<uint8_t>> chunk;
   std::vector<uint8_t> retval;
   while (chunk = reader.chunk()) {
-    std::array<uint8_t, 64u> tmp{};
+    std::array<uint8_t, 64uz> tmp{};
     ECRYPT_decrypt_bytes(&ctx, &(*chunk)[0u], &tmp[0u], 64u);
     for (auto v : tmp)
       retval.push_back(v);

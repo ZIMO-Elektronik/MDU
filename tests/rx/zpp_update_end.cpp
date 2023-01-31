@@ -5,7 +5,7 @@
 using namespace ::testing;
 
 TEST_F(ReceiveZppTest, end_address_check_succeeds) {
-  std::array<uint8_t, 64u> sound_data;
+  std::array<uint8_t, 64uz> sound_data;
   std::iota(begin(sound_data), end(sound_data), 0u);
 
   {
@@ -40,7 +40,7 @@ TEST_F(ReceiveZppTest, end_address_check_succeeds) {
 }
 
 TEST_F(ReceiveZppTest, end_address_check_fails) {
-  std::array<uint8_t, 64u> sound_data;
+  std::array<uint8_t, 64uz> sound_data;
   std::iota(begin(sound_data), end(sound_data), 0u);
 
   {
