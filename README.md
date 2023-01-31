@@ -5,7 +5,7 @@
 <img src="data/images/logo.png" width="15%" align="right">
 
 MDU is an acronym for Multi Decoder Update, a protocol for firmware and ZPP updates over the rail. The protocol is currently supported in the form documented here by the following products:
-- command stations
+- Command stations
   - MXULF
   - Z21
 - Decoders

@@ -1,9 +1,19 @@
 name: build
 
-on: [push]
+on:
+  push:
+    branches: [master]
 
 jobs:
-  linux-gcc:
+  arm-none-eabi-gcc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: carlosperate/arm-none-eabi-gcc-action@v1
+      - run: cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=CMakeModules/toolchains/arm_none_eabi_gcc.cmake
+      - run: cmake --build build --target MDU
+
+  x86_64-pc-linux-gnu-gcc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

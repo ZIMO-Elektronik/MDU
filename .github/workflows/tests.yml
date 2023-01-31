@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  linux-gcc:
+  x86_64-pc-linux-gnu-gcc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
