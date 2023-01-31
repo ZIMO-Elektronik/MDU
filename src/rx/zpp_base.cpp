@@ -14,17 +14,25 @@ namespace mdu::rx::detail {
 
 /// Execute ZPP commands
 ///
-/// \param  command Command
+/// \param  cmd     Command
 /// \param  packet  Packet
 /// \return true    Transmit ackbit in channel2
 /// \return false   Do not transmit ackbit in channel2
-bool ZppMixin::execute(Command command, Packet const& packet, uint32_t) {
-  switch (command) {
+bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
+  // The following commands may run without ZPP validation
+  switch (cmd) {
     case Command::ZppValidQuery: {
       std::string_view zpp_id{std::bit_cast<char*>(&packet.data[4uz]), 2uz};
       auto const zpp_size{data2uint32(&packet.data[6uz])};
       return executeValidQuery(zpp_id, zpp_size);
     }
+    case Command::ZppExit: return executeExit(false);
+    case Command::ZppExitReset: return executeExit(true);
+  }
+
+  // All others may not
+  if (!zpp_valid_) return true;
+  switch (cmd) {
     case Command::ZppLcDcQuery: {
       std::span<uint8_t const, 4uz> developer_code{&packet.data[4uz], 4uz};
       return executeLcDcQuery(developer_code);
@@ -45,8 +53,6 @@ bool ZppMixin::execute(Command command, Packet const& packet, uint32_t) {
       auto const end_addr{data2uint32(&packet.data[8uz])};
       return executeEnd(begin_addr, end_addr);
     }
-    case Command::ZppExit: return executeExit(false);
-    case Command::ZppExitReset: return executeExit(true);
     default: return false;
   }
 }
@@ -58,8 +64,8 @@ bool ZppMixin::execute(Command command, Packet const& packet, uint32_t) {
 /// \return true      Transmit ackbit in channel2
 /// \return false     Do not transmit ackbit in channel2
 bool ZppMixin::executeValidQuery(std::string_view zpp_id, size_t zpp_size) {
-  bool const valid{zppValid(zpp_id, zpp_size)};
-  return !valid;
+  zpp_valid_ = zppValid(zpp_id, zpp_size);
+  return !zpp_valid_;
 }
 
 /// Execute ZppLcDcQuery command

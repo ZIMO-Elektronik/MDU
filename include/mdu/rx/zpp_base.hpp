@@ -27,7 +27,7 @@ struct ZppMixin {
   /// Dtor
   virtual constexpr ~ZppMixin() = default;
 
-  bool execute(Command command, Packet const& packet, uint32_t);
+  bool execute(Command cmd, Packet const& packet, uint32_t);
 
 private:
   /// Check if ZPP is valid
@@ -82,7 +82,8 @@ private:
 
   std::optional<uint32_t> first_addr_{};
   std::optional<uint32_t> last_addr_{};
-  bool addrs_valid_{};
+  bool addrs_valid_ : 1 {};
+  bool zpp_valid_ : 1 {};
 };
 
 }  // namespace detail

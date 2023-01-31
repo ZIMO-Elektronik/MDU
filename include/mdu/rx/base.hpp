@@ -215,12 +215,12 @@ protected:
 
   /// Check if busy, setup nack/ack transmission
   ///
-  /// \param  command           Command
+  /// \param  cmd               Command
   /// \param  queue_almost_full Only 1 slot left in queue
   /// \return true              Busy
   /// \return false             Not busy
-  bool busy(Command command, bool queue_almost_full) {
-    if (command == Command::Busy) {
+  bool busy(Command cmd, bool queue_almost_full) {
+    if (cmd == Command::Busy) {
       nack(crc8_);
       if (!crc8_) ack(queue_almost_full);
     }
@@ -229,19 +229,19 @@ protected:
 
   /// Check if CRC is valid, setup nack/ack transmission
   ///
-  /// \param  command Command
-  /// \return true    CRC is valid
-  /// \return false   CRC is not valid
-  bool crcCheck(Command command) {
+  /// \param  cmd   Command
+  /// \return true  CRC is valid
+  /// \return false CRC is not valid
+  bool crcCheck(Command cmd) {
     uint32_t crc;
     // Commands with CRC32 also transmit failures in channel2
-    if (command == Command::FirmwareUpdate || command == Command::ZppUpdate) {
+    if (cmd == Command::FirmwareUpdate || cmd == Command::ZppUpdate) {
       crc = crc32_;
       ack(crc);
     } else {
       crc = crc8_;
       // And there's also an exception for FirmwareSalsa20IV...
-      if (command == Command::FirmwareSalsa20IV) ack(crc);
+      if (cmd == Command::FirmwareSalsa20IV) ack(crc);
     }
     nack(crc);
     return !crc;

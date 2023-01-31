@@ -43,13 +43,13 @@ struct FirmwareMixin {
 
   /// Execute firmware commands
   ///
-  /// \param  command     Command
+  /// \param  cmd         Command
   /// \param  packet      Packet
   /// \param  decoder_id  Decoder ID
   /// \return true        Transmit ackbit in channel2
   /// \return false       Do not transmit ackbit in channel2
-  bool execute(Command command, Packet const& packet, uint32_t decoder_id) {
-    switch (command) {
+  bool execute(Command cmd, Packet const& packet, uint32_t decoder_id) {
+    switch (cmd) {
       case Command::FirmwareSalsa20IV: {
         std::span<uint8_t const, 8uz> iv{&packet.data[4uz], 8uz};
         return executeSalsa20IV(decoder_id, iv);
