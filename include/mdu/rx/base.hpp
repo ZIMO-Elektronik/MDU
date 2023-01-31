@@ -13,9 +13,9 @@
 #include <functional>
 #include <gsl/util>
 #include <ztl/circular_array.hpp>
+#include "../bit.hpp"
 #include "../crc32.hpp"
 #include "../crc8.hpp"
-#include "../timing.hpp"
 #include "binary_search.hpp"
 #include "config.hpp"
 #include "mixin.hpp"

@@ -12,7 +12,7 @@
 
 #include <array>
 #include <cstddef>
-#include "bit.hpp"
+#include <cstdint>
 
 namespace mdu {
 
@@ -129,21 +129,6 @@ constexpr bool is_ackreq(uint32_t time, size_t transfer_rate_index) {
   auto const i{transfer_rate_index};
   return (time >= timings[i].ackreq_min && time <= timings[i].ackreq_max) ||
          is_fallback_ackreq(time);
-}
-
-/// Convert time to bit
-///
-/// \param  time                Time is µs
-/// \param  transfer_rate_index Current index of transfer rate
-/// \return _0                  Time is a zero bit
-/// \return _1                  Time is a one bit
-/// \return Ackreq              Time is a ackreq bit
-/// \return Invalid             Time isn't valid
-constexpr Bit time2bit(uint32_t time, size_t transfer_rate_index) {
-  if (is_zero(time, transfer_rate_index)) return _0;
-  else if (is_one(time, transfer_rate_index)) return _1;
-  else if (is_ackreq(time, transfer_rate_index)) return Ackreq;
-  else return Invalid;
 }
 
 }  // namespace mdu
