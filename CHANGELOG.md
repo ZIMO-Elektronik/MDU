@@ -1,5 +1,8 @@
 # Changelog
 
+# 0.10.0
+- ZPP-Valid-Query command is mandatory
+
 # 0.9.1
 - Use CPM.cmake
 
