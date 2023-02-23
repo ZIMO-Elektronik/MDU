@@ -4,7 +4,7 @@
 
 /// Receive firmware base
 ///
-/// \file   mdu/rx/firmware_base.cpp
+/// \file   rx/firmware_base.cpp
 /// \author Vincent Hamp
 /// \date   12/12/2022
 

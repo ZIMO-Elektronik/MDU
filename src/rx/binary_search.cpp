@@ -4,7 +4,7 @@
 
 /// Binary search
 ///
-/// \file   mdu/rx/binary_search.cpp
+/// \file   rx/binary_search.cpp
 /// \author Vincent Hamp
 /// \date   12/12/2022
 

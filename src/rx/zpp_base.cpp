@@ -4,7 +4,7 @@
 
 /// Receive ZPP base
 ///
-/// \file   mdu/rx/zpp_base.cpp
+/// \file   rx/zpp_base.cpp
 /// \author Vincent Hamp
 /// \date   12/12/2022
 

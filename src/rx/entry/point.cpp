@@ -4,7 +4,7 @@
 
 /// Receive entry point
 ///
-/// \file   mdu/rx/entry/point.cpp
+/// \file   rx/entry/point.cpp
 /// \author Vincent Hamp
 /// \date   12/12/2022
 
