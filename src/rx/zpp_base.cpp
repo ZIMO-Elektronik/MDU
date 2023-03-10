@@ -86,7 +86,7 @@ bool ZppMixin::executeLcDcQuery(
 /// \param  end_addr    End address
 /// \return true        Transmit ackbit in channel2
 /// \return false       Do not transmit ackbit in channel2
-bool ZppMixin::executeErase(uint32_t begin_addr, uint32_t end_addr) const {
+bool ZppMixin::executeErase(uint32_t begin_addr, uint32_t end_addr) {
   auto const success{eraseZpp(begin_addr, end_addr)};
   return !success;
 }

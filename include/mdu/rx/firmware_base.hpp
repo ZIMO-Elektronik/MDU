@@ -86,7 +86,7 @@ private:
   /// \param  end_addr    End address
   /// \return true        Success
   /// \return false       Failure
-  virtual bool eraseFirmware(uint32_t begin_addr, uint32_t end_addr) const = 0;
+  virtual bool eraseFirmware(uint32_t begin_addr, uint32_t end_addr) = 0;
 
   /// Write firmware
   ///
@@ -95,10 +95,10 @@ private:
   /// \return true  Success
   /// \return false Failure
   virtual bool writeFirmware(uint32_t addr,
-                             std::span<uint8_t const, 64uz> chunk) const = 0;
+                             std::span<uint8_t const, 64uz> chunk) = 0;
 
   /// Exit firmware
-  [[noreturn]] virtual void exitFirmware() const = 0;
+  [[noreturn]] virtual void exitFirmware() = 0;
 
   /// Execute FirmwareSalsa20IV command
   ///
@@ -117,7 +117,7 @@ private:
   /// \param  end_addr    End address
   /// \return true        Transmit ackbit in channel2
   /// \return false       Do not transmit ackbit in channel2
-  bool executeErase(uint32_t begin_addr, uint32_t end_addr) const {
+  bool executeErase(uint32_t begin_addr, uint32_t end_addr) {
     auto const success{eraseFirmware(begin_addr, end_addr)};
     return !success;
   }
@@ -165,7 +165,7 @@ private:
   ///               false Do not exit
   /// \return true  Transmit ackbit in channel2
   /// \return false Do not transmit ackbit in channel2
-  bool executeCrc32Result(bool exit) const {
+  bool executeCrc32Result(bool exit) {
     if (exit && crc32_valid_) {
       exitFirmware();
       return false;

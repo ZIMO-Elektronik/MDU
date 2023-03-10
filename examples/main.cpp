@@ -21,7 +21,7 @@ private:
   bool readCv(uint32_t addr, uint32_t position) const final {}
 
   // Write CV
-  bool writeCv(uint32_t addr, uint8_t value) const final {}
+  bool writeCv(uint32_t addr, uint8_t value) final {}
 
   // Check if ZPP is valid
   bool zppValid(std::string_view zpp_id, size_t zpp_flash_size) const final {}
@@ -31,7 +31,7 @@ private:
   }
 
   // Erase ZPP in the closed-interval [begin_addr, end_addr[
-  bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) const final {}
+  bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) final {}
 
   // Write ZPP
   bool writeZpp(uint32_t addr, std::span<uint8_t const> chunk) final {}
@@ -40,7 +40,7 @@ private:
   bool endZpp() final {}
 
   // Exit (eventually perform CV reset)
-  [[noreturn]] void exitZpp(bool reset_cvs) const final {}
+  [[noreturn]] void exitZpp(bool reset_cvs) final {}
 
   // Timer interrupt calls receive with captured value
   void interrupt() { receive(TIMER_VALUE); }

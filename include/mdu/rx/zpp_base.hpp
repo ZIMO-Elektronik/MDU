@@ -53,7 +53,7 @@ private:
   /// \param  end_addr    End address
   /// \return true        Success
   /// \return false       Failure
-  virtual bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) const = 0;
+  virtual bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) = 0;
 
   /// Write ZPP
   ///
@@ -72,11 +72,11 @@ private:
   /// Exit ZPP
   ///
   /// \param  reset_cvs Reset CVs
-  [[noreturn]] virtual void exitZpp(bool reset_cvs) const = 0;
+  [[noreturn]] virtual void exitZpp(bool reset_cvs) = 0;
 
   bool executeValidQuery(std::string_view zpp_id, size_t zpp_size);
   bool executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const;
-  bool executeErase(uint32_t begin_addr, uint32_t end_addr) const;
+  bool executeErase(uint32_t begin_addr, uint32_t end_addr);
   bool executeUpdate(uint32_t addr, std::span<uint8_t const> chunk);
   bool executeEnd(uint32_t begin_addr, uint32_t end_addr);
   bool executeExit(bool reset);
