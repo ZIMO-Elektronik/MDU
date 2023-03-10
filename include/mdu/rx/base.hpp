@@ -119,7 +119,7 @@ protected:
   /// \param  value CV value
   /// \return true  Success
   /// \return false Failure
-  virtual bool writeCv(uint32_t addr, uint8_t value) const = 0;
+  virtual bool writeCv(uint32_t addr, uint8_t value) = 0;
 
   /// Wait for preamble
   ///
