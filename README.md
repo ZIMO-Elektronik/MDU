@@ -51,7 +51,7 @@ At the end of a data packet, so-called acknowledgment bits are sent by the comma
 
 **Channel 2** (ackreq bits 6-8) is for data acknowledgment. The meaning depends on the last command transmitted. For an overview, refer to the table in the [acknowledgment](#acknowledgment) chapter. The detailed description of individual commands that follows later also goes into more detail about the meaning.
 
-command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For Roco's Z21, for example, 70% duty cycle with a period of 10µs turned out to be ideal.
+Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For Roco's Z21, for example, 70% duty cycle with a period of 10µs turned out to be ideal.
 
 ## Bit timings
 At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders on the rail responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
@@ -291,7 +291,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 | Data (CRC)      | 1-byte CRC8                                   |
 | Acknowledgement | Bit timings are not supported                 |
 
-With the help of a Config-Transfer-Rate command, the transmission speed can be adapted to the decoder by setting the bit timings. The exact times for one bit, zero bit, ackreq bit and ack bit can be found in the [bit timings](#bit-timings). If a decoder does not support the selected transmission speed, an acknowledgement must be sent in channel2.
+With the help of a Config-Transfer-Rate command, the transmission speed can be adapted to the decoder by setting the bit timings. The exact times for one bit, zero bit, ackreq bit and ack bit can be found in the [bit timings](#bit-timings). If a decoder does not support the selected transmission speed, an acknowledgement must be sent in channel 2.
 
 ### Binary-Search
 | Command phase   | Description                        |
@@ -531,6 +531,7 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 2.  Find a Config-Transfer-Rate that is supported by all decoders
 3.  Ping select the desired decoders
 4.  ZPP-Valid-Query
+    -ZPP-Exit on answer
 5.  ZPP-LC-DC-Query (optional)
     - ZPP-Exit on answer
 6.  ZPP-Erase
