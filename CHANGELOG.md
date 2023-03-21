@@ -2,12 +2,12 @@
 
 # 0.11.0
 - Methods which potentially mutate state are no longer const
-  - Base::writeCv
-  - FirmwareBase::eraseFirmware
-  - FirmwareBase::writeFirmware
-  - FirmwareBase::exitFirmware
-  - ZppBase::eraseZpp
-  - ZppBase::exitZpp
+  - rx::Base::writeCv
+  - rx::FirmwareBase::eraseFirmware
+  - rx::FirmwareBase::writeFirmware
+  - rx::FirmwareBase::exitFirmware
+  - rx::ZppBase::eraseZpp
+  - rx::ZppBase::exitZpp
 
 # 0.10.0
 - ZPP-Valid-Query command is mandatory
