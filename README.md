@@ -388,7 +388,7 @@ Firmware-Salsa20-IV is used to transmit the 8-byte initialization vector of the 
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
-The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2.
+The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2. **After the command, a delay of at least 3.5s must be observed.**
 
 ### Firmware-Update
 | Command phase   | Description                        |
@@ -470,7 +470,7 @@ A ZPP-LC-DC query can be used to check whether the decoders contain a valid load
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
-With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2.
+With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2. **After the command, a delay of at least 3.5s must be observed.**
 
 ### ZPP-Update
 | Command phase   | Description                                 |
@@ -521,10 +521,11 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 1. Ping all decoders
 2. Find a Config-TransferRate that is supported by all decoders
 3. Ping select the desired decoders
-4. Firmware-Update
-5. Firmware-CRC32-Start
-6. Firmware-CRC32-Result | Firmware-CRC32-Result&Exit
-7. Maintain voltage for at least 500ms
+4. Firmware-Erase
+5. Firmware-Update
+6. Firmware-CRC32-Start
+7. Firmware-CRC32-Result | Firmware-CRC32-Result&Exit
+8. Maintain voltage for at least 500ms
 
 ### ZPP update
 1.  Ping all decoders
