@@ -532,7 +532,7 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 2.  Find a Config-Transfer-Rate that is supported by all decoders
 3.  Ping select the desired decoders
 4.  ZPP-Valid-Query
-    -ZPP-Exit on answer
+    - ZPP-Exit on answer
 5.  ZPP-LC-DC-Query (optional)
     - ZPP-Exit on answer
 6.  ZPP-Erase
