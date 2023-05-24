@@ -8,8 +8,7 @@
 
 struct PointTest : ::testing::Test {
 protected:
-  void verify(std::vector<std::pair<size_t, uint8_t>> sequence);
-  void verify(size_t index, uint8_t value);
+  void verify(std::vector<std::pair<uint32_t, uint8_t>> sequence);
 
   static constexpr uint32_t decoder_id_{};
 

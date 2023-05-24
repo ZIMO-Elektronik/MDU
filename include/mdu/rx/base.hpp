@@ -182,7 +182,7 @@ protected:
   /// \return false Byte not yet done
   bool shiftIn(uint32_t bit) {
     assert(bit <= 1u);
-    byte_ |= bit << (7uz - bit_count_++);
+    byte_ |= static_cast<decltype(byte_)>(bit << (7uz - bit_count_++));
     if (bit_count_ >= 8uz) {
       crc8_.next(byte_);
       crc32_.next(byte_);
@@ -353,7 +353,7 @@ protected:
     ack(!success);
   }
 
-  using Fp = auto(Base::*)(uint32_t, Bit) -> void;
+  using Fp = auto (Base::*)(uint32_t, Bit) -> void;
   Fp fp_{&Base::preamble};
   size_t bit_count_{};        ///< Count received bits
   size_t ackreqbit_count_{};  ///< Count received ackreqbits
