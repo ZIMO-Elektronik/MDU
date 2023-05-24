@@ -125,11 +125,11 @@ protected:
   ///
   /// \param  bit Bit
   void preamble(uint32_t, Bit bit) {
-    if (bit == 1u) ++bit_count_;
+    if (bit == 1u) nack(++bit_count_ >= 2uz);
     else if (bit_count_ < MDU_RX_PREAMBLE_BITS) reset();
     else {
       bit_count_ = 0uz;
-      active_ = nack_ = true;
+      active(true);
       fp_ = &Base::data;
     }
   }

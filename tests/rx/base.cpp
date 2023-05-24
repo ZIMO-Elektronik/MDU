@@ -26,6 +26,20 @@ TEST_F(ReceiveBaseTest, do_not_nack_ackreq_bits_after_reset) {
   Receive(packet.timingsAckreqOnly());
 }
 
+TEST_F(ReceiveBaseTest, single_preamble_bit_is_not_enough_to_set_nack) {
+  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(0))};
+  PacketBuilder packet;
+  packet.preamble(1uz).ackreq();
+  Receive(packet.timings());
+}
+
+TEST_F(ReceiveBaseTest, two_preamble_bits_are_enough_to_set_nack) {
+  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(3))};
+  PacketBuilder packet;
+  packet.preamble(2uz).ackreq();
+  Receive(packet.timings());
+}
+
 TEST_F(ReceiveBaseTest, receive_packet_with_default_transfer_rate) {
   Receive(
     make_config_transfer_rate_packet(mdu::TransferRate::Default).timings());
