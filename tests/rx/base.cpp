@@ -20,7 +20,8 @@ TEST_F(ReceiveBaseTest, shiftIn) {
 }
 
 TEST_F(ReceiveBaseTest, do_not_nack_ackreq_bits_after_reset) {
-  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(0))};
+  Expectation nack_not_sent{
+    EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(0))};
   PacketBuilder packet;
   Receive(packet.timingsAckreqOnly());
 }
@@ -48,7 +49,7 @@ TEST_F(ReceiveBaseTest, nack_packet_with_crc8_error) {
   PacketBuilder packet;
   packet.preamble()
     .command(mdu::Command::Ping)
-    .data(static_cast<uint32_t>(0u))
+    .data(static_cast<uint32_t>(0))
     .crc8(42u)  // Tinker with CRC8
     .ackreq();
   Receive(packet.timingsWithoutAckreq());
@@ -63,7 +64,7 @@ TEST_F(ReceiveBaseTest, nack_and_ack_packet_with_crc32_error) {
   PacketBuilder packet;
   packet.preamble()
     .command(mdu::Command::ZppUpdate)
-    .data(static_cast<uint32_t>(0u))
+    .data(static_cast<uint32_t>(0))
     .data(zpp_data)
     .crc32(42u)  // Tinker with CRC32
     .ackreq();
@@ -95,7 +96,7 @@ TEST_F(ReceiveBaseTest, receive_multiple_packets) {
   // the second packets. This demonstrates that we correctly receive all those
   // packets although we never actually flush the internal ring buffer due to
   // timing constraints.
-  auto loop_count{10u};
+  auto loop_count{10};
   Expectation nack_sent{
     EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(3 * loop_count))};
 
@@ -105,7 +106,7 @@ TEST_F(ReceiveBaseTest, receive_multiple_packets) {
     Receive(packet.timingsAckreqOnly());
   }};
 
-  for (auto i{0u}; i < loop_count; ++i) {
+  for (auto i{0}; i < loop_count; ++i) {
     receive_execute(first_packet);
     receive_execute(second_packet);
   }
