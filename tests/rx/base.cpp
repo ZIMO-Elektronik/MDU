@@ -19,6 +19,12 @@ TEST_F(ReceiveBaseTest, shiftIn) {
   EXPECT_FALSE(retval);
 }
 
+TEST_F(ReceiveBaseTest, do_not_nack_ackreq_bits_after_reset) {
+  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(0))};
+  PacketBuilder packet;
+  Receive(packet.timingsAckreqOnly());
+}
+
 TEST_F(ReceiveBaseTest, receive_packet_with_default_transfer_rate) {
   Receive(
     make_config_transfer_rate_packet(mdu::TransferRate::Default).timings());
