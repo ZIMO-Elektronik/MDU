@@ -28,6 +28,7 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
     }
     case Command::ZppExit: return executeExit(false);
     case Command::ZppExitReset: return executeExit(true);
+    default: break;
   }
 
   // All others may not
