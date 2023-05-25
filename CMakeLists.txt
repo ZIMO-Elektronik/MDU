@@ -10,7 +10,7 @@ FetchContent_MakeAvailable(CMakeModules)
 
 project(
   MDU
-  VERSION 0.11.0
+  VERSION 0.11.1
   LANGUAGES CXX)
 
 option(MDU_UNITY_BUILD "Combine source files into single batch" ON)

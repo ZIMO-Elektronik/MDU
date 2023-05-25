@@ -388,7 +388,7 @@ Firmware-Salsa20-IV is used to transmit the 8-byte initialization vector of the 
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
-The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2. **After the command, a delay of at least 3.5s must be observed.**
+The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2. :warning: **After the command, a delay of at least 3.5s must be observed.**
 
 ### Firmware-Update
 | Command phase   | Description                        |
@@ -400,7 +400,7 @@ The processor flash is deleted before an update package is written. If an invali
 | Data (CRC)      | 4-byte CRC32                       |
 | Acknowledgement | Invalid address or CRC32 error     |
 
-Firmware-Update is used to transfer firmware data. If an invalid address or a CRC32 error is received, there must be an acknowledgment in channel 2.
+Firmware-Update is used to transfer firmware data. If an invalid address or a CRC32 error is received, there must be an acknowledgment in channel 2. :warning: **Current implementations only support payloads of exactly 64 bytes. Smaller payloads must contain appropriate padding.**
 
 ### Firmware-CRC32-Start
 | Command phase   | Description                        |
@@ -412,7 +412,7 @@ Firmware-Update is used to transfer firmware data. If an invalid address or a CR
 | Data (CRC)      | 4-byte CRC32                       |
 | Acknowledgement | Invalid memory area                |
 
-Firmware-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via firmware update packets, then a response must be made in channel 2. **Caution, the transferred memory area is a closed interval. The last address actually written corresponds to the end address!**
+Firmware-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via firmware update packets, then a response must be made in channel 2. :warning: **The transferred memory area is a closed interval. The last address actually written corresponds to the end address!**
 
 ### Firmware-CRC32-Result
 | Command phase   | Description                        |
@@ -470,7 +470,7 @@ A ZPP-LC-DC query can be used to check whether the decoders contain a valid load
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
-With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2. **After the command, a delay of at least 3.5s must be observed.**
+With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2. :warning: **After the command, a delay of at least 3.5s must be observed.**
 
 ### ZPP-Update
 | Command phase   | Description                                 |
@@ -482,7 +482,7 @@ With the help of ZPP-Erase, a certain memory area of the flash can be deleted. I
 | Data (CRC)      | 4-byte CRC32                                |
 | Acknowledgement | Invalid address or CRC32 error              |
 
-ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 error is received, there must be an acknowledgment in channel 2.
+ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 error is received, there must be an acknowledgment in channel 2. :warning: **Current implementations only support payloads up to 256 bytes.**
 
 ### ZPP-Update-End
 | Command phase   | Description                        |
