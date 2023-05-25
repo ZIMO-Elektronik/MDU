@@ -24,7 +24,7 @@ struct Crc32 : detail::CrcBase<uint32_t, static_cast<uint32_t>(-1)> {
       crc_ <<= 1u;
       if (byte & 0x80u) crc_ |= 1u;
       if (tmp & 0x8000'0000u) crc_ ^= 0x4C11DB7u;
-      byte <<= 1u;
+      byte = static_cast<uint8_t>(byte << 1u);
     }
   }
 

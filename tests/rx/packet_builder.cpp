@@ -62,7 +62,7 @@ PacketBuilder::timingsWithoutAckreq(mdu::TransferRate transfer_rate) const {
   });
 
   // End
-  retval.push_back(timings.one);
+  if (size(data_)) retval.push_back(timings.one);
 
   return retval;
 }

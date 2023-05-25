@@ -5,6 +5,9 @@
 #include <string_view>
 #include <vector>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+
 namespace {
 
 // This is a slightly modified version of the original fucked up pseudo CRC32
@@ -58,3 +61,5 @@ TEST(Crc32, crc32) {
     'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd'};
   EXPECT_EQ(mdu::crc32(str), 0x29EE'5C18u);
 }
+
+#pragma GCC diagnostic pop

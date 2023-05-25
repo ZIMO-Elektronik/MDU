@@ -39,7 +39,7 @@ struct Base : Ts... {
   /// \param  cfg                 Confiuration
   /// \param  salsa20_master_key  Salsa20 master key
   explicit constexpr Base(Config cfg, char const* salsa20_master_key)
-    : cfg_{cfg}, FirmwareMixin{salsa20_master_key} {}
+    : FirmwareMixin{salsa20_master_key}, cfg_{cfg} {}
 
   /// Dtor
   virtual constexpr ~Base() = default;
@@ -125,7 +125,7 @@ protected:
   ///
   /// \param  bit Bit
   void preamble(uint32_t, Bit bit) {
-    if (bit == 1u) ++bit_count_;
+    if (bit == 1u) nack(++bit_count_ >= 2uz);
     else if (bit_count_ < MDU_RX_PREAMBLE_BITS) reset();
     else {
       bit_count_ = 0uz;
@@ -182,7 +182,7 @@ protected:
   /// \return false Byte not yet done
   bool shiftIn(uint32_t bit) {
     assert(bit <= 1u);
-    byte_ |= bit << (7uz - bit_count_++);
+    byte_ |= static_cast<decltype(byte_)>(bit << (7uz - bit_count_++));
     if (bit_count_ >= 8uz) {
       crc8_.next(byte_);
       crc32_.next(byte_);
@@ -196,8 +196,7 @@ protected:
   /// Reset
   void reset() {
     bit_count_ = ackreqbit_count_ = end(queue_)->size = byte_ = 0u;
-    nack(true);
-    ack(false);
+    nack_ = ack_ = false;
     crc8_.reset();
     crc32_.reset();
     fp_ = &Base::preamble;
@@ -292,9 +291,10 @@ protected:
     uint32_t serial_number{};
     uint32_t decoder_id{};
     if (packet.size < 9uz)
-      decoder_id = packet.data[4uz] ? packet.data[4uz] << 24u |
-                                        (cfg_.decoder_id & 0x00FF'FFFFu)
-                                    : 0u;
+      decoder_id = packet.data[4uz]
+                     ? static_cast<uint32_t>(packet.data[4uz] << 24u) |
+                         (cfg_.decoder_id & 0x00FF'FFFFu)
+                     : 0u;
     else {
       serial_number = data2uint32(&packet.data[4uz]);
       if (packet.size >= 12uz) decoder_id = data2uint32(&packet.data[8uz]);
@@ -353,7 +353,7 @@ protected:
     ack(!success);
   }
 
-  using Fp = auto(Base::*)(uint32_t, Bit) -> void;
+  using Fp = auto (Base::*)(uint32_t, Bit) -> void;
   Fp fp_{&Base::preamble};
   size_t bit_count_{};        ///< Count received bits
   size_t ackreqbit_count_{};  ///< Count received ackreqbits
@@ -364,10 +364,10 @@ protected:
   uint8_t transfer_rate_index_{std::to_underlying(TransferRate::Default)};
   uint8_t byte_{};
   BinarySearch binary_search_{};
-  bool ack_ : 1 {};
-  bool active_ : 1 {};
-  bool nack_ : 1 {true};
   bool selected_ : 1 {true};
+  bool active_ : 1 {};
+  bool nack_ : 1 {};
+  bool ack_ : 1 {};
 };
 
 }  // namespace mdu::rx::detail

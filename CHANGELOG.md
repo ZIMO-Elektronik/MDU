@@ -1,5 +1,10 @@
 # Changelog
 
+# 0.11.1
+- NACK logic changed slightly
+  - Previous versions prepared an implicit nack after each reset
+  - Now at least 2 preamble bits must be received so that a NACK is prepared
+
 # 0.11.0
 - Methods which potentially mutate state are no longer const
   - rx::Base::writeCv
@@ -55,4 +60,4 @@
 - Update to ZTL 0.9
 
 # 0.1
-- First release with classes for entry, firmware- and soundupdate
+- First release with classes for entry, firmware- and ZPP update

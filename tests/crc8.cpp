@@ -7,7 +7,8 @@
 TEST(Crc8, crc8_matches_maxim_dallas_polynomial_0x31) {
   mdu::Crc8 crc;
   std::string_view str{"Hello World"};
-  std::ranges::for_each(str, [&crc](auto c) { crc.next(c); });
+  std::ranges::for_each(str,
+                        [&crc](auto c) { crc.next(static_cast<uint8_t>(c)); });
   EXPECT_EQ(crc.value(), 26u);
 }
 
