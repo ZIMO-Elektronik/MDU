@@ -6,27 +6,30 @@
 
 MDU is an acronym for Multi Decoder Update, a protocol for firmware and ZPP updates over the rail. The protocol is currently supported in the form documented here by the following products:
 - Command stations
-  - MXULF
-  - Z21
+  - [MXULF](http://www.zimo.at/web2010/products/InfMXULF.htm)
+  - [Z21](https://www.z21.eu/de)
 - Decoders
-  - MS/MN decoders
+  - [MN decoders](http://www.zimo.at/web2010/products/mn-nicht-sound-decoder.htm)
+  - [Small-](http://www.zimo.at/web2010/products/ms-sound-decoder.htm) and [large-scale MS decoders](http://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn.htm)
 
-## Table of Contents
-- [Entry](#entry)
-- [Alternative entry](#alternative-entry)
-- [Transmission](#transmission)
-- [Bit timings](#bit-timings)
-- [Structure of a data packet](#structure-of-a-data-packet)
-- [Commands](#commands)
-- [Acknowledgment](#acknowledgment)
-- [General commands](#general-commands)
-- [Firmware commands](#firmware-commands)
-- [ZPP commands](#zpp-commands)
-- [Typical processes](#typical-processes)
+### Table of Contents
+- [Protocol](#protocol)
+  - [Entry](#entry)
+  - [Alternative entry](#alternative-entry)
+  - [Transmission](#transmission)
+  - [Bit timings](#bit-timings)
+  - [Structure of a data packet](#structure-of-a-data-packet)
+  - [Commands](#commands)
+  - [Acknowledgment](#acknowledgment)
+  - [General commands](#general-commands)
+  - [Firmware commands](#firmware-commands)
+  - [ZPP commands](#zpp-commands)
+  - [Typical processes](#typical-processes)
 - [Examples](#examples)
 - [Configuration](#configuration)
 
-## Entry
+## Protocol
+### Entry
 Activation of the MDU protocol is accomplished through a sequence of commands to **verify** configuration variables (CVs) in DCC operations mode. The entire sequence must be broadcast and thus sent to broadcast address 0. Details on the command structure can be found in [RCN-214](http://normen.railcommunity.de/RCN-214.pdf), especially point 2 ("Configuration variable access command - long form"). Depending on the type of update desired, firmware or ZPP, the following sequences are to be sent:
 
 | Firmware      | ZPP           |
@@ -39,10 +42,10 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 | CV105 == 0x00 | CV105 == 0x00 |
 | CV106 == 0x00 | CV106 == 0x00 |
 
-## Alternative entry
+### Alternative entry
 As an alternative to entry via DCC CV verify commands, a preamble with [default bit timings](#bit-timings) can be transmitted directly after switching on the rail voltage. The preamble should be sent for at least 200ms.
 
-## Transmission
+### Transmission
 Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](http://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the rail signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.
 
 At the end of a data packet, so-called acknowledgment bits are sent by the command station. **Selected decoders** (see [Ping command](#ping)) can respond within this time by means of current pulses (ack bits). This is comparable to the programming mode of the DCC protocol (service mode) described in [RCN-216](http://normen.railcommunity.de/RCN-216.pdf). The feedback phase is divided into two channels.
@@ -53,7 +56,7 @@ At the end of a data packet, so-called acknowledgment bits are sent by the comma
 
 Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For Roco's Z21, for example, 90% duty cycle with a period of 10µs turned out to be ideal.
 
-## Bit timings
+### Bit timings
 At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders on the rail responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
 
 | Speed        | One bit [µs] | Zero bit [µs] | Ackreq bit [µs] | Ack bit [µs] | Decoder tolerance [%] |
@@ -64,7 +67,7 @@ At the beginning of a transfer, all devices start with the default setting. The 
 | 3            | 40           | 80            | 120             | 80           | 20                    |
 | 4 (default)  | 75           | 150           | 225             | 100          | 10                    |
 
-## Structure of a data packet
+### Structure of a data packet
 The following flowchart describes the general structure of an MDU data packet.
 
 ![alt_text](data/images/data_packet.png)
@@ -79,7 +82,7 @@ In principle, each command packet contains the phases preamble, data and acknowl
 | Data (CRC)                 | 1- or 4-byte checksum of the packet                            |
 | Acknowledgement (optional) | Optional acknowledgement depending on command package          |
 
-## Commands
+### Commands
 The supported commands of the MDU protocol are divided into 3 categories: general, firmware and ZPP. Devices that only want to support either firmware or ZPP updates only have to support the command set actually used. However, the general command set must be implemented.
 
 | General commands     | Coding      | Firmware commands          | Coding      | ZPP commands    | Coding      |
@@ -92,7 +95,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
 | CV-Write             | 0xFFFF'FFF9 | Firmware-CRC32-Result      | 0xFFFF'FFFC | ZPP-Exit        | 0xFFFF'FF0C |
 | Busy                 | 0xFFFF'FFF2 | Firmware-CRC32-Result&Exit | 0xFFFF'FFFD | ZPP-Exit&Reset  | 0xFFFF'FF0D |
 
-## Acknowledgment
+### Acknowledgment
 <table>
   <tr>
     <th style="text-align: center">Ackreq bit</th>
@@ -261,10 +264,10 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
   </tr>
 </table>
 
-## General commands
+### General commands
 The general command set contains commands for searching and selecting decoders, setting the bit timings, writing and reading configuration variables, and a busy query.
 
-### Ping
+#### Ping
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -282,7 +285,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 
 ![alt_text](data/images/ping.png)
 
-### Config-Transfer-Rate
+#### Config-Transfer-Rate
 | Command phase   | Description                                   |
 | --------------- | --------------------------------------------- |
 | Preamble        | Identification and synchronization            |
@@ -293,7 +296,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 
 With the help of a Config-Transfer-Rate command, the transmission speed can be adapted to the decoder by setting the bit timings. The exact times for one bit, zero bit, ackreq bit and ack bit can be found in the [bit timings](#bit-timings). If a decoder does not support the selected transmission speed, an acknowledgement must be sent in channel 2.
 
-### Binary-Search
+#### Binary-Search
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -328,9 +331,7 @@ The following flowchart shows the binary search process from the perspective of 
 
 ![alt_text](data/images/binary_search.png)
 
-// TODO Flowchart for command station?
-
-### CV-Read
+#### CV-Read
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -342,7 +343,7 @@ The following flowchart shows the binary search process from the perspective of 
 
 CV-Read reads a single bit of the configuration variable with the received number. If the bit is set, an acknowledgement is sent in channel 2.
 
-### CV-Write
+#### CV-Write
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -354,7 +355,7 @@ CV-Read reads a single bit of the configuration variable with the received numbe
 
 CV-Write writes a configuration variable with the received number-value pair. Any write errors must be answered with an acknowledgement in channel 2.
 
-### Busy
+#### Busy
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -364,10 +365,10 @@ CV-Write writes a configuration variable with the received number-value pair. An
 
 The Busy command can be used to check whether the decoder is still busy with the last packet. If a decoder is not yet ready for a new packet, it can reply with an acknowledgment in channel 2. If the command station sends packets other than Busy to decoders that are still busy, the packets are discarded and acknowlegded with a response in channel 1.
 
-## Firmware commands
+### Firmware commands
 The firmware command set is used to update the decoder software. Among other things, it contains an update command, commands for a final CRC32 check and a command for transmitting the initialization vector of the [Salsa20](https://en.wikipedia.org/wiki/Salsa20) encryption used.
 
-### Firmware-Salsa20-IV
+#### Firmware-Salsa20-IV
 | Command phase   | Description                          |
 | --------------- | ------------------------------------ |
 | Preamble        | Identification and synchronization   |
@@ -378,7 +379,7 @@ The firmware command set is used to update the decoder software. Among other thi
 
 Firmware-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa20 encryption. For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.
 
-### Firmware-Erase
+#### Firmware-Erase
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -390,7 +391,7 @@ Firmware-Salsa20-IV is used to transmit the 8-byte initialization vector of the 
 
 The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2. :warning: **After the command, a delay of at least 3.5s must be observed.**
 
-### Firmware-Update
+#### Firmware-Update
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -402,7 +403,7 @@ The processor flash is deleted before an update package is written. If an invali
 
 Firmware-Update is used to transfer firmware data. If an invalid address or a CRC32 error is received, there must be an acknowledgment in channel 2. :warning: **Current implementations only support payloads of exactly 64 bytes. Smaller payloads must contain appropriate padding.**
 
-### Firmware-CRC32-Start
+#### Firmware-CRC32-Start
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -414,7 +415,7 @@ Firmware-Update is used to transfer firmware data. If an invalid address or a CR
 
 Firmware-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via firmware update packets, then a response must be made in channel 2. :warning: **The transferred memory area is a closed interval. The last address actually written corresponds to the end address!**
 
-### Firmware-CRC32-Result
+#### Firmware-CRC32-Result
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -424,7 +425,7 @@ Firmware-CRC32-Start transfers the written memory area and the CRC32 of the encr
 
 With the help of the Firmware-CRC32-Result command, the command station queries the result of the checksum previously transmitted via Firmware-CRC32-Start. If the checksum is not correct, there must be an acknowledgment in channel 2.
 
-### Firmware-CRC32-Result&Exit
+#### Firmware-CRC32-Result&Exit
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -434,10 +435,10 @@ With the help of the Firmware-CRC32-Result command, the command station queries 
 
 See Firmware-CRC32-Result. If the checksum is correct, the decoder must perform a reset.
 
-## ZPP commands
+### ZPP commands
 The ZPP command set is used to update the ZPP project. It contains, among other things, an erase and update command, commands for ending the transfer and an exit command.
 
-### ZPP-Valid-Query
+#### ZPP-Valid-Query
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -449,7 +450,7 @@ The ZPP command set is used to update the ZPP project. It contains, among other 
 
 A ZPP-Valid-Query can be used to check whether the decoders are able to load the desired ZPP at all. The check includes the 2-character identifier of the ZPP file and the size of its flash data. If the ZPP cannot be loaded, an acknowledgment must be sent in channel 2.
 
-### ZPP-LC-DC-Query
+#### ZPP-LC-DC-Query
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -460,7 +461,7 @@ A ZPP-Valid-Query can be used to check whether the decoders are able to load the
 
 A ZPP-LC-DC query can be used to check whether the decoders contain a valid loadcode before deleting the flash. If the received loadcode is not correct, an acknowledgment must be sent in channel 2.
 
-### ZPP-Erase
+#### ZPP-Erase
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -472,7 +473,7 @@ A ZPP-LC-DC query can be used to check whether the decoders contain a valid load
 
 With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2. :warning: **After the command, a delay of at least 3.5s must be observed.**
 
-### ZPP-Update
+#### ZPP-Update
 | Command phase   | Description                                 |
 | --------------- | ------------------------------------------- |
 | Preamble        | Identification and synchronization          |
@@ -484,7 +485,7 @@ With the help of ZPP-Erase, a certain memory area of the flash can be deleted. I
 
 ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 error is received, there must be an acknowledgment in channel 2. :warning: **Current implementations only support payloads up to 256 bytes.**
 
-### ZPP-Update-End
+#### ZPP-Update-End
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -496,7 +497,7 @@ ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 er
 
 ZPP-Update-End marks the end of the current data transmission and retransmits the written memory area. Any ZPP data that is still buffered must be written when this command is received. If an invalid memory area is received, an acknowledgment must be given in channel 2.
 
-### ZPP-Exit
+#### ZPP-Exit
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -506,7 +507,7 @@ ZPP-Update-End marks the end of the current data transmission and retransmits th
 
 ZPP-Exit is used to reset the decoder. The reset is only carried out if the memory area previously transferred via the ZPP-Update-End matches that written by the decoder. If this is not the case, the decoder discards all written data.
 
-### ZPP-Exit&Reset
+#### ZPP-Exit&Reset
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -516,8 +517,8 @@ ZPP-Exit is used to reset the decoder. The reset is only carried out if the memo
 
 See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 
-## Typical processes
-### Firmware update
+### Typical processes
+#### Firmware update
 1. Ping all decoders
 2. Find a Config-TransferRate that is supported by all decoders
 3. Ping select the desired decoders
@@ -527,7 +528,7 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 7. Firmware-CRC32-Result | Firmware-CRC32-Result&Exit
 8. Maintain voltage for at least 500ms
 
-### ZPP update
+#### ZPP update
 1.  Ping all decoders
 2.  Find a Config-Transfer-Rate that is supported by all decoders
 3.  Ping select the desired decoders
