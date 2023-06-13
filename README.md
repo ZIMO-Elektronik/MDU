@@ -4,15 +4,15 @@
 
 <img src="data/images/logo.png" width="15%" align="right">
 
-MDU is an acronym for Multi Decoder Update, a protocol for firmware and ZPP updates over the rail. The protocol is currently supported in the form documented here by the following products:
+MDU is an acronym for Multi Decoder Update, a protocol for firmware and ZPP updates over the track. The protocol is currently supported by the following products:
 - Command stations
-  - [MXULF](http://www.zimo.at/web2010/products/InfMXULF.htm)
+  - [ZIMO MXULF](http://www.zimo.at/web2010/products/InfMXULF.htm)
   - [Z21](https://www.z21.eu/de)
 - Decoders
-  - [MN decoders](http://www.zimo.at/web2010/products/mn-nicht-sound-decoder.htm)
-  - [Small-](http://www.zimo.at/web2010/products/ms-sound-decoder.htm) and [large-scale MS decoders](http://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn.htm)
+  - [ZIMO MN decoders](http://www.zimo.at/web2010/products/mn-nicht-sound-decoder.htm)
+  - [ZIMO Small-](http://www.zimo.at/web2010/products/ms-sound-decoder.htm) and [large-scale MS decoders](http://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn.htm)
 
-### Table of Contents
+### Table of contents
 - [Protocol](#protocol)
   - [Entry](#entry)
   - [Alternative entry](#alternative-entry)
@@ -43,10 +43,10 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 | CV106 == 0x00 | CV106 == 0x00 |
 
 ### Alternative entry
-As an alternative to entry via DCC CV verify commands, a preamble with [default bit timings](#bit-timings) can be transmitted directly after switching on the rail voltage. The preamble should be sent for at least 200ms.
+As an alternative to entry via DCC CV verify commands, a preamble with [default bit timings](#bit-timings) can be transmitted directly after switching on the track voltage. The preamble should be sent for at least 200ms.
 
 ### Transmission
-Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](http://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the rail signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.
+Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](http://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the track signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.
 
 At the end of a data packet, so-called acknowledgment bits are sent by the command station. **Selected decoders** (see [Ping command](#ping)) can respond within this time by means of current pulses (ack bits). This is comparable to the programming mode of the DCC protocol (service mode) described in [RCN-216](http://normen.railcommunity.de/RCN-216.pdf). The feedback phase is divided into two channels.
 
@@ -57,7 +57,7 @@ At the end of a data packet, so-called acknowledgment bits are sent by the comma
 Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For Roco's Z21, for example, 90% duty cycle with a period of 10µs turned out to be ideal.
 
 ### Bit timings
-At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders on the rail responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
+At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
 
 | Speed        | One bit [µs] | Zero bit [µs] | Ackreq bit [µs] | Ack bit [µs] | Decoder tolerance [%] |
 | ------------ | ------------ | ------------- | --------------- | ------------ | --------------------- |
