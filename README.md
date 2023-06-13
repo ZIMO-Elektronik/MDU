@@ -12,21 +12,27 @@ MDU is an acronym for Multi Decoder Update, a protocol for firmware and ZPP upda
   - [ZIMO MN decoders](http://www.zimo.at/web2010/products/mn-nicht-sound-decoder.htm)
   - [ZIMO Small-](http://www.zimo.at/web2010/products/ms-sound-decoder.htm) and [large-scale MS decoders](http://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn.htm)
 
-### Table of contents
-- [Protocol](#protocol)
-  - [Entry](#entry)
-  - [Alternative entry](#alternative-entry)
-  - [Transmission](#transmission)
-  - [Bit timings](#bit-timings)
-  - [Structure of a data packet](#structure-of-a-data-packet)
-  - [Commands](#commands)
-  - [Acknowledgment](#acknowledgment)
-  - [General commands](#general-commands)
-  - [Firmware commands](#firmware-commands)
-  - [ZPP commands](#zpp-commands)
-  - [Typical processes](#typical-processes)
-- [Examples](#examples)
-- [Configuration](#configuration)
+<details>
+  <summary>Table of contents</summary>
+  <ol>
+    <li><a href="#protocol">Protocol</a></li>
+      <ul>
+        <li><a href="#entry">Entry</a></li>
+        <li><a href="#alternative-entry">Alternative entry</a></li>
+        <li><a href="#transmission">Transmission</a></li>
+        <li><a href="#bit-timings">Bit timings</a></li>
+        <li><a href="#structure-of-a-data-packet">Structure of a data packet</a></li>
+        <li><a href="#commands">Commands</a></li>
+        <li><a href="#acknowledgment">Acknowledgment</a></li>
+        <li><a href="#general-commands">General commands</a></li>
+        <li><a href="#firmware-commands">Firmware commands</a></li>
+        <li><a href="#zpp-commands">ZPP commands</a></li>
+        <li><a href="#typical-processes">Typical processes</a></li>
+      </ul>
+    <li><a href="#examples">Examples</a></li>
+    <li><a href="#configuration">Configuration</a></li>
+  </ol>
+</details>
 
 ## Protocol
 ### Entry
