@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: git fetch --unshallow --tags
       - uses: carlosperate/arm-none-eabi-gcc-action@v1
       - run: cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=CMakeModules/toolchains/arm_none_eabi_gcc.cmake
       - run: cmake --build build --target MDU
