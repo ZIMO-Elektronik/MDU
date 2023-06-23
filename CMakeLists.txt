@@ -4,13 +4,14 @@ include(FetchContent)
 FetchContent_Declare(
   CMakeModules
   GIT_REPOSITORY https://github.com/ZIMO-Elektronik/CMakeModules
-  GIT_TAG v0.0.5
+  GIT_TAG v0.0.7
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
+version_from_git()
 project(
   MDU
-  VERSION 0.11.1
+  VERSION ${VERSION_FROM_GIT}
   LANGUAGES CXX)
 
 option(MDU_UNITY_BUILD "Combine source files into single batch" ON)
