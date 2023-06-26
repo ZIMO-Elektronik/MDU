@@ -196,7 +196,7 @@ protected:
   /// Reset
   void reset() {
     bit_count_ = ackreqbit_count_ = end(queue_)->size = byte_ = 0u;
-    nack_ = ack_ = false;
+    ack_ = false;
     crc8_.reset();
     crc32_.reset();
     fp_ = &Base::preamble;
@@ -353,7 +353,7 @@ protected:
     ack(!success);
   }
 
-  using Fp = auto (Base::*)(uint32_t, Bit) -> void;
+  using Fp = auto(Base::*)(uint32_t, Bit) -> void;
   Fp fp_{&Base::preamble};
   size_t bit_count_{};        ///< Count received bits
   size_t ackreqbit_count_{};  ///< Count received ackreqbits
