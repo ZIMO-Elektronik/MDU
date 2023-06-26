@@ -59,11 +59,19 @@ if(MDU_UNITY_BUILD)
   target_unity_build(MDU)
 endif()
 
-cpmaddpackage("gh:microsoft/GSL@4.0.0")
-cpmaddpackage("gh:ZIMO-Elektronik/Salsa20@0.3.0")
-cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.16.2")
+if(NOT TARGET Microsoft.GSL::GSL)
+  cpmaddpackage("gh:microsoft/GSL@4.0.0")
+endif()
 
-target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL ZTL::ZTL Salsa20::Salsa20)
+if(NOT TARGET Salsa20::Salsa20)
+  cpmaddpackage("gh:ZIMO-Elektronik/Salsa20@0.3.0")
+endif()
+
+if(NOT TARGET ZTL::ZTL)
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.16.2")
+endif()
+
+target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
