@@ -125,7 +125,8 @@ protected:
   ///
   /// \param  bit Bit
   void preamble(uint32_t, Bit bit) {
-    if (bit == 1u) nack(++bit_count_ >= 2uz);
+    // Preamble can only set nack, never clear it
+    if (bit == 1u) nack(++bit_count_ >= 2uz || nack());
     else if (bit_count_ < MDU_RX_PREAMBLE_BITS) reset();
     else {
       bit_count_ = 0uz;
@@ -196,7 +197,7 @@ protected:
   /// Reset
   void reset() {
     bit_count_ = ackreqbit_count_ = end(queue_)->size = byte_ = 0u;
-    nack_ = ack_ = false;
+    ack(false);
     crc8_.reset();
     crc32_.reset();
     fp_ = &Base::preamble;
@@ -353,7 +354,7 @@ protected:
     ack(!success);
   }
 
-  using Fp = auto (Base::*)(uint32_t, Bit) -> void;
+  using Fp = auto(Base::*)(uint32_t, Bit) -> void;
   Fp fp_{&Base::preamble};
   size_t bit_count_{};        ///< Count received bits
   size_t ackreqbit_count_{};  ///< Count received ackreqbits
