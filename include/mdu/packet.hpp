@@ -2,9 +2,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Receive packet
+/// Packet
 ///
-/// \file   mdu/rx/packet.hpp
+/// \file   mdu/packet.hpp
 /// \author Vincent Hamp
 /// \date   12/12/2022
 
@@ -13,13 +13,12 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
-#include "../command.hpp"
-#include "../crc32.hpp"
-#include "../utility.hpp"
+#include "command.hpp"
+#include "crc32.hpp"
+#include "utility.hpp"
 
-namespace mdu::rx {
+namespace mdu {
 
-/// Receive packet
 struct Packet {
   std::array<uint8_t,
              sizeof(Command) + sizeof(uint32_t) + 256uz + sizeof(Crc32)>
@@ -35,4 +34,4 @@ constexpr Command packet2command(Packet const& packet) {
   return static_cast<Command>(data2uint32(cbegin(packet.data)));
 }
 
-}  // namespace mdu::rx
+}  // namespace mdu

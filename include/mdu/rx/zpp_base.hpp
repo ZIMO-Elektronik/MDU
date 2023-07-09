@@ -15,8 +15,8 @@
 #include <span>
 #include <string_view>
 #include "../command.hpp"
+#include "../packet.hpp"
 #include "base.hpp"
-#include "packet.hpp"
 
 namespace mdu::rx {
 

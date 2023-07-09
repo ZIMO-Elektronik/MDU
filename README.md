@@ -50,7 +50,7 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 | CV106 == 0x00 | CV106 == 0x00 |
 
 ### Alternative entry
-As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 20ms.
+As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
 
 ### Transmission
 Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](http://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the track signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.

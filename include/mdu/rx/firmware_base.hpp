@@ -15,8 +15,8 @@
 #include <span>
 #include "../command.hpp"
 #include "../crc32.hpp"
+#include "../packet.hpp"
 #include "base.hpp"
-#include "packet.hpp"
 
 extern "C" {
 #include <salsa20/ecrypt-sync.h>

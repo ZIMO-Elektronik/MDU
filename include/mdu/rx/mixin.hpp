@@ -12,7 +12,7 @@
 
 #include <type_traits>
 #include "../command.hpp"
-#include "packet.hpp"
+#include "../packet.hpp"
 
 namespace mdu::rx::detail {
 
