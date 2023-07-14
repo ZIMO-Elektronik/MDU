@@ -12,7 +12,7 @@
 
 #include <functional>
 #include <gsl/util>
-#include <ztl/circular_array.hpp>
+#include <ztl/inplace_deque.hpp>
 #include "../bit.hpp"
 #include "../crc32.hpp"
 #include "../crc8.hpp"
@@ -360,7 +360,7 @@ protected:
   size_t ackreqbit_count_{};  ///< Count received ackreqbits
   Config const cfg_{};
   Crc32 crc32_{};
-  ztl::circular_array<Packet, 2uz> queue_{};
+  ztl::inplace_deque<Packet, 2uz> queue_{};
   Crc8 crc8_;
   uint8_t transfer_rate_index_{std::to_underlying(TransferRate::Default)};
   uint8_t byte_{};

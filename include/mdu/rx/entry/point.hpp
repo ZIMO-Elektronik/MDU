@@ -11,7 +11,7 @@
 #pragma once
 
 #include <array>
-#include <ztl/circular_array.hpp>
+#include <ztl/inplace_deque.hpp>
 #include "config.hpp"
 
 namespace mdu::rx::entry {
@@ -26,7 +26,7 @@ private:
   verifySequence(std::array<std::pair<uint8_t, uint8_t>, 5uz> const& sequence,
                  std::function<void()> const& f);
   Config const cfg_;
-  ztl::circular_array<std::pair<uint8_t, uint8_t>, 7uz> queue_{};
+  ztl::inplace_deque<std::pair<uint8_t, uint8_t>, 7uz> queue_{};
 };
 
 }  // namespace mdu::rx::entry

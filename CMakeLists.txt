@@ -13,7 +13,7 @@ endif()
 FetchContent_Declare(
   CMakeModules
   GIT_REPOSITORY https://github.com/ZIMO-Elektronik/CMakeModules
-  GIT_TAG v0.0.7
+  GIT_TAG v0.1.0
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
@@ -62,7 +62,7 @@ else()
     PRIVATE include/mdu)
 endif()
 
-target_common_warnings(MDU)
+target_common_warnings(MDU PRIVATE)
 
 if(MDU_UNITY_BUILD)
   target_unity_build(MDU)
@@ -77,7 +77,7 @@ if(NOT TARGET Salsa20::Salsa20)
 endif()
 
 if(NOT TARGET ZTL::ZTL)
-  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.16.2")
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.17.0")
 endif()
 
 target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)
