@@ -36,7 +36,7 @@ struct FirmwareMixin {
   ///
   /// \param  salsa20_master_key  Salsa20 master key
   explicit constexpr FirmwareMixin(char const* salsa20_master_key)
-    : salsa20_master_key_{salsa20_master_key} {}
+    : _salsa20_master_key{salsa20_master_key} {}
 
   /// Dtor
   virtual constexpr ~FirmwareMixin() = default;
@@ -107,7 +107,7 @@ private:
   /// \return true        Transmit ackbit in channel2
   /// \return false       Do not transmit ackbit in channel2
   bool executeSalsa20IV(uint32_t decoder_id, std::span<uint8_t const, 8uz> iv) {
-    ctx_ = make_salsa20_context(decoder_id, iv, salsa20_master_key_);
+    _ctx = make_salsa20_context(decoder_id, iv, _salsa20_master_key);
     return false;
   }
 
@@ -129,17 +129,17 @@ private:
   /// \return true  Transmit ackbit in channel2
   /// \return false Do not transmit ackbit in channel2
   bool executeUpdate(uint32_t addr, std::span<uint8_t const, 64uz> chunk) {
-    if (!first_addr_) first_addr_ = addr;
+    if (!_first_addr) _first_addr = addr;
     // Lost packet
-    if (last_addr_ && last_addr_ < addr) return true;
+    if (_last_addr && _last_addr < addr) return true;
     // Already written
-    if (last_addr_ && last_addr_ > addr) return false;
+    if (_last_addr && _last_addr > addr) return false;
     std::array<uint8_t, std::size(chunk)> decrypted_chunk;
     ECRYPT_decrypt_bytes(
-      &ctx_, std::data(chunk), data(decrypted_chunk), size(decrypted_chunk));
+      &_ctx, std::data(chunk), data(decrypted_chunk), size(decrypted_chunk));
     if (writeFirmware(addr, decrypted_chunk)) {
-      last_addr_ = addr + size(decrypted_chunk);
-      crc32_.next(chunk);
+      _last_addr = addr + size(decrypted_chunk);
+      _crc32.next(chunk);
       return false;
     }
     return true;
@@ -154,8 +154,8 @@ private:
   /// \return false       Do not transmit ackbit in channel2
   bool
   executeCrc32Start(uint32_t begin_addr, uint32_t end_addr, uint32_t crc32) {
-    if (begin_addr != first_addr_ || end_addr + 1u != last_addr_) return true;
-    crc32_valid_ = crc32 == crc32_;
+    if (begin_addr != _first_addr || end_addr + 1u != _last_addr) return true;
+    _crc32valid = crc32 == _crc32;
     return false;
   }
 
@@ -166,18 +166,18 @@ private:
   /// \return true  Transmit ackbit in channel2
   /// \return false Do not transmit ackbit in channel2
   bool executeCrc32Result(bool exit) {
-    if (exit && crc32_valid_) {
+    if (exit && _crc32valid) {
       exitFirmware();
       return false;
-    } else return !crc32_valid_;
+    } else return !_crc32valid;
   }
 
-  char const* const salsa20_master_key_;
-  Crc32 crc32_{};
-  ECRYPT_ctx ctx_{};
-  std::optional<uint32_t> first_addr_{};
-  std::optional<uint32_t> last_addr_{};
-  bool crc32_valid_{};
+  char const* _salsa20_master_key;
+  Crc32 _crc32{};
+  ECRYPT_ctx _ctx{};
+  std::optional<uint32_t> _first_addr{};
+  std::optional<uint32_t> _last_addr{};
+  bool _crc32valid{};
 };
 
 }  // namespace detail

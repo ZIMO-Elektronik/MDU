@@ -6,5 +6,5 @@
 
 struct ReceiveBaseTest : CrtpTestBase<ReceiveBaseTest> {
   ReceiveBaseTest();
-  std::unique_ptr<BaseMock> base_;
+  std::unique_ptr<BaseMock> _mock;
 };

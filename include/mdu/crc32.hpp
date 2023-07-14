@@ -20,10 +20,10 @@ namespace mdu {
 struct Crc32 : detail::CrcBase<uint32_t, static_cast<uint32_t>(-1)> {
   constexpr void next(uint8_t byte) {
     for (auto i{0}; i < CHAR_BIT; ++i) {
-      uint32_t const tmp{crc_};
-      crc_ <<= 1u;
-      if (byte & 0x80u) crc_ |= 1u;
-      if (tmp & 0x8000'0000u) crc_ ^= 0x4C11DB7u;
+      uint32_t const tmp{_crc};
+      _crc <<= 1u;
+      if (byte & 0x80u) _crc |= 1u;
+      if (tmp & 0x8000'0000u) _crc ^= 0x4C11DB7u;
       byte = static_cast<uint8_t>(byte << 1u);
     }
   }
@@ -33,11 +33,11 @@ struct Crc32 : detail::CrcBase<uint32_t, static_cast<uint32_t>(-1)> {
   }
 
   constexpr uint32_t value() {
-    auto const cpy{crc_};
+    auto const cpy{_crc};
     constexpr std::array<uint8_t, 4uz> zeros{};
     next(zeros);
-    auto const retval{crc_};
-    crc_ = cpy;
+    auto const retval{_crc};
+    _crc = cpy;
     return retval;
   }
 

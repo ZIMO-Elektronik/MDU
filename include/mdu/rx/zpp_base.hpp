@@ -81,10 +81,10 @@ private:
   bool executeEnd(uint32_t begin_addr, uint32_t end_addr);
   bool executeExit(bool reset);
 
-  std::optional<uint32_t> first_addr_{};
-  std::optional<uint32_t> last_addr_{};
-  bool addrs_valid_ : 1 {};
-  bool zpp_valid_ : 1 {};
+  std::optional<uint32_t> _first_addr{};
+  std::optional<uint32_t> _last_addr{};
+  bool _addrs_valid : 1 {};
+  bool _zpp_valid : 1 {};
 };
 
 }  // namespace detail

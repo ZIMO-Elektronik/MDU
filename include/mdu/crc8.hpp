@@ -24,12 +24,12 @@ namespace detail {
 /// \tparam Init  Initial value
 template<std::unsigned_integral T, T Init>
 struct CrcBase {
-  constexpr void reset() { crc_ = Init; }
-  constexpr T value() const { return crc_; }
-  constexpr operator T() const { return crc_; }
+  constexpr void reset() { _crc = Init; }
+  constexpr T value() const { return _crc; }
+  constexpr operator T() const { return _crc; }
 
 protected:
-  T crc_{Init};
+  T _crc{Init};
 };
 
 }  // namespace detail
@@ -37,17 +37,17 @@ protected:
 /// Dallas/Maxim CRC8 with polynomial representation 0x31u
 struct Crc8 : detail::CrcBase<uint8_t, 0u> {
   constexpr void next(uint8_t byte) {
-    crc_ ^= byte;
+    _crc ^= byte;
     uint8_t tmp{};
-    if (crc_ & 0x01u) tmp ^= 0x5Eu;
-    if (crc_ & 0x02u) tmp ^= 0xBCu;
-    if (crc_ & 0x04u) tmp ^= 0x61u;
-    if (crc_ & 0x08u) tmp ^= 0xC2u;
-    if (crc_ & 0x10u) tmp ^= 0x9Du;
-    if (crc_ & 0x20u) tmp ^= 0x23u;
-    if (crc_ & 0x40u) tmp ^= 0x46u;
-    if (crc_ & 0x80u) tmp ^= 0x8Cu;
-    crc_ = tmp;
+    if (_crc & 0x01u) tmp ^= 0x5Eu;
+    if (_crc & 0x02u) tmp ^= 0xBCu;
+    if (_crc & 0x04u) tmp ^= 0x61u;
+    if (_crc & 0x08u) tmp ^= 0xC2u;
+    if (_crc & 0x10u) tmp ^= 0x9Du;
+    if (_crc & 0x20u) tmp ^= 0x23u;
+    if (_crc & 0x40u) tmp ^= 0x46u;
+    if (_crc & 0x80u) tmp ^= 0x8Cu;
+    _crc = tmp;
   }
 
   constexpr void next(std::span<uint8_t const> chunk) {

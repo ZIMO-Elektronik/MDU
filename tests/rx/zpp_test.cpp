@@ -1,3 +1,3 @@
 #include "zpp_test.hpp"
 
-ReceiveZppTest::ReceiveZppTest() { base_ = std::make_unique<ZppMock>(cfg_); }
+ReceiveZppTest::ReceiveZppTest() { _mock = std::make_unique<ZppMock>(_cfg); }

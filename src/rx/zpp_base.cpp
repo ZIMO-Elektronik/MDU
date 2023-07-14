@@ -32,7 +32,7 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
   }
 
   // All others may not
-  if (!zpp_valid_) return true;
+  if (!_zpp_valid) return true;
   switch (cmd) {
     case Command::ZppLcDcQuery: {
       std::span<uint8_t const, 4uz> developer_code{&packet.data[4uz], 4uz};
@@ -66,8 +66,8 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
 /// \return false           Do not transmit ackbit in channel2
 bool ZppMixin::executeValidQuery(std::string_view zpp_id,
                                  size_t zpp_flash_size) {
-  zpp_valid_ = zppValid(zpp_id, zpp_flash_size);
-  return !zpp_valid_;
+  _zpp_valid = zppValid(zpp_id, zpp_flash_size);
+  return !_zpp_valid;
 }
 
 /// Execute ZppLcDcQuery command
@@ -99,13 +99,13 @@ bool ZppMixin::executeErase(uint32_t begin_addr, uint32_t end_addr) {
 /// \return true  Transmit ackbit in channel2
 /// \return false Do not transmit ackbit in channel2
 bool ZppMixin::executeUpdate(uint32_t addr, std::span<uint8_t const> chunk) {
-  if (!first_addr_) first_addr_ = addr;
+  if (!_first_addr) _first_addr = addr;
   // Lost packet
-  if (last_addr_ && last_addr_ < addr) return true;
+  if (_last_addr && _last_addr < addr) return true;
   // Already written
-  if (last_addr_ && last_addr_ > addr) return false;
+  if (_last_addr && _last_addr > addr) return false;
   if (writeZpp(addr, chunk)) {
-    last_addr_ = addr + std::size(chunk);
+    _last_addr = addr + std::size(chunk);
     return false;
   }
   return true;
@@ -118,10 +118,10 @@ bool ZppMixin::executeUpdate(uint32_t addr, std::span<uint8_t const> chunk) {
 /// \return true        Transmit ackbit in channel2
 /// \return false       Do not transmit ackbit in channel2
 bool ZppMixin::executeEnd(uint32_t begin_addr, uint32_t end_addr) {
-  if (!first_addr_ || !last_addr_) return false;
-  addrs_valid_ = begin_addr == first_addr_ && end_addr == last_addr_;
-  if (!addrs_valid_) return true;
-  first_addr_ = last_addr_ = {};
+  if (!_first_addr || !_last_addr) return false;
+  _addrs_valid = begin_addr == _first_addr && end_addr == _last_addr;
+  if (!_addrs_valid) return true;
+  _first_addr = _last_addr = {};
   auto const success{endZpp()};
   return !success;
 }
@@ -132,13 +132,13 @@ bool ZppMixin::executeEnd(uint32_t begin_addr, uint32_t end_addr) {
 /// \return true      Transmit ackbit in channel2
 /// \return false     Do not transmit ackbit in channel2
 bool ZppMixin::executeExit(bool reset_cvs) {
-  if (addrs_valid_ || (!first_addr_ && !last_addr_)) {
+  if (_addrs_valid || (!_first_addr && !_last_addr)) {
     exitZpp(reset_cvs);
     return false;
   }
-  while (!eraseZpp(*first_addr_, *last_addr_))
+  while (!eraseZpp(*_first_addr, *_last_addr))
     ;
-  first_addr_ = last_addr_ = {};
+  _first_addr = _last_addr = {};
   return true;
 }
 

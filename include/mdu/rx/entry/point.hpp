@@ -18,15 +18,15 @@ namespace mdu::rx::entry {
 
 /// Entry point with CV verify
 struct Point {
-  Point(Config cfg) : cfg_{cfg} {}
+  Point(Config cfg) : _cfg{cfg} {}
   void verify(size_t index, uint8_t value);
 
 private:
   void
   verifySequence(std::array<std::pair<uint8_t, uint8_t>, 5uz> const& sequence,
                  std::function<void()> const& f);
-  Config const cfg_;
-  ztl::inplace_deque<std::pair<uint8_t, uint8_t>, 7uz> queue_{};
+  Config const _cfg;
+  ztl::inplace_deque<std::pair<uint8_t, uint8_t>, 7uz> _deque{};
 };
 
 }  // namespace mdu::rx::entry

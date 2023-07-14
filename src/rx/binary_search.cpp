@@ -22,8 +22,8 @@ namespace mdu::rx {
 bool BinarySearch::operator()(uint32_t serial_number,
                               uint32_t decoder_id,
                               uint32_t position) {
-  if (position == 255u) return !(ignore_ = false);
-  if (ignore_) return false;
+  if (position == 255u) return !(_ignore = false);
+  if (_ignore) return false;
 
   // Set
   if (auto const number{static_cast<uint64_t>(decoder_id) << 32u |
@@ -35,10 +35,10 @@ bool BinarySearch::operator()(uint32_t serial_number,
     return !(number & (static_cast<uint64_t>(1u) << (position - 64u)));
   // Ignore from now on if set
   else if (position >= 128u && position <= 128u + 62u)
-    ignore_ = number & (static_cast<uint64_t>(1u) << (position - 128u));
+    _ignore = number & (static_cast<uint64_t>(1u) << (position - 128u));
   // Ignore from now on if clear
   else if (position >= 192u && position <= 192u + 62u)
-    ignore_ = !(number & (static_cast<uint64_t>(1u) << (position - 192u)));
+    _ignore = !(number & (static_cast<uint64_t>(1u) << (position - 192u)));
 
   return false;
 }

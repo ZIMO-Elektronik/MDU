@@ -22,7 +22,7 @@ public:
 
   PacketBuilder& data(std::unsigned_integral auto value) {
     for (auto i{sizeof(value)}; i-- > 0uz;)
-      data_.push_back(static_cast<uint8_t>(value >> i * CHAR_BIT));
+      _data.push_back(static_cast<uint8_t>(value >> i * CHAR_BIT));
     return *this;
   }
 
@@ -50,7 +50,7 @@ public:
     mdu::TransferRate transfer_rate = mdu::TransferRate::Default) const;
 
 private:
-  size_t preamble_count_{};
-  size_t ackreq_count_{};
-  std::vector<uint8_t> data_{};
+  size_t _preamble_count{};
+  size_t _ackreq_count{};
+  std::vector<uint8_t> _data{};
 };
