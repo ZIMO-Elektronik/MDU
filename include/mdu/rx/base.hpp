@@ -75,19 +75,19 @@ struct Base : Ts... {
 
     switch (command) {
       case Command::ConfigTransferRate: {
-        auto const transfer_rate{static_cast<TransferRate>(packet.data[4uz])};
+        auto const transfer_rate{static_cast<TransferRate>(packet[4uz])};
         return executeConfigTransferRate(transfer_rate);
       }
       case Command::BinarySearch: {
-        uint32_t const position{packet.data[4uz]};
+        uint32_t const position{packet[4uz]};
         return executeBinarySearch(position);
       }
       case Command::CvRead: [[fallthrough]];
       case Command::CvWrite: {
-        auto const number{data2uint16(&packet.data[4uz])};
+        auto const number{data2uint16(&packet[4uz])};
         assert(number > 0u);
         auto const addr{number - 1u};
-        auto const value{packet.data[6uz]};
+        auto const value{packet[6uz]};
         return command == Command::CvRead ? executeCvRead(addr, value)
                                           : executeCvWrite(addr, value);
       }
@@ -187,8 +187,7 @@ protected:
     if (_bit_count >= 8uz) {
       _crc8.next(_byte);
       _crc32.next(_byte);
-      auto& [data, size]{*end(_deque)};
-      data[size++] = _byte;
+      end(_deque)->push_back(_byte);
       _bit_count = _byte = 0u;
     }
     return !_bit_count;
@@ -196,7 +195,8 @@ protected:
 
   /// Reset
   void reset() {
-    _bit_count = _ackreqbit_count = end(_deque)->size = _byte = 0u;
+    end(_deque)->resize(0uz);
+    _bit_count = _ackreqbit_count = _byte = 0u;
     ack(false);
     _crc8.reset();
     _crc32.reset();
@@ -291,14 +291,13 @@ protected:
   void executePing(Packet const& packet) {
     uint32_t serial_number{};
     uint32_t decoder_id{};
-    if (packet.size < 9uz)
-      decoder_id = packet.data[4uz]
-                     ? static_cast<uint32_t>(packet.data[4uz] << 24u) |
-                         (_cfg.decoder_id & 0x00FF'FFFFu)
-                     : 0u;
+    if (size(packet) < 9uz)
+      decoder_id = packet[4uz] ? static_cast<uint32_t>(packet[4uz] << 24u) |
+                                   (_cfg.decoder_id & 0x00FF'FFFFu)
+                               : 0u;
     else {
-      serial_number = data2uint32(&packet.data[4uz]);
-      if (packet.size >= 12uz) decoder_id = data2uint32(&packet.data[8uz]);
+      serial_number = data2uint32(&packet[4uz]);
+      if (size(packet) >= 12uz) decoder_id = data2uint32(&packet[8uz]);
     }
     executePing(serial_number, decoder_id);
   }

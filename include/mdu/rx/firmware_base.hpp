@@ -51,26 +51,26 @@ struct FirmwareMixin {
   bool execute(Command cmd, Packet const& packet, uint32_t decoder_id) {
     switch (cmd) {
       case Command::FirmwareSalsa20IV: {
-        std::span<uint8_t const, 8uz> iv{&packet.data[4uz], 8uz};
+        std::span<uint8_t const, 8uz> iv{&packet[4uz], 8uz};
         return executeSalsa20IV(decoder_id, iv);
       }
       case Command::FirmwareErase: {
-        auto const begin_addr{data2uint32(&packet.data[4uz])};
-        auto const end_addr{data2uint32(&packet.data[8uz])};
+        auto const begin_addr{data2uint32(&packet[4uz])};
+        auto const end_addr{data2uint32(&packet[8uz])};
         return executeErase(begin_addr, end_addr);
       }
       case Command::FirmwareUpdate: {
-        auto const address{data2uint32(&packet.data[4uz])};
-        auto const size{packet.size - sizeof(Command) - sizeof(address) -
-                        sizeof(Crc32)};
-        assert(size == 64uz);
-        std::span<uint8_t const, 64uz> chunk{&packet.data[8uz], 64uz};
+        auto const address{data2uint32(&packet[4uz])};
+        auto const chunk_size{size(packet) - sizeof(Command) - sizeof(address) -
+                              sizeof(Crc32)};
+        assert(chunk_size == 64uz);
+        std::span<uint8_t const, 64uz> chunk{&packet[8uz], 64uz};
         return executeUpdate(address, chunk);
       }
       case Command::FirmwareCrc32Start: {
-        auto const begin_addr{data2uint32(&packet.data[4uz])};
-        auto const end_addr{data2uint32(&packet.data[8uz])};
-        auto const crc32{data2uint32(&packet.data[12uz])};
+        auto const begin_addr{data2uint32(&packet[4uz])};
+        auto const end_addr{data2uint32(&packet[8uz])};
+        auto const crc32{data2uint32(&packet[12uz])};
         return executeCrc32Start(begin_addr, end_addr, crc32);
       }
       case Command::FirmwareCrc32Result: return executeCrc32Result(false);

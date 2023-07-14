@@ -22,8 +22,8 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
   // The following commands may run without ZPP validation
   switch (cmd) {
     case Command::ZppValidQuery: {
-      std::string_view zpp_id{std::bit_cast<char*>(&packet.data[4uz]), 2uz};
-      auto const zpp_flash_size{data2uint32(&packet.data[6uz])};
+      std::string_view zpp_id{std::bit_cast<char*>(&packet[4uz]), 2uz};
+      auto const zpp_flash_size{data2uint32(&packet[6uz])};
       return executeValidQuery(zpp_id, zpp_flash_size);
     }
     case Command::ZppExit: return executeExit(false);
@@ -35,23 +35,23 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
   if (!_zpp_valid) return true;
   switch (cmd) {
     case Command::ZppLcDcQuery: {
-      std::span<uint8_t const, 4uz> developer_code{&packet.data[4uz], 4uz};
+      std::span<uint8_t const, 4uz> developer_code{&packet[4uz], 4uz};
       return executeLcDcQuery(developer_code);
     }
     case Command::ZppErase: {
-      auto const begin_addr{data2uint32(&packet.data[4uz])};
-      auto const end_addr{data2uint32(&packet.data[8uz])};
+      auto const begin_addr{data2uint32(&packet[4uz])};
+      auto const end_addr{data2uint32(&packet[8uz])};
       return executeErase(begin_addr, end_addr);
     }
     case Command::ZppUpdate: {
-      auto const address{data2uint32(&packet.data[4uz])};
-      auto const size{packet.size - sizeof(Command) - sizeof(address) -
-                      sizeof(Crc32)};
-      return executeUpdate(address, {&packet.data[8uz], size});
+      auto const address{data2uint32(&packet[4uz])};
+      auto const chunk_size{size(packet) - sizeof(Command) - sizeof(address) -
+                            sizeof(Crc32)};
+      return executeUpdate(address, {&packet[8uz], chunk_size});
     }
     case Command::ZppUpdateEnd: {
-      auto const begin_addr{data2uint32(&packet.data[4uz])};
-      auto const end_addr{data2uint32(&packet.data[8uz])};
+      auto const begin_addr{data2uint32(&packet[4uz])};
+      auto const end_addr{data2uint32(&packet[8uz])};
       return executeEnd(begin_addr, end_addr);
     }
     default: return false;

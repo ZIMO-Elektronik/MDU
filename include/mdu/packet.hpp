@@ -13,25 +13,23 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <ztl/inplace_vector.hpp>
 #include "command.hpp"
 #include "crc32.hpp"
 #include "utility.hpp"
 
 namespace mdu {
 
-struct Packet {
-  std::array<uint8_t,
-             sizeof(Command) + sizeof(uint32_t) + 256uz + sizeof(Crc32)>
-    data{};
-  size_t size{};
-};
+using Packet = ztl::inplace_vector<uint8_t,
+                                   sizeof(Command) + sizeof(uint32_t) + 256uz +
+                                     sizeof(Crc32)>;
 
 /// Packet to command
 ///
 /// \param  packet  Packet
 /// \return Command
 constexpr Command packet2command(Packet const& packet) {
-  return static_cast<Command>(data2uint32(cbegin(packet.data)));
+  return static_cast<Command>(data2uint32(data(packet)));
 }
 
 }  // namespace mdu
