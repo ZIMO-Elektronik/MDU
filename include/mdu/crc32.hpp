@@ -44,6 +44,8 @@ struct Crc32 : detail::CrcBase<uint32_t, static_cast<uint32_t>(-1)> {
   constexpr operator uint32_t() { return value(); }
 };
 
+static_assert(sizeof(Crc32) == sizeof(uint32_t));
+
 /// "CRC32" with no polynomial representation whatsoever...
 ///
 /// \param  chunk Chunk to calculate "CRC32" for

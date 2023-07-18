@@ -1,6 +1,6 @@
 #include <numeric>
 #include "base_test.hpp"
-#include "utility.hpp"
+#include "packet_builder.hpp"
 
 using namespace ::testing;
 
@@ -42,19 +42,21 @@ TEST_F(ReceiveBaseTest, two_preamble_bits_are_enough_to_set_nack) {
 
 TEST_F(ReceiveBaseTest, receive_packet_with_default_transfer_rate) {
   Receive(
-    make_config_transfer_rate_packet(mdu::TransferRate::Default).timings());
+    PacketBuilder::makeConfigTransferRatePacket(mdu::TransferRate::Default)
+      .timings());
   EXPECT_EQ(size(_mock->_deque), 1u);
 }
 
 TEST_F(ReceiveBaseTest, receive_packet_with_fallback_transfer_rate) {
-  Receive(make_ping_packet(0u).timings(mdu::TransferRate::Fallback));
+  Receive(
+    PacketBuilder::makePingPacket(0u).timings(mdu::TransferRate::Fallback));
   EXPECT_EQ(size(_mock->_deque), 1u);
 }
 
 TEST_F(ReceiveBaseTest, receive_packet_with_crc32) {
   std::array<uint8_t, 256uz> zpp_data;
   std::iota(begin(zpp_data), end(zpp_data), 0u);
-  Receive(make_zpp_update_packet(0u, zpp_data).timings());
+  Receive(PacketBuilder::makeZppUpdatePacket(0u, zpp_data).timings());
   EXPECT_EQ(size(_mock->_deque), 1u);
 }
 
@@ -89,7 +91,7 @@ TEST_F(ReceiveBaseTest, nack_and_ack_packet_with_crc32_error) {
 
 TEST_F(ReceiveBaseTest, nack_incomplete_packet) {
   Expectation nack_sent{EXPECT_CALL(*_mock, ackbit(100u)).Times(Exactly(3))};
-  auto packet{make_ping_packet(0u)};
+  auto packet{PacketBuilder::makePingPacket(0u)};
   auto timings_without_ackreq{packet.timingsWithoutAckreq()};
   // Tinker with packet length
   timings_without_ackreq.erase(end(timings_without_ackreq) - 4,
@@ -101,10 +103,10 @@ TEST_F(ReceiveBaseTest, nack_incomplete_packet) {
 
 TEST_F(ReceiveBaseTest, receive_multiple_packets) {
   // This packet will generate an ack
-  auto first_packet{make_ping_packet(0u)};
+  auto first_packet{PacketBuilder::makePingPacket(0u)};
 
   // This won't
-  auto second_packet{make_ping_packet(42u)};
+  auto second_packet{PacketBuilder::makePingPacket(42u)};
 
   // All in all we will receive 3 ackbits for every first packet, but none from
   // the second packets. This demonstrates that we correctly receive all those

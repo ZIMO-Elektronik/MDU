@@ -55,6 +55,8 @@ struct Crc8 : detail::CrcBase<uint8_t, 0u> {
   }
 };
 
+static_assert(sizeof(Crc8) == sizeof(uint8_t));
+
 /// This function calculates CRC8 (Dallas/Maxim). The polynomial representations
 /// is 0x31.
 ///

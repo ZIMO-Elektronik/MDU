@@ -41,6 +41,17 @@ constexpr auto data2uint64(uint8_t const* data) {
   return static_cast<uint64_t>(upper) << 32u | lower;
 }
 
+/// uint16_t to data
+///
+/// \param  hword Half-word to convert
+/// \param  data  Pointer to write to
+/// \return Pointer after last element
+constexpr auto uint16_2data(uint16_t hword, uint8_t* data) {
+  *data++ = static_cast<uint8_t>((hword & 0xFF00u) >> 8u);
+  *data++ = static_cast<uint8_t>((hword & 0x00FFu) >> 0u);
+  return data;
+}
+
 /// uint32_t to data
 ///
 /// \param  word  Word to convert

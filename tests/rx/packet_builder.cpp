@@ -73,3 +73,107 @@ PacketBuilder::timingsAckreqOnly(size_t count,
   return std::vector<uint32_t>(
     count, mdu::timings[std::to_underlying(transfer_rate)].ackreq);
 }
+
+PacketBuilder PacketBuilder::makePingPacket(uint8_t decoder_id) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::Ping)
+    .data(decoder_id)
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder PacketBuilder::makePingPacket(uint32_t serial_number,
+                                            uint32_t decoder_id) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::Ping)
+    .data(serial_number, decoder_id)
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder
+PacketBuilder::makeConfigTransferRatePacket(mdu::TransferRate transfer_rate) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::ConfigTransferRate)
+    .data(std::to_underlying(transfer_rate))
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder PacketBuilder::makeBusyPacket() {
+  PacketBuilder packet;
+  packet.preamble().command(mdu::Command::Busy).crc8().ackreq();
+  return packet;
+}
+
+PacketBuilder
+PacketBuilder::makeFirmwareUpdatePacket(uint32_t addr,
+                                        std::span<uint8_t const, 64uz> chunk) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::FirmwareUpdate)
+    .data(addr)
+    .data(chunk)
+    .crc32()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder PacketBuilder::makeZppValidQueryPacket(std::string_view zpp_id,
+                                                     size_t zpp_flash_size) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::ZppValidQuery)
+    .data(zpp_id)
+    .data(zpp_flash_size)
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder PacketBuilder::makeZppLcDcQueryPacket(
+  std::span<uint8_t const, 4uz> developer_code) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::ZppLcDcQuery)
+    .data(developer_code)
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder
+PacketBuilder::makeZppUpdatePacket(uint32_t addr,
+                                   std::span<uint8_t const> chunk) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::ZppUpdate)
+    .data(addr)
+    .data(chunk)
+    .crc32()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder PacketBuilder::makeZppUpdateEndPacket(uint32_t begin_addr,
+                                                    uint32_t end_addr) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::ZppUpdateEnd)
+    .data(begin_addr, end_addr)
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
+PacketBuilder PacketBuilder::makeZppExitPacket() {
+  PacketBuilder packet;
+  packet.preamble().command(mdu::Command::ZppExit).crc8().ackreq();
+  return packet;
+}
