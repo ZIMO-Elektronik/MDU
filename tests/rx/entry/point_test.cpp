@@ -3,5 +3,5 @@
 
 void PointTest::verify(std::vector<std::pair<uint32_t, uint8_t>> sequence) {
   std::ranges::for_each(
-    sequence, [this](auto p) { entry_point_.verify(p.first, p.second); });
+    sequence, [this](auto p) { _entry_point.verify(p.first, p.second); });
 }

@@ -20,7 +20,7 @@ struct BinarySearch {
   operator()(uint32_t serial_number, uint32_t decoder_id, uint32_t bit_number);
 
 private:
-  bool ignore_{true};
+  bool _ignore{true};
 };
 
 }  // namespace mdu::rx

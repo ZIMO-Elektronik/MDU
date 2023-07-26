@@ -62,13 +62,13 @@ constexpr bool is_index(size_t index) {
 /// \param  index CV index
 /// \param  value CV value
 void Point::verify(size_t index, uint8_t value) {
-  if (!is_index(index)) return queue_.clear();
-  if (size(queue_) && queue_.back().first == index) return;
-  queue_.push_back({static_cast<uint8_t>(index), value});
-  if (queue_.front().second == 0xFFu)
-    verifySequence(make_firmware_sequence(cfg_.decoder_id),
-                   cfg_.firmware_entry);
-  else verifySequence(make_zpp_sequence(), cfg_.zpp_entry);
+  if (!is_index(index)) return _deque.clear();
+  if (size(_deque) && _deque.back().first == index) return;
+  _deque.push_back({static_cast<uint8_t>(index), value});
+  if (_deque.front().second == 0xFFu)
+    verifySequence(make_firmware_sequence(_cfg.decoder_id),
+                   _cfg.firmware_entry);
+  else verifySequence(make_zpp_sequence(), _cfg.zpp_entry);
 }
 
 /// Verify entry sequence
@@ -79,12 +79,12 @@ void Point::verifySequence(
   std::array<std::pair<uint8_t, uint8_t>, 5uz> const& sequence,
   std::function<void()> const& f) {
   static constexpr auto zero_sequence{make_zero_sequence()};
-  auto const n{size(queue_)};
-  if (!((n <= 5uz && std::equal(begin(queue_), end(queue_), begin(sequence))) ||
+  auto const n{size(_deque)};
+  if (!((n <= 5uz && std::equal(begin(_deque), end(_deque), begin(sequence))) ||
         (n > 5uz &&
-         std::equal(begin(queue_) + 5, end(queue_), begin(zero_sequence)))))
-    queue_.clear();
-  else if (n == queue_.max_size()) std::invoke(f);
+         std::equal(begin(_deque) + 5, end(_deque), begin(zero_sequence)))))
+    _deque.clear();
+  else if (n == _deque.max_size()) std::invoke(f);
 }
 
 }  // namespace mdu::rx::entry

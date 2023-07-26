@@ -22,7 +22,7 @@ public:
 
   PacketBuilder& data(std::unsigned_integral auto value) {
     for (auto i{sizeof(value)}; i-- > 0uz;)
-      data_.push_back(static_cast<uint8_t>(value >> i * CHAR_BIT));
+      _data.push_back(static_cast<uint8_t>(value >> i * CHAR_BIT));
     return *this;
   }
 
@@ -49,8 +49,27 @@ public:
     size_t count = MDU_TX_ACKREQ_BITS,
     mdu::TransferRate transfer_rate = mdu::TransferRate::Default) const;
 
+  // Builder methods
+  static PacketBuilder makePingPacket(uint8_t decoder_id);
+  static PacketBuilder makePingPacket(uint32_t serial_number,
+                                      uint32_t decoder_id);
+  static PacketBuilder
+  makeConfigTransferRatePacket(mdu::TransferRate transfer_rate);
+  static PacketBuilder makeBusyPacket();
+  static PacketBuilder
+  makeFirmwareUpdatePacket(uint32_t addr, std::span<uint8_t const, 64uz> chunk);
+  static PacketBuilder makeZppValidQueryPacket(std::string_view zpp_id,
+                                               size_t zpp_flash_size);
+  static PacketBuilder
+  makeZppLcDcQueryPacket(std::span<uint8_t const, 4uz> developer_code);
+  static PacketBuilder makeZppUpdatePacket(uint32_t addr,
+                                           std::span<uint8_t const> chunk);
+  static PacketBuilder makeZppUpdateEndPacket(uint32_t begin_addr,
+                                              uint32_t end_addr);
+  static PacketBuilder makeZppExitPacket();
+
 private:
-  size_t preamble_count_{};
-  size_t ackreq_count_{};
-  std::vector<uint8_t> data_{};
+  size_t _preamble_count{};
+  size_t _ackreq_count{};
+  std::vector<uint8_t> _data{};
 };

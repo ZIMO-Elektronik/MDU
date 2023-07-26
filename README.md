@@ -29,7 +29,8 @@ MDU is an acronym for Multi Decoder Update, a protocol for firmware and ZPP upda
         <li><a href="#zpp-commands">ZPP commands</a></li>
         <li><a href="#typical-processes">Typical processes</a></li>
       </ul>
-    <li><a href="#examples">Examples</a></li>
+    <li><a href="#getting-started">Getting started</a></li>
+    <li><a href="#usage">Usage</a></li>
     <li><a href="#configuration">Configuration</a></li>
   </ol>
 </details>
@@ -49,7 +50,7 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 | CV106 == 0x00 | CV106 == 0x00 |
 
 ### Alternative entry
-As an alternative to entry via DCC CV verify commands, a preamble with [default bit timings](#bit-timings) can be transmitted directly after switching on the track voltage. The preamble should be sent for at least 200ms.
+As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
 
 ### Transmission
 Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](http://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the track signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.
@@ -548,7 +549,10 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 9.  ZPP-Exit | ZPP-Exit&Reset
 10. Maintain voltage for at least 500ms
 
-## Examples
+## Getting started
+TODO
+
+## Usage
 To use the MDU library, a number of virtual functions must be implemented. Depending on whether firmware or ZPP is to be transferred, one of the following abstract classes must be derived:
 - mdu::rx::FirmwareBase
 - mdu::rx::ZppBase

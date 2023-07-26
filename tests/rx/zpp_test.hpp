@@ -5,6 +5,6 @@
 
 struct ReceiveZppTest : CrtpTestBase<ReceiveZppTest> {
   ReceiveZppTest();
-  static constexpr std::array<uint8_t, 4uz> developer_code_{42u};
-  std::unique_ptr<ZppMock> base_;
+  static constexpr std::array<uint8_t, 4uz> _developer_code{42u};
+  std::unique_ptr<ZppMock> _mock;
 };

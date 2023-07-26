@@ -11,7 +11,7 @@ target_compile_definitions(
     $<$<BOOL:${MDU_TESTS_MASTER_KEY}>:MDU_TESTS_MASTER_KEY="${MDU_TESTS_MASTER_KEY}">
 )
 
-target_common_warnings(MDUTests)
+target_common_warnings(MDUTests PRIVATE)
 
 cpmaddpackage("gh:google/googletest#main")
 cpmaddpackage("gh:ericniebler/range-v3#0.12.0")

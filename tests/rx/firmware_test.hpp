@@ -5,5 +5,5 @@
 
 struct ReceiveFirmwareTest : CrtpTestBase<ReceiveFirmwareTest> {
   ReceiveFirmwareTest();
-  std::unique_ptr<FirmwareMock> base_;
+  std::unique_ptr<FirmwareMock> _mock;
 };

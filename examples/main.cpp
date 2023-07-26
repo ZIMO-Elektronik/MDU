@@ -18,26 +18,31 @@ private:
   void ackbit(uint32_t us) const final {}
 
   // Read CV bit
-  bool readCv(uint32_t addr, uint32_t position) const final {}
+  bool readCv(uint32_t addr, uint32_t position) const final { return {}; }
 
   // Write CV
-  bool writeCv(uint32_t addr, uint8_t value) final {}
+  bool writeCv(uint32_t addr, uint8_t value) final { return {}; }
 
   // Check if ZPP is valid
-  bool zppValid(std::string_view zpp_id, size_t zpp_flash_size) const final {}
+  bool zppValid(std::string_view zpp_id, size_t zpp_flash_size) const final {
+    return {};
+  }
 
   // Check if loadcode is valid
   bool loadcodeValid(std::span<uint8_t const, 4uz> developer_code) const final {
+    return {};
   }
 
   // Erase ZPP in the closed-interval [begin_addr, end_addr[
-  bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) final {}
+  bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) final { return {}; }
 
   // Write ZPP
-  bool writeZpp(uint32_t addr, std::span<uint8_t const> chunk) final {}
+  bool writeZpp(uint32_t addr, std::span<uint8_t const> chunk) final {
+    return {};
+  }
 
   // Update done
-  bool endZpp() final {}
+  bool endZpp() final { return {}; }
 
   // Exit (eventually perform CV reset)
   [[noreturn]] void exitZpp(bool reset_cvs) final {}

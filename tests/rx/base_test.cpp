@@ -1,3 +1,3 @@
 #include "base_test.hpp"
 
-ReceiveBaseTest::ReceiveBaseTest() { base_ = std::make_unique<BaseMock>(cfg_); }
+ReceiveBaseTest::ReceiveBaseTest() { _mock = std::make_unique<BaseMock>(_cfg); }

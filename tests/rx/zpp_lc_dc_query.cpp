@@ -1,4 +1,4 @@
-#include "utility.hpp"
+#include "packet_builder.hpp"
 #include "zpp_test.hpp"
 
 using namespace ::testing;
@@ -14,10 +14,10 @@ bool operator==(span<uint8_t const, 4uz> lhs, span<uint8_t const, 4uz> rhs) {
 
 TEST_F(ReceiveZppTest, loadcode_valid) {
   {
-    Expectation validate_zpp{EXPECT_CALL(*base_, zppValid(_, _))
+    Expectation validate_zpp{EXPECT_CALL(*_mock, zppValid(_, _))
                                .Times(Exactly(1))
                                .WillRepeatedly(Return(true))};
-    auto packet{make_zpp_valid_query_packet("SP", 0uz)};
+    auto packet{PacketBuilder::makeZppValidQueryPacket("SP", 0uz)};
     Receive(packet.timingsWithoutAckreq());
     Execute();
     Receive(packet.timingsAckreqOnly());
@@ -25,10 +25,10 @@ TEST_F(ReceiveZppTest, loadcode_valid) {
 
   {
     Expectation loadcode_valid{
-      EXPECT_CALL(*base_, loadcodeValid({developer_code_}))
+      EXPECT_CALL(*_mock, loadcodeValid({_developer_code}))
         .Times(Exactly(1))
         .WillRepeatedly(Return(true))};
-    auto packet{make_zpp_lc_dc_query_packet(developer_code_)};
+    auto packet{PacketBuilder::makeZppLcDcQueryPacket(_developer_code)};
     Receive(packet.timingsWithoutAckreq());
     Execute();
     Receive(packet.timingsAckreqOnly());

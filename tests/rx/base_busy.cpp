@@ -1,18 +1,18 @@
 #include "base_test.hpp"
-#include "utility.hpp"
+#include "packet_builder.hpp"
 
 using namespace ::testing;
 
 TEST_F(ReceiveBaseTest, ignore_busy_when_not_busy) {
-  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(0))};
-  Receive(make_busy_packet().timings());
+  Expectation nack_sent{EXPECT_CALL(*_mock, ackbit(100u)).Times(Exactly(0))};
+  Receive(PacketBuilder::makeBusyPacket().timings());
 }
 
 TEST_F(ReceiveBaseTest, ack_busy_packet_when_busy) {
-  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(3))};
+  Expectation nack_sent{EXPECT_CALL(*_mock, ackbit(100u)).Times(Exactly(3))};
   auto config_packet{
-    make_config_transfer_rate_packet(mdu::TransferRate::Default)};
-  auto busy_packet{make_busy_packet()};
+    PacketBuilder::makeConfigTransferRatePacket(mdu::TransferRate::Default)};
+  auto busy_packet{PacketBuilder::makeBusyPacket()};
   Receive(config_packet.timings());
   Receive(busy_packet.timingsWithoutAckreq());
   Execute();
@@ -20,10 +20,10 @@ TEST_F(ReceiveBaseTest, ack_busy_packet_when_busy) {
 }
 
 TEST_F(ReceiveBaseTest, do_not_nack_busy_packet_when_busy) {
-  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(0))};
+  Expectation nack_sent{EXPECT_CALL(*_mock, ackbit(100u)).Times(Exactly(0))};
   auto config_packet{
-    make_config_transfer_rate_packet(mdu::TransferRate::Default)};
-  auto busy_packet{make_busy_packet()};
+    PacketBuilder::makeConfigTransferRatePacket(mdu::TransferRate::Default)};
+  auto busy_packet{PacketBuilder::makeBusyPacket()};
   Receive(config_packet.timings());
   Receive(busy_packet.timingsWithoutAckreq());
   Execute();
@@ -31,8 +31,9 @@ TEST_F(ReceiveBaseTest, do_not_nack_busy_packet_when_busy) {
 }
 
 TEST_F(ReceiveBaseTest, nack_other_packets_when_busy) {
-  Expectation nack_sent{EXPECT_CALL(*base_, ackbit(100u)).Times(Exactly(3))};
-  auto packet{make_config_transfer_rate_packet(mdu::TransferRate::Default)};
+  Expectation nack_sent{EXPECT_CALL(*_mock, ackbit(100u)).Times(Exactly(3))};
+  auto packet{
+    PacketBuilder::makeConfigTransferRatePacket(mdu::TransferRate::Default)};
   Receive(packet.timings());
   Receive(packet.timingsWithoutAckreq());
   Execute();
