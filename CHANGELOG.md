@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.12.0
+- More sophisticated packet
+
 ## 0.11.2
 - Don't touch nack in reset()
 
