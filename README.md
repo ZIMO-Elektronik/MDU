@@ -97,7 +97,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
 |                      |             |                            |             | ZPP-Valid-Query | 0xFFFF'FF06 |
 | Ping                 | 0xFFFF'FFFF | Firmware-Salsa20-IV        | 0xFFFF'FFF7 | ZPP-LC-DC-Query | 0xFFFF'FF07 |
 | Config-Transfer-Rate | 0xFFFF'FFFE | Firmware-Erase             | 0xFFFF'FFF5 | ZPP-Erase       | 0xFFFF'FF05 |
-| Binary-Search        | 0xFFFF'FFFA | Firmware-Update            | 0xFFFF'FFF8 | ZPP-Update      | 0xFFFF'FF08 |
+| Binary-Tree-Search   | 0xFFFF'FFFA | Firmware-Update            | 0xFFFF'FFF8 | ZPP-Update      | 0xFFFF'FF08 |
 | CV-Read              | 0xFFFF'FFF6 | Firmware-CRC32-Start       | 0xFFFF'FFFB | ZPP-Update-End  | 0xFFFF'FF0B |
 | CV-Write             | 0xFFFF'FFF9 | Firmware-CRC32-Result      | 0xFFFF'FFFC | ZPP-Exit        | 0xFFFF'FF0C |
 | Busy                 | 0xFFFF'FFF2 | Firmware-CRC32-Result&Exit | 0xFFFF'FFFD | ZPP-Exit&Reset  | 0xFFFF'FF0D |
@@ -134,7 +134,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Binary-Search</td>
+    <td>Binary-Tree-Search</td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -303,7 +303,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 
 With the help of a Config-Transfer-Rate command, the transmission speed can be adapted to the decoder by setting the bit timings. The exact times for one bit, zero bit, ackreq bit and ack bit can be found in the [bit timings](#bit-timings). If a decoder does not support the selected transmission speed, an acknowledgement must be sent in channel 2.
 
-#### Binary-Search
+#### Binary-Tree-Search
 | Command phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
@@ -312,15 +312,15 @@ With the help of a Config-Transfer-Rate command, the transmission speed can be a
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | See description                    |
 
-The Binary-Search command is used to search for decoders that support MDU. The following combination of serial number and decoder ID is used for clear identification:
+The Binary-Tree-Search command is used to search for decoders that support MDU. The following combination of serial number and decoder ID is used for clear identification:
 ```c
-uint64_t bin_search_number = (decoder_id << 32u) | serial_number;
+uint64_t unique_id = (decoder_id << 32u) | serial_number;
 ```
 With the exception of the MSB (always 0), that number can be queried bit by bit. Again, reference is made to [RCN-214](http://normen.railcommunity.de/RCN-214.pdf), which provides a similar command for the programming mode of the DCC protocol to read CVs bit by bit.
 
 Since, in contrast to DCC, several decoders can send an acknowledgment at the same time, further commands are required in addition to querying a bit, which are represented with the help of special values or closed intervals.
 - 255  
-  Special value that initiates the start or restart of the binary search. All decoders that have received this packet reply with an acknowledgment. All decoders that have not received this packet are excluded from further search history and also send **no** acknowledgment.
+  Special value that initiates the start or restart of the search. All decoders that have received this packet reply with an acknowledgment. All decoders that have not received this packet are excluded from further search history and also send **no** acknowledgment.
 
 - [0...62]  
   The data byte received corresponds to the bit number of the bit to be checked. All decoders with this bit set respond.
@@ -329,14 +329,14 @@ Since, in contrast to DCC, several decoders can send an acknowledgment at the sa
   The received data byte-64 corresponds to the bit number of the inverted bit to be checked. All decoders with this bit cleared respond.
 
 - [128...128+62]  
-  The received data byte-128 corresponds to the bit number of the bit to be checked. All decoders with this bit set end the binary search. Only special value 255 can restart the binary search at this point.
+  The received data byte-128 corresponds to the bit number of the bit to be checked. All decoders with this bit set end the search. Only special value 255 can restart the search at this point.
 
 - [192...192+62]  
-  The received data byte-192 corresponds to the bit number of the inverted bit to be checked. All decoders with this bit cleared end the binary search. Only special value 255 can restart the binary search at this point.
+  The received data byte-192 corresponds to the bit number of the inverted bit to be checked. All decoders with this bit cleared end the search. Only special value 255 can restart the search at this point.
 
-The following flowchart shows the binary search process from the perspective of the decoder.
+The following flowchart shows the search process from the perspective of the decoder. See [Maxim Integrated's application note](https://www.analog.com/en/app-notes/1wire-search-algorithm.html) [1-Wire Search Algorithm](data/1wire-search-algorithm.pdf) for more information.
 
-![alt_text](data/images/binary_search.png)
+![alt_text](data/images/binary_tree_search.png)
 
 #### CV-Read
 | Command phase   | Description                        |
@@ -526,19 +526,20 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 
 ### Typical processes
 #### Firmware update
-1. Ping all decoders
+1. Ping the desired decoders (optional)
 2. Find a Config-TransferRate that is supported by all decoders
-3. Ping select the desired decoders
-4. Firmware-Erase
-5. Firmware-Update
-6. Firmware-CRC32-Start
-7. Firmware-CRC32-Result | Firmware-CRC32-Result&Exit
-8. Maintain voltage for at least 500ms
+3. Ping the desired decoders
+4. Transmit Salsa20 initialization vector
+5. Firmware-Erase
+6. Firmware-Update
+7. Firmware-CRC32-Start
+8. Firmware-CRC32-Result | Firmware-CRC32-Result&Exit
+9. Leave track voltage switched on for at least 500ms
 
 #### ZPP update
-1.  Ping all decoders
+1.  Ping the desired decoders (optional)
 2.  Find a Config-Transfer-Rate that is supported by all decoders
-3.  Ping select the desired decoders
+3.  Ping the desired decoders
 4.  ZPP-Valid-Query
     - ZPP-Exit on answer
 5.  ZPP-LC-DC-Query (optional)
@@ -547,7 +548,7 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 7.  ZPP-Update
 8.  ZPP-Update-End
 9.  ZPP-Exit | ZPP-Exit&Reset
-10. Maintain voltage for at least 500ms
+10. Leave track voltage switched on for at least 500ms
 
 ## Getting started
 TODO
@@ -576,7 +577,7 @@ private:
   void ackbit(uint32_t us) const final {}
 
   // Read CV bit
-  bool readCv(uint32_t addr, uint32_t position) const final {}
+  bool readCv(uint32_t addr, uint32_t pos) const final {}
 
   // Write CV
   bool writeCv(uint32_t addr, uint8_t value) final {}

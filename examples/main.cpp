@@ -18,7 +18,7 @@ private:
   void ackbit(uint32_t us) const final {}
 
   // Read CV bit
-  bool readCv(uint32_t addr, uint32_t position) const final { return {}; }
+  bool readCv(uint32_t addr, uint32_t pos) const final { return {}; }
 
   // Write CV
   bool writeCv(uint32_t addr, uint8_t value) final { return {}; }

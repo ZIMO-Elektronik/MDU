@@ -18,7 +18,7 @@ namespace mdu {
 enum class Command : uint32_t {
   Ping = 0xFFFF'FFFFu,
   ConfigTransferRate = 0xFFFF'FFFEu,
-  BinarySearch = 0xFFFF'FFFAu,
+  BinaryTreeSearch = 0xFFFF'FFFAu,
   CvRead = 0xFFFF'FFF6u,
   CvWrite = 0xFFFF'FFF9u,
   Busy = 0xFFFF'FFF2u,

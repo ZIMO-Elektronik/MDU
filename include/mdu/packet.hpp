@@ -68,10 +68,10 @@ constexpr auto make_config_transfer_rate_packet(TransferRate transfer_rate) {
 }
 
 /// TODO
-constexpr auto make_binary_search_packet(uint8_t byte) {
+constexpr auto make_binary_tree_search_packet(uint8_t byte) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(byte) + sizeof(Crc8));
-  uint32_2data(std::to_underlying(Command::BinarySearch), begin(packet));
+  uint32_2data(std::to_underlying(Command::BinaryTreeSearch), begin(packet));
   packet[4uz] = byte;
   packet[5uz] = crc8({cbegin(packet), 5uz});
   return packet;
