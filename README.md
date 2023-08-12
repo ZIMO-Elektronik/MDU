@@ -92,15 +92,15 @@ In principle, each command packet contains the phases preamble, data and acknowl
 ### Commands
 The supported commands of the MDU protocol are divided into 3 categories: general, firmware and ZPP. Devices that only want to support either firmware or ZPP updates only have to support the command set actually used. However, the general command set must be implemented.
 
-| General commands     | Coding      | Firmware commands          | Coding      | ZPP commands    | Coding      |
-| -------------------- | ----------- | -------------------------- | ----------- | --------------- | ----------- |
-|                      |             |                            |             | ZPP-Valid-Query | 0xFFFF'FF06 |
-| Ping                 | 0xFFFF'FFFF | Firmware-Salsa20-IV        | 0xFFFF'FFF7 | ZPP-LC-DC-Query | 0xFFFF'FF07 |
-| Config-Transfer-Rate | 0xFFFF'FFFE | Firmware-Erase             | 0xFFFF'FFF5 | ZPP-Erase       | 0xFFFF'FF05 |
-| Binary-Tree-Search   | 0xFFFF'FFFA | Firmware-Update            | 0xFFFF'FFF8 | ZPP-Update      | 0xFFFF'FF08 |
-| CV-Read              | 0xFFFF'FFF6 | Firmware-CRC32-Start       | 0xFFFF'FFFB | ZPP-Update-End  | 0xFFFF'FF0B |
-| CV-Write             | 0xFFFF'FFF9 | Firmware-CRC32-Result      | 0xFFFF'FFFC | ZPP-Exit        | 0xFFFF'FF0C |
-| Busy                 | 0xFFFF'FFF2 | Firmware-CRC32-Result&Exit | 0xFFFF'FFFD | ZPP-Exit&Reset  | 0xFFFF'FF0D |
+| General commands                              | Coding      | Firmware commands                                        | Coding      | ZPP commands                        | Coding      |
+| --------------------------------------------- | ----------- | -------------------------------------------------------- | ----------- | ----------------------------------- | ----------- |
+|                                               |             |                                                          |             | [ZPP-Valid-Query](#zpp-valid-query) | 0xFFFF'FF06 |
+| [Ping](#ping)                                 | 0xFFFF'FFFF | [Firmware-Salsa20-IV](#firmware-salsa20-iv)              | 0xFFFF'FFF7 | [ZPP-LC-DC-Query](#zpp-lc-dc-query) | 0xFFFF'FF07 |
+| [Config-Transfer-Rate](#config-transfer-rate) | 0xFFFF'FFFE | [Firmware-Erase](#firmware-erase)                        | 0xFFFF'FFF5 | [ZPP-Erase](#zpp-erase)             | 0xFFFF'FF05 |
+| [Binary-Tree-Search](#binary-tree-search)     | 0xFFFF'FFFA | [Firmware-Update](#firmware-update)                      | 0xFFFF'FFF8 | [ZPP-Update](#zpp-update)           | 0xFFFF'FF08 |
+| [CV-Read](#cv-read)                           | 0xFFFF'FFF6 | [Firmware-CRC32-Start](#firmware-crc32-start)            | 0xFFFF'FFFB | [ZPP-Update-End](#zpp-update-end)   | 0xFFFF'FF0B |
+| [CV-Write](#cv-write)                         | 0xFFFF'FFF9 | [Firmware-CRC32-Result](#firmware-crc32-result)          | 0xFFFF'FFFC | [ZPP-Exit](#zpp-exit)               | 0xFFFF'FF0C |
+| [Busy](#busy)                                 | 0xFFFF'FFF2 | [Firmware-CRC32-Result&Exit](#firmware-crc32-resultexit) | 0xFFFF'FFFD | [ZPP-Exit&Reset](#zpp-exitreset)    | 0xFFFF'FF0D |
 
 ### Acknowledgment
 <table>
@@ -118,7 +118,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <th style="text-align: center">9</th>
   </tr>
   <tr>
-    <td>Ping</td>
+    <td><a href="#ping">Ping</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -126,7 +126,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Config-Transfer-Rate</td>
+    <td><a href="#config-transfer-rate">Config-Transfer-Rate</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -134,7 +134,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Binary-Tree-Search</td>
+    <td><a href="#binary-tree-search">Binary-Tree-Search</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -142,7 +142,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>CV-Read</td>
+    <td><a href="#cv-read">CV-Read</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -150,7 +150,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>CV-Write</td>
+    <td><a href="#cv-write">CV-Write</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -158,7 +158,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Busy</td>
+    <td><a href="#busy">Busy</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error</td>
     <td></td>
@@ -166,7 +166,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Firmware-Salsa20-IV</td>
+    <td><a href="#firmware-salsa20-iv">Firmware-Salsa20-IV</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -174,7 +174,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Firmware-Erase</td>
+    <td><a href="#firmware-erase">Firmware-Erase</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -182,7 +182,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Firmware-Update</td>
+    <td><a href="#firmware-update">Firmware-Update</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
     <td></td>
@@ -190,7 +190,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Firmware-CRC32-Start</td>
+    <td><a href="#firmware-crc32-start">Firmware-CRC32-Start</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -198,7 +198,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Firmware-CRC32-Result</td>
+    <td><a href="#firmware-crc32-result">Firmware-CRC32-Result</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -206,7 +206,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>Firmware-CRC32-Result&Exit</td>
+    <td><a href="#firmware-crc32-resultexit">Firmware-CRC32-Result&Exit</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -214,7 +214,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>ZPP-Valid-Query</td>
+    <td><a href="#zpp-valid-query">ZPP-Valid-Query</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -222,7 +222,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>ZPP-LC-DC-Query</td>
+    <td><a href="#zpp-lc-dc-query">ZPP-LC-DC-Query</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -230,7 +230,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>ZPP-Erase</td>
+    <td><a href="#zpp-erase">ZPP-Erase</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -238,7 +238,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>ZPP-Update</td>
+    <td><a href="#zpp-update">ZPP-Update</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
     <td></td>
@@ -246,7 +246,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>ZPP-Update-End</td>
+    <td><a href="#zpp-update-end">ZPP-Update-End</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -254,7 +254,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>ZPP-Exit</td>
+    <td><a href="#zpp-exit">ZPP-Exit</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -262,7 +262,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td></td>
   </tr>
   <tr>
-    <td>ZPP-Exit&Reset</td>
+    <td><a href="#zpp-exitreset">ZPP-Exit&Reset</a></td>
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
@@ -384,7 +384,7 @@ The firmware command set is used to update the decoder software. Among other thi
 | Data (CRC)      | 1-byte CRC8                          |
 | Acknowledgement | CRC8 error                           |
 
-Firmware-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa20 encryption. For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.
+Firmware-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa20 encryption. :warning: **For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.**
 
 #### Firmware-Erase
 | Command phase   | Description                        |
@@ -417,7 +417,8 @@ Firmware-Update is used to transfer firmware data. If an invalid address or a CR
 | Data (coding)   | 0xFFFF'FFFB                        |
 | Data            | 4-byte start address               |
 | Data            | 4-byte end address                 |
-| Data (CRC)      | 4-byte CRC32                       |
+| Data            | 4-byte CRC32                       |
+| Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
 Firmware-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via firmware update packets, then a response must be made in channel 2. :warning: **The transferred memory area is a closed interval. The last address actually written corresponds to the end address!**
@@ -526,29 +527,27 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 
 ### Typical processes
 #### Firmware update
-1. Ping the desired decoders (optional)
-2. Find a Config-TransferRate that is supported by all decoders
-3. Ping the desired decoders
-4. Transmit Salsa20 initialization vector
-5. Firmware-Erase
-6. Firmware-Update
-7. Firmware-CRC32-Start
-8. Firmware-CRC32-Result | Firmware-CRC32-Result&Exit
+1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
+2. [Binary-Tree-Search](#binary-tree-search) to find all connected decoders
+3. [Ping](#ping) the desired decoders
+4. [Firmware-Salsa20-IV](#firmware-salsa20-iv)
+5. [Firmware-Erase](#firmware-erase)
+6. [Firmware-Update](#firmware-update)
+7. [Firmware-CRC32-Start](#firmware-crc32-start)
+8. [Firmware-CRC32-Result](#firmware-crc32-result) | [Firmware-CRC32-Result&Exit](#firmware-crc32-resultexit)
 9. Leave track voltage switched on for at least 500ms
 
 #### ZPP update
-1.  Ping the desired decoders (optional)
-2.  Find a Config-Transfer-Rate that is supported by all decoders
-3.  Ping the desired decoders
-4.  ZPP-Valid-Query
-    - ZPP-Exit on answer
-5.  ZPP-LC-DC-Query (optional)
-    - ZPP-Exit on answer
-6.  ZPP-Erase
-7.  ZPP-Update
-8.  ZPP-Update-End
-9.  ZPP-Exit | ZPP-Exit&Reset
-10. Leave track voltage switched on for at least 500ms
+1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
+2. [ZPP-Valid-Query](#zpp-valid-query)
+   - [ZPP-Exit](#zpp-exit) on answer
+3. [ZPP-LC-DC-Query](#zpp-lc-dc-query) (optional)
+   - [ZPP-Exit](#zpp-exit) on answer
+4. [ZPP-Erase](#zpp-erase)
+5. [ZPP-Update](#zpp-update)
+6. [ZPP-Update-End](#zpp-update-end)
+7. [ZPP-Exit](#zpp-exit) | [ZPP-Exit&Reset](#zpp-exitreset)
+8. Leave track voltage switched on for at least 500ms
 
 ## Getting started
 TODO
