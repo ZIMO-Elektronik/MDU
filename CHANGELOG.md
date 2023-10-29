@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.0
+- Add ESP32 RMT encoder
+- Rename Firmware* to Zsu* (classes, commands, ...)
+
 ## 0.12.0
 - More sophisticated packet
 
