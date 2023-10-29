@@ -3,7 +3,8 @@
 #include <iostream>
 #include <range/v3/all.hpp>
 #include <ztl/math.hpp>
-#include "firmware_test.hpp"
+#include "../utility.hpp"
+#include "zsu_test.hpp"
 
 #if defined(MDU_TESTS_MASTER_KEY)
 using namespace ::testing;
@@ -11,11 +12,6 @@ using namespace ::testing;
 namespace {
 
 using namespace ranges;
-
-std::filesystem::path __file__2path(std::string __file__) {
-  if (__file__[0u] == '.' && __file__[1u] == '.') __file__.erase(0u, 1u);
-  return std::filesystem::path(__file__).parent_path();
-}
 
 // Read vector 64 bytes at a time
 struct Reader64 {
@@ -111,7 +107,7 @@ std::vector<uint8_t> zsu2bin(std::filesystem::path zsu_path) {
   Reader64 reader{zsu2encrypted_bin(zsu_path)};
   std::optional<std::vector<uint8_t>> chunk;
   std::vector<uint8_t> retval;
-  while (chunk = reader.chunk()) {
+  while ((chunk = reader.chunk())) {
     std::array<uint8_t, 64uz> tmp{};
     ECRYPT_decrypt_bytes(&ctx, &(*chunk)[0u], &tmp[0u], 64u);
     for (auto v : tmp)
@@ -149,8 +145,8 @@ bool zsu_equals_bin(std::filesystem::path zsu_path,
 
 }  // namespace
 
-TEST_F(ReceiveFirmwareTest, decrypt) {
-  auto const cwd{__file__2path(__FILE__)};
+TEST_F(ReceiveZsuTest, decrypt) {
+  auto const cwd{source_location_parent_path()};
   EXPECT_TRUE(zsu_equals_bin(cwd / "./firmwares/firmware0.zsu",
                              cwd / "./firmwares/firmware0.bin"));
   EXPECT_TRUE(zsu_equals_bin(cwd / "./firmwares/firmware1.zsu",
@@ -163,8 +159,8 @@ TEST_F(ReceiveFirmwareTest, decrypt) {
                              cwd / "./firmwares/MS440_test.bin"));
 }
 
-TEST_F(ReceiveFirmwareTest, crc32_of_encrypted_bin) {
-  auto const cwd{__file__2path(__FILE__)};
+TEST_F(ReceiveZsuTest, crc32_of_encrypted_bin) {
+  auto const cwd{source_location_parent_path()};
   auto zsu_encrypted_bin{zsu2encrypted_bin(cwd / "./firmwares/MS440_test.zsu")};
   while (size(zsu_encrypted_bin) % 64u)
     zsu_encrypted_bin.push_back(0u);

@@ -113,11 +113,11 @@ PacketBuilder PacketBuilder::makeBusyPacket() {
 }
 
 PacketBuilder
-PacketBuilder::makeFirmwareUpdatePacket(uint32_t addr,
+PacketBuilder::makeZsuUpdatePacket(uint32_t addr,
                                         std::span<uint8_t const, 64uz> chunk) {
   PacketBuilder packet;
   packet.preamble()
-    .command(mdu::Command::FirmwareUpdate)
+    .command(mdu::Command::ZsuUpdate)
     .data(addr)
     .data(chunk)
     .crc32()

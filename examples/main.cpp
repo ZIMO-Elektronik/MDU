@@ -51,12 +51,11 @@ private:
   void interrupt() { receive(TIMER_VALUE); }
 };
 
-void enter_firmware_update() {}
+void enter_zpp_update() {}
 
 // Ctor takes ID und function object hooks with void() signature
-mdu::rx::entry::Point entry_point{{.decoder_id = ID,
-                                   .firmware_entry = enter_firmware_update,
-                                   .zpp_entry = nullptr}};
+mdu::rx::entry::Point entry_point{
+  {.decoder_id = ID, .zpp_entry = enter_zpp_update, .zsu_entry = nullptr}};
 
 int main() {
   ZppLoad zpp_load{};

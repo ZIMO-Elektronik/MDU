@@ -2,8 +2,8 @@
 
 using namespace ::testing;
 
-TEST_F(PointTest, firmware_entry) {
-  EXPECT_CALL(*this, firmwareEntry()).Times(Exactly(1));
+TEST_F(PointTest, zsu_entry) {
+  EXPECT_CALL(*this, zsuEntry()).Times(Exactly(1));
   verify({{8u - 1u, 255},
           {105u - 1u, (_decoder_id & 0xFF00'0000u) >> 24u},
           {106u - 1u, (_decoder_id & 0x00FF'0000u) >> 16u},
@@ -13,8 +13,8 @@ TEST_F(PointTest, firmware_entry) {
           {106u - 1u, 0u}});
 }
 
-TEST_F(PointTest, firmware_missing_reset) {
-  EXPECT_CALL(*this, firmwareEntry()).Times(Exactly(0));
+TEST_F(PointTest, zsu_missing_reset) {
+  EXPECT_CALL(*this, zsuEntry()).Times(Exactly(0));
   verify({// {8u - 1u, 255},
           {105u - 1u, (_decoder_id & 0xFF00'0000u) >> 24u},
           {106u - 1u, (_decoder_id & 0x00FF'0000u) >> 16u},
@@ -24,8 +24,8 @@ TEST_F(PointTest, firmware_missing_reset) {
           {106u - 1u, 0u}});
 }
 
-TEST_F(PointTest, firmware_missing_verify) {
-  EXPECT_CALL(*this, firmwareEntry()).Times(Exactly(0));
+TEST_F(PointTest, zsu_missing_verify) {
+  EXPECT_CALL(*this, zsuEntry()).Times(Exactly(0));
   verify({{8u - 1u, 255},
           {105u - 1u, (_decoder_id & 0xFF00'0000u) >> 24u},
           // {106u - 1u, (_decoder_id & 0x00FF'0000u) >> 16u},
@@ -35,8 +35,8 @@ TEST_F(PointTest, firmware_missing_verify) {
           {106u - 1u, 0u}});
 }
 
-TEST_F(PointTest, firmware_wrong_index) {
-  EXPECT_CALL(*this, firmwareEntry()).Times(Exactly(0));
+TEST_F(PointTest, zsu_wrong_index) {
+  EXPECT_CALL(*this, zsuEntry()).Times(Exactly(0));
   verify({{8u - 1u, 255},
           {105u - 1u, (_decoder_id & 0xFF00'0000u) >> 24u},
           {107u - 1u, (_decoder_id & 0x00FF'0000u) >> 16u},
@@ -46,8 +46,8 @@ TEST_F(PointTest, firmware_wrong_index) {
           {106u - 1u, 0u}});
 }
 
-TEST_F(PointTest, firmware_wrong_decoder_id) {
-  EXPECT_CALL(*this, firmwareEntry()).Times(Exactly(0));
+TEST_F(PointTest, zsu_wrong_decoder_id) {
+  EXPECT_CALL(*this, zsuEntry()).Times(Exactly(0));
   verify({{8u - 1u, 255},
           {105u - 1u, (_decoder_id & 0xFF00'0000u) >> 24u},
           {107u - 1u, (_decoder_id & 0x00FF'0000u) >> 16u},
@@ -57,8 +57,8 @@ TEST_F(PointTest, firmware_wrong_decoder_id) {
           {106u - 1u, 0u}});
 }
 
-TEST_F(PointTest, firmware_entry_after_reset) {
-  EXPECT_CALL(*this, firmwareEntry()).Times(Exactly(1));
+TEST_F(PointTest, zsu_entry_after_reset) {
+  EXPECT_CALL(*this, zsuEntry()).Times(Exactly(1));
   verify({{8u - 1u, 255},
           {105u - 1u, (_decoder_id & 0xFF00'0000u) >> 24u},
           {107u - 1u, (_decoder_id & 0x00FF'0000u) >> 16u},

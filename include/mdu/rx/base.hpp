@@ -22,7 +22,7 @@
 
 namespace mdu::rx::detail {
 
-struct FirmwareMixin;
+struct ZsuMixin;
 
 /// Receive base
 ///
@@ -39,7 +39,7 @@ struct Base : Ts... {
   /// \param  cfg                 Confiuration
   /// \param  salsa20_master_key  Salsa20 master key
   explicit constexpr Base(Config cfg, char const* salsa20_master_key)
-    : FirmwareMixin{salsa20_master_key}, _cfg{cfg} {}
+    : ZsuMixin{salsa20_master_key}, _cfg{cfg} {}
 
   /// Dtor
   virtual constexpr ~Base() = default;
@@ -235,13 +235,13 @@ protected:
   bool crcCheck(Command cmd) {
     uint32_t crc;
     // Commands with CRC32 also transmit failures in channel2
-    if (cmd == Command::FirmwareUpdate || cmd == Command::ZppUpdate) {
+    if (cmd == Command::ZsuUpdate || cmd == Command::ZppUpdate) {
       crc = _crc32;
       ack(crc);
     } else {
       crc = _crc8;
-      // And there's also an exception for FirmwareSalsa20IV...
-      if (cmd == Command::FirmwareSalsa20IV) ack(crc);
+      // And there's also an exception for ZsuSalsa20IV...
+      if (cmd == Command::ZsuSalsa20IV) ack(crc);
     }
     nack(crc);
     return !crc;

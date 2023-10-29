@@ -12,11 +12,10 @@ protected:
 
   static constexpr uint32_t _decoder_id{};
 
-  MOCK_METHOD(void, firmwareEntry, ());
   MOCK_METHOD(void, zppEntry, ());
+  MOCK_METHOD(void, zsuEntry, ());
 
-  mdu::rx::entry::Point _entry_point{
-    {.decoder_id = _decoder_id,
-     .firmware_entry = [this] { firmwareEntry(); },
-     .zpp_entry = [this] { zppEntry(); }}};
+  mdu::rx::entry::Point _entry_point{{.decoder_id = _decoder_id,
+                                      .zpp_entry = [this] { zppEntry(); },
+                                      .zsu_entry = [this] { zsuEntry(); }}};
 };
