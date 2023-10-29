@@ -68,10 +68,10 @@ constexpr auto make_config_transfer_rate_packet(TransferRate transfer_rate) {
 }
 
 /// TODO
-constexpr auto make_binary_search_packet(uint8_t byte) {
+constexpr auto make_binary_tree_search_packet(uint8_t byte) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(byte) + sizeof(Crc8));
-  uint32_2data(std::to_underlying(Command::BinarySearch), begin(packet));
+  uint32_2data(std::to_underlying(Command::BinaryTreeSearch), begin(packet));
   packet[4uz] = byte;
   packet[5uz] = crc8({cbegin(packet), 5uz});
   return packet;
@@ -113,26 +113,24 @@ constexpr auto make_busy_packet() {
 }
 
 /// TODO
-constexpr auto
-make_firmware_salsa20_iv_packet(std::span<uint8_t const, 8uz> iv) {
+constexpr auto make_zsu_salsa20_iv_packet(std::span<uint8_t const, 8uz> iv) {
   Packet packet{};
   packet.resize(sizeof(Command) + size(iv) + sizeof(Crc8));
   auto first{begin(packet)};
   auto last{
-    uint32_2data(std::to_underlying(Command::FirmwareSalsa20IV), first)};
+    uint32_2data(std::to_underlying(Command::ZsuSalsa20IV), first)};
   last = std::copy(cbegin(iv), cend(iv), last);
   *last = crc8({first, last});
   return packet;
 }
 
 /// TODO
-constexpr auto make_firmware_erase_packet(uint32_t begin_addr,
-                                          uint32_t end_addr) {
+constexpr auto make_zsu_erase_packet(uint32_t begin_addr, uint32_t end_addr) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(begin_addr) + sizeof(end_addr) +
                 sizeof(Crc8));
   auto first{begin(packet)};
-  auto last{uint32_2data(std::to_underlying(Command::FirmwareErase), first)};
+  auto last{uint32_2data(std::to_underlying(Command::ZsuErase), first)};
   last = uint32_2data(begin_addr, last);
   last = uint32_2data(end_addr, last);
   *last = crc8({first, last});
@@ -140,13 +138,12 @@ constexpr auto make_firmware_erase_packet(uint32_t begin_addr,
 }
 
 /// TODO
-constexpr auto
-make_firmware_update_packet(uint32_t addr,
-                            std::span<uint8_t const, 64uz> chunk) {
+constexpr auto make_zsu_update_packet(uint32_t addr,
+                                      std::span<uint8_t const, 64uz> chunk) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(addr) + size(chunk) + sizeof(Crc32));
   auto first{begin(packet)};
-  auto last{uint32_2data(std::to_underlying(Command::FirmwareUpdate), first)};
+  auto last{uint32_2data(std::to_underlying(Command::ZsuUpdate), first)};
   last = std::copy(cbegin(chunk), cend(chunk), last);
   uint32_2data(crc32({first, last}), last);
   return packet;

@@ -11,6 +11,6 @@
 #pragma once
 
 #include "rx/entry/point.hpp"
-#include "rx/firmware_base.hpp"
-#include "rx/firmware_zpp_base.hpp"
 #include "rx/zpp_base.hpp"
+#include "rx/zpp_zsu_base.hpp"
+#include "rx/zsu_base.hpp"

@@ -57,7 +57,7 @@ public:
   makeConfigTransferRatePacket(mdu::TransferRate transfer_rate);
   static PacketBuilder makeBusyPacket();
   static PacketBuilder
-  makeFirmwareUpdatePacket(uint32_t addr, std::span<uint8_t const, 64uz> chunk);
+  makeZsuUpdatePacket(uint32_t addr, std::span<uint8_t const, 64uz> chunk);
   static PacketBuilder makeZppValidQueryPacket(std::string_view zpp_id,
                                                size_t zpp_flash_size);
   static PacketBuilder

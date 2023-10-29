@@ -14,11 +14,11 @@ namespace mdu::rx::entry {
 
 namespace {
 
-/// Make first half of firmware entry sequence
+/// Make first half of ZSU entry sequence
 ///
 /// \param  decoder_id  Decoder ID
-/// \return First half of firmware entry sequence
-constexpr auto make_firmware_sequence(uint32_t decoder_id) {
+/// \return First half of ZSU entry sequence
+constexpr auto make_zsu_sequence(uint32_t decoder_id) {
   return std::array<std::pair<uint8_t, uint8_t>, 5uz>{
     {{8u - 1u, 255u},
      {105u - 1u, (decoder_id & 0xFF00'0000u) >> 24u},
@@ -38,9 +38,9 @@ consteval auto make_zpp_sequence() {
                                                        {106u - 1u, 0xAAu}}};
 }
 
-/// Make second half of firmware/ZPP entry
+/// Make second half of ZPP/ZSU entry
 ///
-/// \return Second half of firmware/ZPP entry
+/// \return Second half of ZPP/ZSU entry
 consteval auto make_zero_sequence() {
   return std::array<std::pair<uint8_t, uint8_t>, 2uz>{
     {{105u - 1u, 0u}, {106u - 1u, 0u}}};
@@ -66,8 +66,7 @@ void Point::verify(size_t index, uint8_t value) {
   if (size(_deque) && _deque.back().first == index) return;
   _deque.push_back({static_cast<uint8_t>(index), value});
   if (_deque.front().second == 0xFFu)
-    verifySequence(make_firmware_sequence(_cfg.decoder_id),
-                   _cfg.firmware_entry);
+    verifySequence(make_zsu_sequence(_cfg.decoder_id), _cfg.zsu_entry);
   else verifySequence(make_zpp_sequence(), _cfg.zpp_entry);
 }
 

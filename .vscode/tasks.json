@@ -23,7 +23,7 @@
       "label": "Run dot",
       "type": "shell",
       "isBackground": true,
-      "command": "dot -Tpng ./data/binary_search.dot > ./data/images/binary_search.png; dot -Tpng ./data/data_packet.dot > ./data/images/data_packet.png; dot -Tpng ./data/ping.dot > ./data/images/ping.png"
+      "command": "dot -Tpng ./data/binary_tree_search.dot > ./data/images/binary_tree_search.png; dot -Tpng ./data/data_packet.dot > ./data/images/data_packet.png; dot -Tpng ./data/ping.dot > ./data/images/ping.png"
     }
   ]
 }

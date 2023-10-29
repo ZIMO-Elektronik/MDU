@@ -2,11 +2,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Receive firmware base
+/// Receive ZSU base
 ///
-/// \file   mdu/rx/firmware_base.hpp
+/// \file   mdu/rx/zsu_base.hpp
 /// \author Vincent Hamp
-/// \date   12/12/2022
+/// \date   29/10/2023
 
 #pragma once
 
@@ -30,18 +30,18 @@ ECRYPT_ctx make_salsa20_context(uint32_t decoder_id,
                                 std::span<uint8_t const, 8uz> iv,
                                 char const* master_key);
 
-/// Provides firmware update logic
-struct FirmwareMixin {
+/// Provides ZSU update logic
+struct ZsuMixin {
   /// Ctor
   ///
   /// \param  salsa20_master_key  Salsa20 master key
-  explicit constexpr FirmwareMixin(char const* salsa20_master_key)
+  explicit constexpr ZsuMixin(char const* salsa20_master_key)
     : _salsa20_master_key{salsa20_master_key} {}
 
   /// Dtor
-  virtual constexpr ~FirmwareMixin() = default;
+  virtual constexpr ~ZsuMixin() = default;
 
-  /// Execute firmware commands
+  /// Execute ZSU commands
   ///
   /// \param  cmd         Command
   /// \param  packet      Packet
@@ -50,16 +50,16 @@ struct FirmwareMixin {
   /// \return false       Do not transmit ackbit in channel2
   bool execute(Command cmd, Packet const& packet, uint32_t decoder_id) {
     switch (cmd) {
-      case Command::FirmwareSalsa20IV: {
+      case Command::ZsuSalsa20IV: {
         std::span<uint8_t const, 8uz> iv{&packet[4uz], 8uz};
         return executeSalsa20IV(decoder_id, iv);
       }
-      case Command::FirmwareErase: {
+      case Command::ZsuErase: {
         auto const begin_addr{data2uint32(&packet[4uz])};
         auto const end_addr{data2uint32(&packet[8uz])};
         return executeErase(begin_addr, end_addr);
       }
-      case Command::FirmwareUpdate: {
+      case Command::ZsuUpdate: {
         auto const address{data2uint32(&packet[4uz])};
         auto const chunk_size{size(packet) - sizeof(Command) - sizeof(address) -
                               sizeof(Crc32)};
@@ -67,40 +67,40 @@ struct FirmwareMixin {
         std::span<uint8_t const, 64uz> chunk{&packet[8uz], 64uz};
         return executeUpdate(address, chunk);
       }
-      case Command::FirmwareCrc32Start: {
+      case Command::ZsuCrc32Start: {
         auto const begin_addr{data2uint32(&packet[4uz])};
         auto const end_addr{data2uint32(&packet[8uz])};
         auto const crc32{data2uint32(&packet[12uz])};
         return executeCrc32Start(begin_addr, end_addr, crc32);
       }
-      case Command::FirmwareCrc32Result: return executeCrc32Result(false);
-      case Command::FirmwareCrc32ResultExit: return executeCrc32Result(true);
+      case Command::ZsuCrc32Result: return executeCrc32Result(false);
+      case Command::ZsuCrc32ResultExit: return executeCrc32Result(true);
       default: return false;
     }
   }
 
 private:
-  /// Erase firmware in the closed-interval [begin_addr, end_addr[
+  /// Erase ZSU in the closed-interval [begin_addr, end_addr[
   ///
   /// \param  begin_addr  Begin address
   /// \param  end_addr    End address
   /// \return true        Success
   /// \return false       Failure
-  virtual bool eraseFirmware(uint32_t begin_addr, uint32_t end_addr) = 0;
+  virtual bool eraseZsu(uint32_t begin_addr, uint32_t end_addr) = 0;
 
-  /// Write firmware
+  /// Write ZSU
   ///
   /// \param  addr  Address
   /// \param  chunk Chunk
   /// \return true  Success
   /// \return false Failure
-  virtual bool writeFirmware(uint32_t addr,
-                             std::span<uint8_t const, 64uz> chunk) = 0;
+  virtual bool writeZsu(uint32_t addr,
+                        std::span<uint8_t const, 64uz> chunk) = 0;
 
-  /// Exit firmware
-  [[noreturn]] virtual void exitFirmware() = 0;
+  /// Exit ZSU
+  [[noreturn]] virtual void exitZsu() = 0;
 
-  /// Execute FirmwareSalsa20IV command
+  /// Execute ZsuSalsa20IV command
   ///
   /// \param  decoder_id  Decoder ID
   /// \param  iv          Initialization vector
@@ -111,18 +111,18 @@ private:
     return false;
   }
 
-  /// Execute FirmwareErase command
+  /// Execute ZsuErase command
   ///
   /// \param  begin_addr  Begin address
   /// \param  end_addr    End address
   /// \return true        Transmit ackbit in channel2
   /// \return false       Do not transmit ackbit in channel2
   bool executeErase(uint32_t begin_addr, uint32_t end_addr) {
-    auto const success{eraseFirmware(begin_addr, end_addr)};
+    auto const success{eraseZsu(begin_addr, end_addr)};
     return !success;
   }
 
-  /// Execute FirmwareUpdate command
+  /// Execute ZsuUpdate command
   ///
   /// \param  addr  Address
   /// \param  chunk Chunk
@@ -137,7 +137,7 @@ private:
     std::array<uint8_t, std::size(chunk)> decrypted_chunk;
     ECRYPT_decrypt_bytes(
       &_ctx, std::data(chunk), data(decrypted_chunk), size(decrypted_chunk));
-    if (writeFirmware(addr, decrypted_chunk)) {
+    if (writeZsu(addr, decrypted_chunk)) {
       _last_addr = addr + size(decrypted_chunk);
       _crc32.next(chunk);
       return false;
@@ -145,7 +145,7 @@ private:
     return true;
   }
 
-  /// Execute FirmwareCrc32Start command
+  /// Execute ZsuCrc32Start command
   ///
   /// \param  begin_addr  Begin address
   /// \param  end_addr    End address
@@ -159,7 +159,7 @@ private:
     return false;
   }
 
-  /// Execute FirmwareCrc32Result or FirmwareCrc32ResultExit command
+  /// Execute ZsuCrc32Result or ZsuCrc32ResultExit command
   ///
   /// \param  exit  true  Exit
   ///               false Do not exit
@@ -167,7 +167,7 @@ private:
   /// \return false Do not transmit ackbit in channel2
   bool executeCrc32Result(bool exit) {
     if (exit && _crc32valid) {
-      exitFirmware();
+      exitZsu();
       return false;
     } else return !_crc32valid;
   }
@@ -182,6 +182,6 @@ private:
 
 }  // namespace detail
 
-using FirmwareBase = detail::Base<detail::FirmwareMixin>;
+using ZsuBase = detail::Base<detail::ZsuMixin>;
 
 }  // namespace mdu::rx

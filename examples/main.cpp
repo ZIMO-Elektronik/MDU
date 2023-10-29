@@ -18,7 +18,7 @@ private:
   void ackbit(uint32_t us) const final {}
 
   // Read CV bit
-  bool readCv(uint32_t addr, uint32_t position) const final { return {}; }
+  bool readCv(uint32_t addr, uint32_t pos) const final { return {}; }
 
   // Write CV
   bool writeCv(uint32_t addr, uint8_t value) final { return {}; }
@@ -51,12 +51,11 @@ private:
   void interrupt() { receive(TIMER_VALUE); }
 };
 
-void enter_firmware_update() {}
+void enter_zpp_update() {}
 
 // Ctor takes ID und function object hooks with void() signature
-mdu::rx::entry::Point entry_point{{.decoder_id = ID,
-                                   .firmware_entry = enter_firmware_update,
-                                   .zpp_entry = nullptr}};
+mdu::rx::entry::Point entry_point{
+  {.decoder_id = ID, .zpp_entry = enter_zpp_update, .zsu_entry = nullptr}};
 
 int main() {
   ZppLoad zpp_load{};

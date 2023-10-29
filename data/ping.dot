@@ -1,4 +1,6 @@
 digraph {
+  rankdir=LR;
+
   start[shape=square, label="ping"];
 
   serial_decoder_id[shape=diamond, label="SN != 0 && ID != 0?"];

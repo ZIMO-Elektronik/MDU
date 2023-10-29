@@ -4,16 +4,13 @@ include(FetchContent)
 if(ESP_PLATFORM)
   file(GLOB_RECURSE SRC src/*.c)
   idf_component_register(SRCS ${SRC} INCLUDE_DIRS include REQUIRES driver)
-  idf_build_get_property(TGT IDF_TARGET)
-  string(TOUPPER ${TGT} TGT)
-  target_compile_definitions(${COMPONENT_LIB} PRIVATE CONFIG_IDF_TARGET_${TGT})
   target_link_libraries(${COMPONENT_LIB} PUBLIC MDU)
 endif()
 
 FetchContent_Declare(
   CMakeModules
   GIT_REPOSITORY https://github.com/ZIMO-Elektronik/CMakeModules
-  GIT_TAG v0.1.2
+  GIT_TAG v0.2.2
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
@@ -77,7 +74,7 @@ if(NOT TARGET Salsa20::Salsa20)
 endif()
 
 if(NOT TARGET ZTL::ZTL)
-  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.17.0")
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.18.0")
 endif()
 
 target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)

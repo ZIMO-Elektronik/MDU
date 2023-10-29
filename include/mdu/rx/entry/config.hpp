@@ -17,8 +17,8 @@ namespace mdu::rx::entry {
 
 struct Config {
   uint32_t decoder_id{};
-  std::function<void()> firmware_entry{};
   std::function<void()> zpp_entry{};
+  std::function<void()> zsu_entry{};
 };
 
 }  // namespace mdu::rx::entry

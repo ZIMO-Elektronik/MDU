@@ -16,13 +16,13 @@
 #include "../bit.hpp"
 #include "../crc32.hpp"
 #include "../crc8.hpp"
-#include "binary_search.hpp"
+#include "binary_tree_search.hpp"
 #include "config.hpp"
 #include "mixin.hpp"
 
 namespace mdu::rx::detail {
 
-struct FirmwareMixin;
+struct ZsuMixin;
 
 /// Receive base
 ///
@@ -39,7 +39,7 @@ struct Base : Ts... {
   /// \param  cfg                 Confiuration
   /// \param  salsa20_master_key  Salsa20 master key
   explicit constexpr Base(Config cfg, char const* salsa20_master_key)
-    : FirmwareMixin{salsa20_master_key}, _cfg{cfg} {}
+    : ZsuMixin{salsa20_master_key}, _cfg{cfg} {}
 
   /// Dtor
   virtual constexpr ~Base() = default;
@@ -78,9 +78,9 @@ struct Base : Ts... {
         auto const transfer_rate{static_cast<TransferRate>(packet[4uz])};
         return executeConfigTransferRate(transfer_rate);
       }
-      case Command::BinarySearch: {
-        uint32_t const position{packet[4uz]};
-        return executeBinarySearch(position);
+      case Command::BinaryTreeSearch: {
+        uint32_t const pos{packet[4uz]};
+        return executeBinaryTreeSearch(pos);
       }
       case Command::CvRead: [[fallthrough]];
       case Command::CvWrite: {
@@ -107,11 +107,11 @@ protected:
 
   /// Read CV bit
   ///
-  /// \param  addr      CV address
-  /// \param  position  Bit position to test
-  /// \return true      Bit set
-  /// \return false     Bit clear
-  virtual bool readCv(uint32_t addr, uint32_t position) const = 0;
+  /// \param  addr  CV address
+  /// \param  pos   Bit position to test
+  /// \return true  Bit set
+  /// \return false Bit clear
+  virtual bool readCv(uint32_t addr, uint32_t pos) const = 0;
 
   /// Write CV
   ///
@@ -235,13 +235,13 @@ protected:
   bool crcCheck(Command cmd) {
     uint32_t crc;
     // Commands with CRC32 also transmit failures in channel2
-    if (cmd == Command::FirmwareUpdate || cmd == Command::ZppUpdate) {
+    if (cmd == Command::ZsuUpdate || cmd == Command::ZppUpdate) {
       crc = _crc32;
       ack(crc);
     } else {
       crc = _crc8;
-      // And there's also an exception for FirmwareSalsa20IV...
-      if (cmd == Command::FirmwareSalsa20IV) ack(crc);
+      // And there's also an exception for ZsuSalsa20IV...
+      if (cmd == Command::ZsuSalsa20IV) ack(crc);
     }
     nack(crc);
     return !crc;
@@ -326,21 +326,21 @@ protected:
       _transfer_rate_index = i;
   }
 
-  /// Execute binary search
+  /// Execute binary tree search
   ///
-  /// \param  position  Bit position to test
-  void executeBinarySearch(uint32_t position) {
+  /// \param  pos Bit position to test
+  void executeBinaryTreeSearch(uint32_t pos) {
     bool const bit{
-      _binary_search(_cfg.serial_number, _cfg.decoder_id, position)};
+      _binary_tree_search(_cfg.serial_number, _cfg.decoder_id, pos)};
     ack(bit);
   }
 
   /// Execute CV read
   ///
-  /// \param  addr      CV address
-  /// \param  position  Bit position to test
-  void executeCvRead(uint32_t addr, uint32_t position) {
-    bool const bit{readCv(addr, position)};
+  /// \param  addr  CV address
+  /// \param  pos   Bit position to test
+  void executeCvRead(uint32_t addr, uint32_t pos) {
+    bool const bit{readCv(addr, pos)};
     ack(bit);
   }
 
@@ -362,7 +362,7 @@ protected:
   Crc8 _crc8;
   uint8_t _transfer_rate_index{std::to_underlying(TransferRate::Default)};
   uint8_t _byte{};
-  BinarySearch _binary_search{};
+  BinaryTreeSearch _binary_tree_search{};
   bool _selected : 1 {true};
   bool _active : 1 {};
   bool _nack : 1 {};

@@ -1,7 +1,7 @@
 digraph {
   rankdir=LR;
 
-  start[shape=square, label="Binary-Search"];
+  start[shape=square, label="Binary-Tree-Search"];
   start->_255;
   _255[shape=diamond, label="byte == 255?"];
   _255->byte[label="true"];

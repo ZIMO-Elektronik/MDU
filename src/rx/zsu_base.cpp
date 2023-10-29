@@ -2,13 +2,13 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Receive firmware base
+/// Receive ZSU base
 ///
-/// \file   rx/firmware_base.cpp
+/// \file   rx/zsu_base.cpp
 /// \author Vincent Hamp
-/// \date   12/12/2022
+/// \date   29/10/2023
 
-#include "rx/firmware_base.hpp"
+#include "rx/zsu_base.hpp"
 #include <cstring>
 
 namespace mdu::rx::detail {

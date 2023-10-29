@@ -2,11 +2,11 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Binary search
+/// Binary tree search
 ///
-/// \file   mdu/rx/binary_search.hpp
+/// \file   mdu/rx/binary_tree_search.hpp
 /// \author Vincent Hamp
-/// \date   12/12/2022
+/// \date   02/08/2023
 
 #pragma once
 
@@ -14,8 +14,8 @@
 
 namespace mdu::rx {
 
-/// Binary search
-struct BinarySearch {
+/// Binary tree search
+struct BinaryTreeSearch {
   bool
   operator()(uint32_t serial_number, uint32_t decoder_id, uint32_t bit_number);
 
