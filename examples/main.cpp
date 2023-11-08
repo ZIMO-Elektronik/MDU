@@ -28,8 +28,8 @@ private:
     return {};
   }
 
-  // Check if loadcode is valid
-  bool loadcodeValid(std::span<uint8_t const, 4uz> developer_code) const final {
+  // Check if load code is valid
+  bool loadCodeValid(std::span<uint8_t const, 4uz> developer_code) const final {
     return {};
   }
 

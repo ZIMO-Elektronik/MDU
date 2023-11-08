@@ -11,7 +11,7 @@ struct ZppMock : mdu::rx::ZppBase {
   MOCK_METHOD(bool, writeCv, (uint32_t, uint8_t), (override));
   MOCK_METHOD(bool, zppValid, (std::string_view, size_t), (const, override));
   MOCK_METHOD(bool,
-              loadcodeValid,
+              loadCodeValid,
               ((std::span<uint8_t const, 4uz>)),
               (const, override));
   MOCK_METHOD(bool, eraseZpp, (uint32_t, uint32_t), (override));

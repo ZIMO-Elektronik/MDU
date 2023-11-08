@@ -39,13 +39,13 @@ private:
   virtual bool zppValid(std::string_view zpp_id,
                         size_t zpp_flash_size) const = 0;
 
-  /// Check if loadcode is valid
+  /// Check if load code is valid
   ///
   /// \param  developer_code  Developer code
-  /// \return true            Loadcode is valid
-  /// \return false           Loadcode is not valid
+  /// \return true            Load code is valid
+  /// \return false           Load code is not valid
   virtual bool
-  loadcodeValid(std::span<uint8_t const, 4uz> developer_code) const = 0;
+  loadCodeValid(std::span<uint8_t const, 4uz> developer_code) const = 0;
 
   /// Erase ZPP in the closed-interval [begin_addr, end_addr[
   ///

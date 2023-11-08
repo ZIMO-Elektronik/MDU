@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.14.0
+- Consistent spelling of 'load code'
+
 ## 0.13.0
 - Add ESP32 RMT encoder
 - Rename Firmware* to Zsu* (classes, commands, ...)

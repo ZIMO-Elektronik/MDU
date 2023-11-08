@@ -12,7 +12,7 @@ bool operator==(span<uint8_t const, 4uz> lhs, span<uint8_t const, 4uz> rhs) {
 
 }  // namespace std
 
-TEST_F(ReceiveZppTest, loadcode_valid) {
+TEST_F(ReceiveZppTest, load_code_valid) {
   {
     Expectation validate_zpp{EXPECT_CALL(*_mock, zppValid(_, _))
                                .Times(Exactly(1))
@@ -24,8 +24,8 @@ TEST_F(ReceiveZppTest, loadcode_valid) {
   }
 
   {
-    Expectation loadcode_valid{
-      EXPECT_CALL(*_mock, loadcodeValid({_developer_code}))
+    Expectation load_code_valid{
+      EXPECT_CALL(*_mock, loadCodeValid({_developer_code}))
         .Times(Exactly(1))
         .WillRepeatedly(Return(true))};
     auto packet{PacketBuilder::makeZppLcDcQueryPacket(_developer_code)};

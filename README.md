@@ -178,7 +178,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
     <td colspan=2 style="text-align: center">Reference</td>
     <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
     <td></td>
-    <td colspan=3 style="text-align: center">Loadcode wrong</td>
+    <td colspan=3 style="text-align: center">Load code wrong</td>
     <td></td>
   </tr>
   <tr>
@@ -394,9 +394,9 @@ A ZPP-Valid-Query can be used to check whether the decoders are able to load the
 | Data (coding)   | 0xFFFF'FF07                        |
 | Data            | 4-byte developer code              |
 | Data (CRC)      | 1-byte CRC8                        |
-| Acknowledgement | Loadcode wrong                     |
+| Acknowledgement | Load code wrong                    |
 
-A ZPP-LC-DC query can be used to check whether the decoders contain a valid loadcode before deleting the flash. If the received loadcode is not correct, an acknowledgment must be sent in channel 2.
+A ZPP-LC-DC query can be used to check whether the decoders contain a valid load code before deleting the flash. If the received load code is not correct, an acknowledgment must be sent in channel 2.
 
 #### ZPP-Erase
 | Command phase   | Description                        |
@@ -584,8 +584,8 @@ private:
   // Check if ZPP is valid
   bool zppValid(std::string_view zpp_id, size_t zpp_flash_size) const final {}
 
-  // Check if loadcode is valid
-  bool loadcodeValid(std::span<uint8_t const, 4uz> developer_code) const final {}
+  // Check if load code is valid
+  bool loadCodeValid(std::span<uint8_t const, 4uz> developer_code) const final {}
 
   // Erase ZPP in the closed-interval [begin_addr, end_addr[
   bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) final {}

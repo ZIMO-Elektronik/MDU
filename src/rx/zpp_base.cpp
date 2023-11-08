@@ -77,7 +77,7 @@ bool ZppMixin::executeValidQuery(std::string_view zpp_id,
 /// \return false           Do not transmit ackbit in channel2
 bool ZppMixin::executeLcDcQuery(
   std::span<uint8_t const, 4uz> developer_code) const {
-  bool const valid{loadcodeValid(developer_code)};
+  bool const valid{loadCodeValid(developer_code)};
   return !valid;
 }
 
