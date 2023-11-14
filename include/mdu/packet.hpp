@@ -117,8 +117,7 @@ constexpr auto make_zsu_salsa20_iv_packet(std::span<uint8_t const, 8uz> iv) {
   Packet packet{};
   packet.resize(sizeof(Command) + size(iv) + sizeof(Crc8));
   auto first{begin(packet)};
-  auto last{
-    uint32_2data(std::to_underlying(Command::ZsuSalsa20IV), first)};
+  auto last{uint32_2data(std::to_underlying(Command::ZsuSalsa20IV), first)};
   last = std::copy(cbegin(iv), cend(iv), last);
   *last = crc8({first, last});
   return packet;
@@ -139,12 +138,12 @@ constexpr auto make_zsu_erase_packet(uint32_t begin_addr, uint32_t end_addr) {
 
 /// TODO
 constexpr auto make_zsu_update_packet(uint32_t addr,
-                                      std::span<uint8_t const, 64uz> chunk) {
+                                      std::span<uint8_t const, 64uz> bytes) {
   Packet packet{};
-  packet.resize(sizeof(Command) + sizeof(addr) + size(chunk) + sizeof(Crc32));
+  packet.resize(sizeof(Command) + sizeof(addr) + size(bytes) + sizeof(Crc32));
   auto first{begin(packet)};
   auto last{uint32_2data(std::to_underlying(Command::ZsuUpdate), first)};
-  last = std::copy(cbegin(chunk), cend(chunk), last);
+  last = std::copy(cbegin(bytes), cend(bytes), last);
   uint32_2data(crc32({first, last}), last);
   return packet;
 }
@@ -167,7 +166,7 @@ make_zpp_lc_dc_query_packet(std::span<uint8_t const, 4uz> developer_code) {
 
 /// TODO
 constexpr auto make_zpp_update_packet(uint32_t addr,
-                                      std::span<uint8_t const> chunk) {
+                                      std::span<uint8_t const> bytes) {
   Packet packet{};
   // TODO
   return packet;

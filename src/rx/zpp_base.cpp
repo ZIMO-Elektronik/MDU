@@ -45,9 +45,9 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
     }
     case Command::ZppUpdate: {
       auto const address{data2uint32(&packet[4uz])};
-      auto const chunk_size{size(packet) - sizeof(Command) - sizeof(address) -
+      auto const bytes_size{size(packet) - sizeof(Command) - sizeof(address) -
                             sizeof(Crc32)};
-      return executeUpdate(address, {&packet[8uz], chunk_size});
+      return executeUpdate(address, {&packet[8uz], bytes_size});
     }
     case Command::ZppUpdateEnd: {
       auto const begin_addr{data2uint32(&packet[4uz])};
@@ -95,17 +95,17 @@ bool ZppMixin::executeErase(uint32_t begin_addr, uint32_t end_addr) {
 /// Execute ZppUpdate command
 ///
 /// \param  addr  Address
-/// \param  chunk Chunk
+/// \param  bytes Bytes
 /// \return true  Transmit ackbit in channel2
 /// \return false Do not transmit ackbit in channel2
-bool ZppMixin::executeUpdate(uint32_t addr, std::span<uint8_t const> chunk) {
+bool ZppMixin::executeUpdate(uint32_t addr, std::span<uint8_t const> bytes) {
   if (!_first_addr) _first_addr = addr;
   // Lost packet
   if (_last_addr && _last_addr < addr) return true;
   // Already written
   if (_last_addr && _last_addr > addr) return false;
-  if (writeZpp(addr, chunk)) {
-    _last_addr = addr + std::size(chunk);
+  if (writeZpp(addr, bytes)) {
+    _last_addr = addr + std::size(bytes);
     return false;
   }
   return true;

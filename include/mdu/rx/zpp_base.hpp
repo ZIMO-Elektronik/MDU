@@ -58,10 +58,10 @@ private:
   /// Write ZPP
   ///
   /// \param  addr  Address
-  /// \param  chunk Chunk
+  /// \param  bytes Bytes
   /// \return true  Success
   /// \return false Failure
-  virtual bool writeZpp(uint32_t addr, std::span<uint8_t const> chunk) = 0;
+  virtual bool writeZpp(uint32_t addr, std::span<uint8_t const> bytes) = 0;
 
   /// Update done
   ///
@@ -77,7 +77,7 @@ private:
   bool executeValidQuery(std::string_view zpp_id, size_t zpp_size);
   bool executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const;
   bool executeErase(uint32_t begin_addr, uint32_t end_addr);
-  bool executeUpdate(uint32_t addr, std::span<uint8_t const> chunk);
+  bool executeUpdate(uint32_t addr, std::span<uint8_t const> bytes);
   bool executeEnd(uint32_t begin_addr, uint32_t end_addr);
   bool executeExit(bool reset);
 

@@ -26,7 +26,7 @@ public:
     return *this;
   }
 
-  PacketBuilder& data(std::span<uint8_t const> chunk);
+  PacketBuilder& data(std::span<uint8_t const> bytes);
   PacketBuilder& data(std::string_view sv);
 
   // CRC
@@ -57,13 +57,13 @@ public:
   makeConfigTransferRatePacket(mdu::TransferRate transfer_rate);
   static PacketBuilder makeBusyPacket();
   static PacketBuilder
-  makeZsuUpdatePacket(uint32_t addr, std::span<uint8_t const, 64uz> chunk);
+  makeZsuUpdatePacket(uint32_t addr, std::span<uint8_t const, 64uz> bytes);
   static PacketBuilder makeZppValidQueryPacket(std::string_view zpp_id,
                                                size_t zpp_flash_size);
   static PacketBuilder
   makeZppLcDcQueryPacket(std::span<uint8_t const, 4uz> developer_code);
   static PacketBuilder makeZppUpdatePacket(uint32_t addr,
-                                           std::span<uint8_t const> chunk);
+                                           std::span<uint8_t const> bytes);
   static PacketBuilder makeZppUpdateEndPacket(uint32_t begin_addr,
                                               uint32_t end_addr);
   static PacketBuilder makeZppExitPacket();

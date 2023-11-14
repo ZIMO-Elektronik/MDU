@@ -17,7 +17,7 @@ using namespace ranges;
 struct Reader64 {
   Reader64(std::vector<uint8_t> const& data) : data_{data} {}
 
-  std::optional<std::vector<uint8_t>> chunk() {
+  std::optional<std::vector<uint8_t>> bytes() {
     size_t const n{
       pos_ < size(data_) ? std::min<size_t>(size(data_) - pos_, 64u) : 0u};
     if (!n) return {};
@@ -90,8 +90,7 @@ std::vector<uint8_t> zsu2encrypted_bin(std::filesystem::path zsu_path) {
   auto const colon{std::find(begin(zsu), end(zsu), ':')};
   auto const pos{ztl::align(16u, colon - begin(zsu) + 1u)};
   std::vector<uint8_t> encrypted_bin;
-  for (auto i{pos}; i < size(zsu); ++i)
-    encrypted_bin.push_back(zsu[i]);
+  for (auto i{pos}; i < size(zsu); ++i) encrypted_bin.push_back(zsu[i]);
   return encrypted_bin;
 }
 
@@ -105,13 +104,12 @@ std::vector<uint8_t> zsu2bin(std::filesystem::path zsu_path) {
 
   // Run decryption
   Reader64 reader{zsu2encrypted_bin(zsu_path)};
-  std::optional<std::vector<uint8_t>> chunk;
+  std::optional<std::vector<uint8_t>> bytes;
   std::vector<uint8_t> retval;
-  while ((chunk = reader.chunk())) {
+  while ((bytes = reader.bytes())) {
     std::array<uint8_t, 64uz> tmp{};
-    ECRYPT_decrypt_bytes(&ctx, &(*chunk)[0u], &tmp[0u], 64u);
-    for (auto v : tmp)
-      retval.push_back(v);
+    ECRYPT_decrypt_bytes(&ctx, &(*bytes)[0u], &tmp[0u], 64u);
+    for (auto v : tmp) retval.push_back(v);
   }
 
   return retval;
@@ -162,8 +160,7 @@ TEST_F(ReceiveZsuTest, decrypt) {
 TEST_F(ReceiveZsuTest, crc32_of_encrypted_bin) {
   auto const cwd{source_location_parent_path()};
   auto zsu_encrypted_bin{zsu2encrypted_bin(cwd / "./firmwares/MS440_test.zsu")};
-  while (size(zsu_encrypted_bin) % 64u)
-    zsu_encrypted_bin.push_back(0u);
+  while (size(zsu_encrypted_bin) % 64u) zsu_encrypted_bin.push_back(0u);
   mdu::Crc32 crc32;
   crc32.next(zsu_encrypted_bin);
   uint32_t crc32_result = crc32.value();

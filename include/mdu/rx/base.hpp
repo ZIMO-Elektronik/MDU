@@ -278,7 +278,7 @@ protected:
   ///
   /// \return true  Transmit ackbit in channel2
   /// \return false Do not transmit ackbit in channel2
-  bool ack() const { return _ack; };
+  bool ack() const { return _ack; }
 
   /// Set ack status
   ///

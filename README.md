@@ -591,7 +591,7 @@ private:
   bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) final {}
 
   // Write ZPP
-  bool writeZpp(uint32_t addr, std::span<uint8_t const> chunk) final {}
+  bool writeZpp(uint32_t addr, std::span<uint8_t const> bytes) final {}
 
   // Update done
   bool endZpp() final {}

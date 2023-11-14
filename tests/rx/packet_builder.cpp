@@ -10,8 +10,8 @@ PacketBuilder& PacketBuilder::command(mdu::Command cmd) {
   return data(std::to_underlying(cmd));
 }
 
-PacketBuilder& PacketBuilder::data(std::span<uint8_t const> chunk) {
-  _data.insert(end(_data), cbegin(chunk), cend(chunk));
+PacketBuilder& PacketBuilder::data(std::span<uint8_t const> bytes) {
+  _data.insert(end(_data), cbegin(bytes), cend(bytes));
   return *this;
 }
 
@@ -39,8 +39,7 @@ PacketBuilder::timings(mdu::TransferRate transfer_rate) const {
   auto const& timings{mdu::timings[std::to_underlying(transfer_rate)]};
 
   // Ackreq
-  for (auto i{0uz}; i < _ackreq_count; ++i)
-    retval.push_back(timings.ackreq);
+  for (auto i{0uz}; i < _ackreq_count; ++i) retval.push_back(timings.ackreq);
 
   return retval;
 }
@@ -51,8 +50,7 @@ PacketBuilder::timingsWithoutAckreq(mdu::TransferRate transfer_rate) const {
   auto const& timings{mdu::timings[std::to_underlying(transfer_rate)]};
 
   // Preamble
-  for (auto i{0uz}; i < _preamble_count; ++i)
-    retval.push_back(timings.one);
+  for (auto i{0uz}; i < _preamble_count; ++i) retval.push_back(timings.one);
 
   // Data
   std::ranges::for_each(_data, [&](uint8_t byte) {
@@ -114,12 +112,12 @@ PacketBuilder PacketBuilder::makeBusyPacket() {
 
 PacketBuilder
 PacketBuilder::makeZsuUpdatePacket(uint32_t addr,
-                                        std::span<uint8_t const, 64uz> chunk) {
+                                   std::span<uint8_t const, 64uz> bytes) {
   PacketBuilder packet;
   packet.preamble()
     .command(mdu::Command::ZsuUpdate)
     .data(addr)
-    .data(chunk)
+    .data(bytes)
     .crc32()
     .ackreq();
   return packet;
@@ -150,12 +148,12 @@ PacketBuilder PacketBuilder::makeZppLcDcQueryPacket(
 
 PacketBuilder
 PacketBuilder::makeZppUpdatePacket(uint32_t addr,
-                                   std::span<uint8_t const> chunk) {
+                                   std::span<uint8_t const> bytes) {
   PacketBuilder packet;
   packet.preamble()
     .command(mdu::Command::ZppUpdate)
     .data(addr)
-    .data(chunk)
+    .data(bytes)
     .crc32()
     .ackreq();
   return packet;

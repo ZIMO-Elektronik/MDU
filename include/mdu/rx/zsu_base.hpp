@@ -61,11 +61,11 @@ struct ZsuMixin {
       }
       case Command::ZsuUpdate: {
         auto const address{data2uint32(&packet[4uz])};
-        auto const chunk_size{size(packet) - sizeof(Command) - sizeof(address) -
+        auto const bytes_size{size(packet) - sizeof(Command) - sizeof(address) -
                               sizeof(Crc32)};
-        assert(chunk_size == 64uz);
-        std::span<uint8_t const, 64uz> chunk{&packet[8uz], 64uz};
-        return executeUpdate(address, chunk);
+        assert(bytes_size == 64uz);
+        std::span<uint8_t const, 64uz> bytes{&packet[8uz], 64uz};
+        return executeUpdate(address, bytes);
       }
       case Command::ZsuCrc32Start: {
         auto const begin_addr{data2uint32(&packet[4uz])};
@@ -91,11 +91,11 @@ private:
   /// Write ZSU
   ///
   /// \param  addr  Address
-  /// \param  chunk Chunk
+  /// \param  bytes Bytes
   /// \return true  Success
   /// \return false Failure
   virtual bool writeZsu(uint32_t addr,
-                        std::span<uint8_t const, 64uz> chunk) = 0;
+                        std::span<uint8_t const, 64uz> bytes) = 0;
 
   /// Exit ZSU
   [[noreturn]] virtual void exitZsu() = 0;
@@ -125,21 +125,21 @@ private:
   /// Execute ZsuUpdate command
   ///
   /// \param  addr  Address
-  /// \param  chunk Chunk
+  /// \param  bytes Bytes
   /// \return true  Transmit ackbit in channel2
   /// \return false Do not transmit ackbit in channel2
-  bool executeUpdate(uint32_t addr, std::span<uint8_t const, 64uz> chunk) {
+  bool executeUpdate(uint32_t addr, std::span<uint8_t const, 64uz> bytes) {
     if (!_first_addr) _first_addr = addr;
     // Lost packet
     if (_last_addr && _last_addr < addr) return true;
     // Already written
     if (_last_addr && _last_addr > addr) return false;
-    std::array<uint8_t, std::size(chunk)> decrypted_chunk;
+    std::array<uint8_t, std::size(bytes)> decrypted_bytes;
     ECRYPT_decrypt_bytes(
-      &_ctx, std::data(chunk), data(decrypted_chunk), size(decrypted_chunk));
-    if (writeZsu(addr, decrypted_chunk)) {
-      _last_addr = addr + size(decrypted_chunk);
-      _crc32.next(chunk);
+      &_ctx, std::data(bytes), data(decrypted_bytes), size(decrypted_bytes));
+    if (writeZsu(addr, decrypted_bytes)) {
+      _last_addr = addr + size(decrypted_bytes);
+      _crc32.next(bytes);
       return false;
     }
     return true;

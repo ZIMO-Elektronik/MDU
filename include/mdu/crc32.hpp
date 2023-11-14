@@ -28,8 +28,8 @@ struct Crc32 : detail::CrcBase<uint32_t, static_cast<uint32_t>(-1)> {
     }
   }
 
-  constexpr void next(std::span<uint8_t const> chunk) {
-    std::ranges::for_each(chunk, [this](uint8_t byte) { next(byte); });
+  constexpr void next(std::span<uint8_t const> bytes) {
+    std::ranges::for_each(bytes, [this](uint8_t byte) { next(byte); });
   }
 
   constexpr uint32_t value() {
@@ -48,11 +48,11 @@ static_assert(sizeof(Crc32) == sizeof(uint32_t));
 
 /// "CRC32" with no polynomial representation whatsoever...
 ///
-/// \param  chunk Chunk to calculate "CRC32" for
+/// \param  bytes Bytes to calculate "CRC32" for
 /// \return CRC32
-constexpr uint32_t crc32(std::span<uint8_t const> chunk) {
+constexpr uint32_t crc32(std::span<uint8_t const> bytes) {
   Crc32 crc;
-  crc.next(chunk);
+  crc.next(bytes);
   return crc;
 }
 

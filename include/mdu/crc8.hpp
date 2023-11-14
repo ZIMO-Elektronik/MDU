@@ -50,8 +50,8 @@ struct Crc8 : detail::CrcBase<uint8_t, 0u> {
     _crc = tmp;
   }
 
-  constexpr void next(std::span<uint8_t const> chunk) {
-    std::ranges::for_each(chunk, [this](uint8_t byte) { next(byte); });
+  constexpr void next(std::span<uint8_t const> bytes) {
+    std::ranges::for_each(bytes, [this](uint8_t byte) { next(byte); });
   }
 };
 
@@ -60,11 +60,11 @@ static_assert(sizeof(Crc8) == sizeof(uint8_t));
 /// This function calculates CRC8 (Dallas/Maxim). The polynomial representations
 /// is 0x31.
 ///
-/// \param  chunk Chunk to calculate CRC8 for
+/// \param  bytes Bytes to calculate CRC8 for
 /// \return CRC8
-constexpr uint8_t crc8(std::span<uint8_t const> chunk) {
+constexpr uint8_t crc8(std::span<uint8_t const> bytes) {
   Crc8 crc;
-  crc.next(chunk);
+  crc.next(bytes);
   return crc;
 }
 
