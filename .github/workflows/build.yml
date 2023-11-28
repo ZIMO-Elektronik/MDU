@@ -6,21 +6,10 @@ on:
 
 jobs:
   arm-none-eabi-gcc:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: git fetch --unshallow --tags
-      - uses: carlosperate/arm-none-eabi-gcc-action@v1
-      - run: cmake -Bbuild -DARCH="-mcpu=cortex-m4" -DCMAKE_TOOLCHAIN_FILE=CMakeModules/src/toolchains/arm_none_eabi_gcc.cmake
-      - run: cmake --build build --target MDU
+    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/arm-none-eabi-gcc.yml@v0.0.1
+    with:
+      arch: -mcpu=cortex-m4
+      target: MDU
 
-  x86_64-pc-linux-gnu-gcc:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: git fetch --unshallow --tags
-      - run: cmake -Bbuild
-        env:
-          CC:   gcc-13
-          CXX:  g++-13
-      - run: cmake --build build --target MDU
+  x86_64-linux-gnu-gcc:
+    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.0.1
