@@ -38,7 +38,7 @@ typedef struct {
 ///
 /// \param  mdu_encoder   MDU encoder handle
 /// \param  channel       RMT TX channel handle
-/// \param  ret_state     Returned current encoder’s state
+/// \param  ret_state     Returned current encoder state
 /// \param  symbols       Symbols representing current bit
 /// \return Number of RMT symbols that the primary data has been encoded into
 static size_t IRAM_ATTR rmt_encode_mdu_bit(rmt_mdu_encoder_t* mdu_encoder,
@@ -66,7 +66,7 @@ static size_t IRAM_ATTR rmt_encode_mdu_bit(rmt_mdu_encoder_t* mdu_encoder,
 /// \param  mdu_encoder   MDU encoder handle
 /// \param  channel       RMT TX channel handle
 /// \param  data_size     Size of primary_data, in bytes
-/// \param  ret_state     Returned current encoder’s state
+/// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
 static size_t IRAM_ATTR rmt_encode_mdu_preamble(rmt_mdu_encoder_t* mdu_encoder,
                                                 rmt_channel_handle_t channel,
@@ -110,7 +110,7 @@ out:
 ///
 /// \param  mdu_encoder   MDU encoder handle
 /// \param  channel       RMT TX channel handle
-/// \param  ret_state     Returned current encoder’s state
+/// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
 static size_t IRAM_ATTR rmt_encode_mdu_start(rmt_mdu_encoder_t* mdu_encoder,
                                              rmt_channel_handle_t channel,
@@ -130,7 +130,7 @@ static size_t IRAM_ATTR rmt_encode_mdu_start(rmt_mdu_encoder_t* mdu_encoder,
 /// \param  channel       RMT TX channel handle
 /// \param  primary_data  App data to be encoded into RMT symbols
 /// \param  data_size     Size of primary_data, in bytes
-/// \param  ret_state     Returned current encoder’s state
+/// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
 static size_t IRAM_ATTR rmt_encode_mdu_data(rmt_mdu_encoder_t* mdu_encoder,
                                             rmt_channel_handle_t channel,
@@ -174,7 +174,7 @@ out:
 ///
 /// \param  mdu_encoder   MDU encoder handle
 /// \param  channel       RMT TX channel handle
-/// \param  ret_state     Returned current encoder’s state
+/// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
 static size_t IRAM_ATTR rmt_encode_mdu_end(rmt_mdu_encoder_t* mdu_encoder,
                                            rmt_channel_handle_t channel,
@@ -192,7 +192,7 @@ static size_t IRAM_ATTR rmt_encode_mdu_end(rmt_mdu_encoder_t* mdu_encoder,
 ///
 /// \param  mdu_encoder   MDU encoder handle
 /// \param  channel       RMT TX channel handle
-/// \param  ret_state     Returned current encoder’s state
+/// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
 static size_t IRAM_ATTR rmt_encode_mdu_ackreq(rmt_mdu_encoder_t* mdu_encoder,
                                               rmt_channel_handle_t channel,
@@ -233,7 +233,7 @@ out:
 /// \param  channel       RMT TX channel handle
 /// \param  primary_data  App data to be encoded into RMT symbols
 /// \param  data_size     Size of primary_data, in bytes
-/// \param  ret_state     Returned current encoder’s state
+/// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
 static size_t IRAM_ATTR rmt_encode_mdu(rmt_encoder_t* encoder,
                                        rmt_channel_handle_t channel,
