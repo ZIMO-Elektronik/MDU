@@ -8,6 +8,8 @@ on:
 
 jobs:
   tests:
-    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/ctest.yml@v0.0.2
+    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/ctest.yml@v0.0.3
     with:
+      args: -DMDU_TESTS_MASTER_KEY=${{ secrets.MDU_TESTS_MASTER_KEY }}
       target: MDUTests
+    secrets: inherit
