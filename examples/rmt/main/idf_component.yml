@@ -1,0 +1,4 @@
+dependencies:
+  ZIMO-Elektronik/MDU:
+    version: "*"
+    override_path: '../../../'

@@ -1,0 +1,14 @@
+description: MDU protocol for ZPP and ZSU updates
+url: http://zimo.at
+documentation: https://github.com/ZIMO-Elektronik/MDU/blob/master/README.md
+repository: https://github.com/ZIMO-Elektronik/MDU.git
+issues: https://github.com/ZIMO-Elektronik/MDU/issues
+
+maintainers:
+  - "Vincent Hamp <hamp@zimo.at>"
+
+examples:
+  - path: ./examples/rmt
+
+dependencies:
+  idf: ">=5.0.0"
