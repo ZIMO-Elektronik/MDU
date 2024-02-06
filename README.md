@@ -46,8 +46,12 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 | CV106 == 0x55 | CV106 == ID   |
 | CV105 == 0x55 | CV105 == ID   |
 | CV106 == 0xAA | CV106 == ID   |
-| CV105 == 0x00 | CV105 == 0x00 |
-| CV106 == 0x00 | CV106 == 0x00 |
+| CV105 == SN   | CV105 == SN   |
+| CV106 == SN   | CV106 == SN   |
+| CV105 == SN   | CV105 == SN   |
+| CV106 == SN   | CV106 == SN   |
+
+By specifying a serial number(SN), it is possible to activate only a very specific decoder. Setting the SN bytes to zero will activate the desired state in all connected decoders(ZPP), or all connected decoders with a certain ID(ZSU).
 
 ### Alternative entry
 As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
