@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.15.2
+- Bugfix logo path
+
 ## 0.15.1
 - Absolute image paths for [ESP registry](https://components.espressif.com/)
 
