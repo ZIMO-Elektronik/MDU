@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.15.0
+- Bugfix RMT encoder [#13032](https://github.com/espressif/esp-idf/issues/13032)
+
 ## 0.14.0
 - Consistent spelling of 'load code'
 
