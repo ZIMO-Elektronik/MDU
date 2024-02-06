@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.15.1
+- Absolute image paths for [ESP registry](https://components.espressif.com/)
+
 ## 0.15.0
 - Bugfix RMT encoder [#13032](https://github.com/espressif/esp-idf/issues/13032)
 
