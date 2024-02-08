@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.15.3
+- Bugfix documentation
+
 ## 0.15.2
 - Bugfix logo path
 
