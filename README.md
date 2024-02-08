@@ -2,7 +2,7 @@
 
 [![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)
 
-<img src="https://raw.githubusercontent.com/ZIMO-Elektronik/MDU/master/data/images/logo.svg" width="15%" align="right">
+<img src="https://raw.githubusercontent.com/ZIMO-Elektronik/MDU/master/data/images/logo.png" align="right">
 
 MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.com/ZIMO-Elektronik/ZPP) and [ZSU](https://github.com/ZIMO-Elektronik/ZSU) updates over the track. The protocol is currently supported by the following products:
 - Command stations
