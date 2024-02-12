@@ -26,7 +26,7 @@ private:
   verifySequence(std::array<std::pair<uint8_t, uint8_t>, 5uz> const& sequence,
                  std::function<void()> const& f);
   Config const _cfg;
-  ztl::inplace_deque<std::pair<uint8_t, uint8_t>, 7uz> _deque{};
+  ztl::inplace_deque<std::pair<uint8_t, uint8_t>, 9uz> _deque{};
 };
 
 }  // namespace mdu::rx::entry
