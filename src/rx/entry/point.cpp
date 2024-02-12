@@ -42,8 +42,8 @@ consteval auto make_zpp_sequence() {
 ///
 /// \return Second half of ZPP/ZSU entry
 consteval auto make_zero_sequence() {
-  return std::array<std::pair<uint8_t, uint8_t>, 2uz>{
-    {{105u - 1u, 0u}, {106u - 1u, 0u}}};
+  return std::array<std::pair<uint8_t, uint8_t>, 4uz>{
+    {{105u - 1u, 0u}, {106u - 1u, 0u}, {105u - 1u, 0u}, {106u - 1u, 0u}}};
 }
 
 /// Index is what we are looking for

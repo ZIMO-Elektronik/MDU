@@ -10,7 +10,7 @@ struct PointTest : ::testing::Test {
 protected:
   void verify(std::vector<std::pair<uint32_t, uint8_t>> sequence);
 
-  static constexpr uint32_t _decoder_id{};
+  static constexpr uint32_t _decoder_id{0xCC00FFEEu};
 
   MOCK_METHOD(void, zppEntry, ());
   MOCK_METHOD(void, zsuEntry, ());
