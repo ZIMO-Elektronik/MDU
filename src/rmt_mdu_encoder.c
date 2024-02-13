@@ -108,10 +108,9 @@ static size_t IRAM_ATTR rmt_encode_mdu_preamble(rmt_mdu_encoder_t* mdu_encoder,
       mdu_encoder->last_byte_index = 0u;
       mdu_encoder->state = Start;
     }
-    if (state & RMT_ENCODING_MEM_FULL) goto out;
+    if (state & RMT_ENCODING_MEM_FULL) break;
   }
 
-out:
   *ret_state = state;
   return encoded_symbols;
 }
@@ -211,28 +210,29 @@ static size_t IRAM_ATTR rmt_encode_mdu_ackreq(rmt_mdu_encoder_t* mdu_encoder,
   rmt_encode_state_t state = 0;
   rmt_encoder_handle_t copy_encoder = mdu_encoder->copy_encoder;
 
+  // Skip
   if (mdu_encoder->num_ackreq_symbols == 0u) {
     state |= RMT_ENCODING_COMPLETE;
-    goto out;
+    mdu_encoder->state = Preamble;
   }
+  // Encode ackreq symbols
+  else
+    while (mdu_encoder->state == Ackreq) {
+      size_t const tmp = copy_encoder->encode(
+        copy_encoder,
+        channel,
+        &mdu_encoder->ackreq_symbols[mdu_encoder->last_level],
+        sizeof(rmt_symbol_word_t),
+        &state);
+      if (tmp) mdu_encoder->last_level = !mdu_encoder->last_level;
+      encoded_symbols += tmp;
+      mdu_encoder->last_byte_index += tmp;
+      if (state & RMT_ENCODING_COMPLETE &&
+          mdu_encoder->last_byte_index >= mdu_encoder->num_ackreq_symbols)
+        mdu_encoder->state = Preamble;
+      if (state & RMT_ENCODING_MEM_FULL) break;
+    }
 
-  while (mdu_encoder->state == Ackreq) {
-    size_t const tmp = copy_encoder->encode(
-      copy_encoder,
-      channel,
-      &mdu_encoder->ackreq_symbols[mdu_encoder->last_level],
-      sizeof(rmt_symbol_word_t),
-      &state);
-    if (tmp) mdu_encoder->last_level = !mdu_encoder->last_level;
-    encoded_symbols += tmp;
-    mdu_encoder->last_byte_index += tmp;
-    if (state & RMT_ENCODING_COMPLETE &&
-        mdu_encoder->last_byte_index >= mdu_encoder->num_ackreq_symbols)
-      mdu_encoder->state = Preamble;
-    if (state & RMT_ENCODING_MEM_FULL) goto out;
-  }
-
-out:
   *ret_state = state;
   return encoded_symbols;
 }
@@ -262,7 +262,7 @@ static size_t IRAM_ATTR rmt_encode_mdu(rmt_encoder_t* encoder,
         mdu_encoder, channel, data_size, &session_state);
       if (session_state & RMT_ENCODING_MEM_FULL) {
         state |= RMT_ENCODING_MEM_FULL;
-        goto out;
+        break;
       }
       // fallthrough
 
@@ -272,7 +272,7 @@ static size_t IRAM_ATTR rmt_encode_mdu(rmt_encoder_t* encoder,
         rmt_encode_mdu_start(mdu_encoder, channel, &session_state);
       if (session_state & RMT_ENCODING_MEM_FULL) {
         state |= RMT_ENCODING_MEM_FULL;
-        goto out;
+        break;
       }
       // fallthrough
 
@@ -281,7 +281,7 @@ static size_t IRAM_ATTR rmt_encode_mdu(rmt_encoder_t* encoder,
         mdu_encoder, channel, primary_data, data_size, &session_state);
       if (session_state & RMT_ENCODING_MEM_FULL) {
         state |= RMT_ENCODING_MEM_FULL;
-        goto out;
+        break;
       }
       if (mdu_encoder->state < End) goto start;
       // fallthrough
@@ -291,7 +291,7 @@ static size_t IRAM_ATTR rmt_encode_mdu(rmt_encoder_t* encoder,
         rmt_encode_mdu_end(mdu_encoder, channel, &session_state);
       if (session_state & RMT_ENCODING_MEM_FULL) {
         state |= RMT_ENCODING_MEM_FULL;
-        goto out;
+        break;
       }
       // fallthrough
 
@@ -306,12 +306,11 @@ static size_t IRAM_ATTR rmt_encode_mdu(rmt_encoder_t* encoder,
       }
       if (session_state & RMT_ENCODING_MEM_FULL) {
         state |= RMT_ENCODING_MEM_FULL;
-        goto out;
+        break;
       }
       // fallthrough
   }
 
-out:
   *ret_state = state;
   return encoded_symbols;
 }
