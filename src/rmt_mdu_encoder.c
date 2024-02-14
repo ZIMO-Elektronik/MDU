@@ -86,13 +86,6 @@ static size_t IRAM_ATTR rmt_encode_mdu_preamble(rmt_mdu_encoder_t* mdu_encoder,
   rmt_encode_state_t state = 0;
   rmt_encoder_handle_t copy_encoder = mdu_encoder->copy_encoder;
 
-  // Extra symbol so that EOT levels don't change depending on overall size
-  bool const extra_symbol = !((mdu_encoder->num_preamble_symbols + data_size +
-                               mdu_encoder->num_ackreq_symbols) %
-                              2u);
-  size_t const num_preamble_symbols =
-    mdu_encoder->num_preamble_symbols + extra_symbol;
-
   while (mdu_encoder->state == Preamble) {
     size_t const tmp =
       copy_encoder->encode(copy_encoder,
@@ -104,7 +97,7 @@ static size_t IRAM_ATTR rmt_encode_mdu_preamble(rmt_mdu_encoder_t* mdu_encoder,
     encoded_symbols += tmp;
     mdu_encoder->last_byte_index += tmp;
     if (state & RMT_ENCODING_COMPLETE &&
-        mdu_encoder->last_byte_index >= num_preamble_symbols) {
+        mdu_encoder->last_byte_index >= mdu_encoder->num_preamble_symbols) {
       mdu_encoder->last_byte_index = 0u;
       mdu_encoder->state = Start;
     }

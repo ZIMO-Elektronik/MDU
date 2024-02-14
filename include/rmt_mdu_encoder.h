@@ -22,8 +22,6 @@ typedef struct {
   uint8_t transfer_rate;
 
   /// Number of preamble bits [14, 255]
-  /// (encoder might add 1 to keep EOT levels equal accross multiple
-  /// transmissions)
   uint8_t num_preamble;
 
   /// Number of ackreq bits 0 || [10, 255]
