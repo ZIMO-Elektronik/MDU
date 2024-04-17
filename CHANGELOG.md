@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.15.4
+- Bugfix remove extra preamble symbol from encoder
+
 ## 0.15.3
 - Bugfix documentation
 
