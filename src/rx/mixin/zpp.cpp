@@ -2,15 +2,15 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Receive ZPP base
+/// Receive ZPP mixin
 ///
-/// \file   rx/zpp_base.cpp
+/// \file   rx/mixin/zpp.cpp
 /// \author Vincent Hamp
-/// \date   12/12/2022
+/// \date   29/10/2023
 
-#include "rx/zpp_base.hpp"
+#include "rx/mixin/zpp.hpp"
 
-namespace mdu::rx::detail {
+namespace mdu::rx::mixin {
 
 /// Execute ZPP commands
 ///
@@ -18,7 +18,7 @@ namespace mdu::rx::detail {
 /// \param  packet  Packet
 /// \return true    Transmit ackbit in channel2
 /// \return false   Do not transmit ackbit in channel2
-bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
+bool Zpp::execute(Command cmd, Packet const& packet, uint32_t) {
   // The following commands may run without ZPP validation
   switch (cmd) {
     case Command::ZppValidQuery: {
@@ -64,8 +64,7 @@ bool ZppMixin::execute(Command cmd, Packet const& packet, uint32_t) {
 /// \param  zpp_flash_size  ZPP flash size
 /// \return true            Transmit ackbit in channel2
 /// \return false           Do not transmit ackbit in channel2
-bool ZppMixin::executeValidQuery(std::string_view zpp_id,
-                                 size_t zpp_flash_size) {
+bool Zpp::executeValidQuery(std::string_view zpp_id, size_t zpp_flash_size) {
   _zpp_valid = zppValid(zpp_id, zpp_flash_size);
   return !_zpp_valid;
 }
@@ -75,8 +74,7 @@ bool ZppMixin::executeValidQuery(std::string_view zpp_id,
 /// \param  developer_code  Developer code
 /// \return true            Transmit ackbit in channel2
 /// \return false           Do not transmit ackbit in channel2
-bool ZppMixin::executeLcDcQuery(
-  std::span<uint8_t const, 4uz> developer_code) const {
+bool Zpp::executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const {
   bool const valid{loadCodeValid(developer_code)};
   return !valid;
 }
@@ -87,7 +85,7 @@ bool ZppMixin::executeLcDcQuery(
 /// \param  end_addr    End address
 /// \return true        Transmit ackbit in channel2
 /// \return false       Do not transmit ackbit in channel2
-bool ZppMixin::executeErase(uint32_t begin_addr, uint32_t end_addr) {
+bool Zpp::executeErase(uint32_t begin_addr, uint32_t end_addr) {
   auto const success{eraseZpp(begin_addr, end_addr)};
   return !success;
 }
@@ -98,7 +96,7 @@ bool ZppMixin::executeErase(uint32_t begin_addr, uint32_t end_addr) {
 /// \param  bytes Bytes
 /// \return true  Transmit ackbit in channel2
 /// \return false Do not transmit ackbit in channel2
-bool ZppMixin::executeUpdate(uint32_t addr, std::span<uint8_t const> bytes) {
+bool Zpp::executeUpdate(uint32_t addr, std::span<uint8_t const> bytes) {
   if (!_first_addr) _first_addr = addr;
   // Lost packet
   if (_last_addr && _last_addr < addr) return true;
@@ -117,7 +115,7 @@ bool ZppMixin::executeUpdate(uint32_t addr, std::span<uint8_t const> bytes) {
 /// \param  end_addr    End address
 /// \return true        Transmit ackbit in channel2
 /// \return false       Do not transmit ackbit in channel2
-bool ZppMixin::executeEnd(uint32_t begin_addr, uint32_t end_addr) {
+bool Zpp::executeEnd(uint32_t begin_addr, uint32_t end_addr) {
   if (!_first_addr || !_last_addr) return false;
   _addrs_valid = begin_addr == _first_addr && end_addr == _last_addr;
   if (!_addrs_valid) return true;
@@ -131,7 +129,7 @@ bool ZppMixin::executeEnd(uint32_t begin_addr, uint32_t end_addr) {
 /// \param  reset_cvs Reset CVs
 /// \return true      Transmit ackbit in channel2
 /// \return false     Do not transmit ackbit in channel2
-bool ZppMixin::executeExit(bool reset_cvs) {
+bool Zpp::executeExit(bool reset_cvs) {
   if (_addrs_valid || (!_first_addr && !_last_addr)) {
     exitZpp(reset_cvs);
     return false;
@@ -142,4 +140,4 @@ bool ZppMixin::executeExit(bool reset_cvs) {
   return true;
 }
 
-}  // namespace mdu::rx::detail
+}  // namespace mdu::rx::mixin

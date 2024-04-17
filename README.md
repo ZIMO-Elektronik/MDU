@@ -2,7 +2,7 @@
 
 [![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)
 
-<img src="https://raw.githubusercontent.com/ZIMO-Elektronik/MDU/master/data/images/logo.png" align="right">
+<img src="https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/logo.png" align="right">
 
 MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.com/ZIMO-Elektronik/ZPP) and [ZSU](https://github.com/ZIMO-Elektronik/ZSU) updates over the track. The protocol is currently supported by the following products:
 - Command stations
@@ -81,7 +81,7 @@ At the beginning of a transfer, all devices start with the default setting. The 
 ### Structure of a data packet
 The following flowchart describes the general structure of an MDU data packet.
 
-![alt_text](https://raw.githubusercontent.com/ZIMO-Elektronik/MDU/master/data/images/data_packet.png)
+![data packet](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/data_packet.png)
 
 In principle, each command packet contains the phases preamble, data and acknowledgement. The meaning of the transmitted data and the acknowledgment depends on the command package itself and will be itemized later for each command.
 
@@ -294,7 +294,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 - If serial number 0 and a decoder ID is transmitted, all decoders with the corresponding ID are selected.
 - If serial number 0 and decoder ID 0 is transmitted, all decoders are selected.
 
-![alt_text](https://raw.githubusercontent.com/ZIMO-Elektronik/MDU/master/data/images/ping.png)
+![ping](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/ping.png)
 
 #### Config-Transfer-Rate
 | Command phase   | Description                                   |
@@ -340,7 +340,7 @@ Since, in contrast to DCC, several decoders can send an acknowledgment at the sa
 
 The following flowchart shows the search process from the perspective of the decoder. See [Maxim Integrated's application note](https://www.analog.com/en/app-notes/1wire-search-algorithm.html) [1-Wire Search Algorithm](data/1wire-search-algorithm.pdf) for more information.
 
-![alt_text](https://raw.githubusercontent.com/ZIMO-Elektronik/MDU/master/data/images/binary_tree_search.png)
+![binary tree search](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/binary_tree_search.png)
 
 #### CV-Read
 | Command phase   | Description                        |
@@ -622,17 +622,14 @@ entry_point.verify(index, value);
 - MDU_UNITY_BUILD  
   Enable unity build
 
-- MDU_RX_PREAMBLE_BITS  
-  Number of preambel bits of decoder
+- MDU_RX_MIN_PREAMBLE_BITS  
+  Minimum number of preambel bits of decoder
 
-- MDU_RX_ACKREQ_BITS  
-  Number of ackreq bits of decoder
+- MDU_TX_MIN_PREAMBLE_BITS  
+  Minimum number of preambel bits of command station
 
-- MDU_TX_PREAMBLE_BITS  
-  Number of preambel bits of command station
-
-- MDU_TX_ACKREQ_BITS  
-  Number of ackreq bits of command station
+- MDU_TX_MIN_ACKREQ_BITS  
+  Minimum number of ackreq bits of command station
 
 - MDU_TESTS_MASTER_KEY  
   Pass master key for ZSU decryption to tests

@@ -11,8 +11,17 @@
 #pragma once
 
 #include <cstdint>
+#include <span>
+
+extern "C" {
+#include <salsa20/ecrypt-sync.h>
+}
 
 namespace mdu {
+
+ECRYPT_ctx make_salsa20_context(uint32_t decoder_id,
+                                std::span<uint8_t const, 8uz> iv,
+                                char const* master_key);
 
 /// Data to uint16_t
 ///

@@ -48,23 +48,24 @@ consteval auto make_zero_sequence() {
 
 /// Index is what we are looking for
 ///
-/// \param  index Index to check
-/// \return true  Right index
-/// \return false Wrong index
-constexpr bool is_index(size_t index) {
-  return index == 8uz - 1uz || index == 105uz - 1uz || index == 106uz - 1uz;
+/// \param  cv_addr CV address to check
+/// \return true    Right CV address
+/// \return false   Wrong CV address
+constexpr bool is_cv_addr(uint32_t cv_addr) {
+  return cv_addr == 8uz - 1uz || cv_addr == 105uz - 1uz ||
+         cv_addr == 106uz - 1uz;
 }
 
 }  // namespace
 
 /// Verify
 ///
-/// \param  index CV index
-/// \param  value CV value
-void Point::verify(size_t index, uint8_t value) {
-  if (!is_index(index)) return _deque.clear();
-  if (size(_deque) && _deque.back().first == index) return;
-  _deque.push_back({static_cast<uint8_t>(index), value});
+/// \param  cv_addr CV address
+/// \param  byte    CV value
+void Point::verify(uint32_t cv_addr, uint8_t byte) {
+  if (!is_cv_addr(cv_addr)) return _deque.clear();
+  if (size(_deque) && _deque.back().first == cv_addr) return;
+  _deque.push_back({static_cast<uint8_t>(cv_addr), byte});
   if (_deque.front().second == 0xFFu)
     verifySequence(make_zsu_sequence(_cfg.decoder_id), _cfg.zsu_entry);
   else verifySequence(make_zpp_sequence(), _cfg.zpp_entry);

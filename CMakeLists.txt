@@ -14,7 +14,7 @@ endif()
 FetchContent_Declare(
   CMakeModules
   GIT_REPOSITORY https://github.com/ZIMO-Elektronik/CMakeModules
-  GIT_TAG v0.7.0
+  GIT_TAG v0.8.0
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
@@ -25,18 +25,15 @@ project(
   LANGUAGES CXX)
 
 option(MDU_UNITY_BUILD "Combine source files into single batch" ON)
-set(MDU_RX_PREAMBLE_BITS
-    10uz
-    CACHE STRING "Number of preambel bits of decoder")
-set(MDU_RX_ACKREQ_BITS
-    10uz
-    CACHE STRING "Number of ackreq bits of decoder")
-set(MDU_TX_PREAMBLE_BITS
-    14uz
-    CACHE STRING "Number of preambel bits of command station")
-set(MDU_TX_ACKREQ_BITS
-    10uz
-    CACHE STRING "Number of ackreq bits of decoder")
+set(MDU_RX_MIN_PREAMBLE_BITS
+    10u
+    CACHE STRING "Minimum number of preambel bits of decoder")
+set(MDU_TX_MIN_PREAMBLE_BITS
+    14u
+    CACHE STRING "Minimum number of preambel bits of command station")
+set(MDU_TX_MIN_ACKREQ_BITS
+    10u
+    CACHE STRING "Minimum number of ackreq bits of command station")
 
 file(GLOB_RECURSE SRC src/*.cpp)
 add_library(MDU STATIC ${SRC})
@@ -46,10 +43,9 @@ target_compile_features(MDU PUBLIC cxx_std_23)
 
 target_compile_definitions(
   MDU
-  PUBLIC MDU_RX_PREAMBLE_BITS=${MDU_RX_PREAMBLE_BITS}
-         MDU_RX_ACKREQ_BITS=${MDU_RX_ACKREQ_BITS}
-         MDU_TX_PREAMBLE_BITS=${MDU_TX_PREAMBLE_BITS}
-         MDU_TX_ACKREQ_BITS=${MDU_TX_ACKREQ_BITS})
+  PUBLIC MDU_RX_MIN_PREAMBLE_BITS=${MDU_RX_MIN_PREAMBLE_BITS}
+         MDU_TX_MIN_PREAMBLE_BITS=${MDU_TX_MIN_PREAMBLE_BITS}
+         MDU_TX_MIN_ACKREQ_BITS=${MDU_TX_MIN_ACKREQ_BITS})
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   target_include_directories(

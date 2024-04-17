@@ -10,7 +10,7 @@
 class PacketBuilder {
 public:
   // Add preamble
-  PacketBuilder& preamble(size_t count = MDU_TX_PREAMBLE_BITS);
+  PacketBuilder& preamble(size_t count = MDU_TX_MIN_PREAMBLE_BITS);
 
   // Add command
   PacketBuilder& command(mdu::Command cmd);
@@ -46,7 +46,7 @@ public:
 
   // Get ackreq timings
   std::vector<uint32_t> timingsAckreqOnly(
-    size_t count = MDU_TX_ACKREQ_BITS,
+    size_t count = MDU_TX_MIN_ACKREQ_BITS,
     mdu::TransferRate transfer_rate = mdu::TransferRate::Default) const;
 
   // Builder methods

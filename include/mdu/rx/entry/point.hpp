@@ -11,6 +11,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 #include <ztl/inplace_deque.hpp>
 #include "config.hpp"
 
@@ -19,7 +20,7 @@ namespace mdu::rx::entry {
 /// Entry point with CV verify
 struct Point {
   Point(Config cfg) : _cfg{cfg} {}
-  void verify(size_t index, uint8_t value);
+  void verify(uint32_t cv_addr, uint8_t byte);
 
 private:
   void
