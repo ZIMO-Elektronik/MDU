@@ -2,16 +2,17 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Receive ZSU base
+/// Utility
 ///
-/// \file   rx/zsu_base.cpp
+/// \file   utility.cpp
 /// \author Vincent Hamp
-/// \date   29/10/2023
+/// \date   17/04/2024
 
-#include "rx/zsu_base.hpp"
+#include "utility.hpp"
+#include <array>
 #include <cstring>
 
-namespace mdu::rx::detail {
+namespace mdu {
 
 namespace {
 
@@ -58,4 +59,4 @@ ECRYPT_ctx make_salsa20_context(uint32_t decoder_id,
   return ctx;
 }
 
-}  // namespace mdu::rx::detail
+}  // namespace mdu

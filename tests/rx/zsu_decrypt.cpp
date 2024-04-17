@@ -99,8 +99,7 @@ std::vector<uint8_t> zsu2bin(std::filesystem::path zsu_path) {
   // Make Salsa20 context
   auto const decoder_id{zsu2decoder_id(zsu_path)};
   auto const iv{zsu2initialization_vector(zsu_path)};
-  auto ctx{mdu::rx::detail::make_salsa20_context(
-    decoder_id, iv, MDU_TESTS_MASTER_KEY)};
+  auto ctx{mdu::make_salsa20_context(decoder_id, iv, MDU_TESTS_MASTER_KEY)};
 
   // Run decryption
   Reader64 reader{zsu2encrypted_bin(zsu_path)};

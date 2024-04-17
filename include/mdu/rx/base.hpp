@@ -18,16 +18,15 @@
 #include "../crc8.hpp"
 #include "binary_tree_search.hpp"
 #include "config.hpp"
-#include "mixin.hpp"
+#include "mixin/executable.hpp"
+#include "mixin/zsu.hpp"
 
-namespace mdu::rx::detail {
-
-struct ZsuMixin;
+namespace mdu::rx {
 
 /// Receive base
 ///
 /// \tparam Ts... Types of mixins
-template<Mixin... Ts>
+template<mixin::Executable... Ts>
 struct Base : Ts... {
   /// Ctor
   ///
@@ -39,7 +38,7 @@ struct Base : Ts... {
   /// \param  cfg                 Confiuration
   /// \param  salsa20_master_key  Salsa20 master key
   explicit constexpr Base(Config cfg, char const* salsa20_master_key)
-    : ZsuMixin{salsa20_master_key}, _cfg{cfg} {}
+    : mixin::Zsu{salsa20_master_key}, _cfg{cfg} {}
 
   /// Dtor
   virtual constexpr ~Base() = default;
@@ -127,7 +126,7 @@ protected:
   void preamble(uint32_t, Bit bit) {
     // Preamble can only set nack, never clear it
     if (bit == 1u) nack(++_bit_count >= 2uz || nack());
-    else if (_bit_count < MDU_RX_PREAMBLE_BITS) reset();
+    else if (_bit_count < MDU_RX_MIN_PREAMBLE_BITS) reset();
     else {
       _bit_count = 0uz;
       active(true);
@@ -369,4 +368,4 @@ protected:
   bool _ack : 1 {};
 };
 
-}  // namespace mdu::rx::detail
+}  // namespace mdu::rx
