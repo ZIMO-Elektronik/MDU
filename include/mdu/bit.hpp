@@ -20,10 +20,10 @@ enum Bit : uint8_t { _0, _1, Ackreq, Invalid };
 ///
 /// \param  time                Time is µs
 /// \param  transfer_rate_index Current index of transfer rate
-/// \return _0                  Time is a zero bit
-/// \return _1                  Time is a one bit
-/// \return Ackreq              Time is a ackreq bit
-/// \return Invalid             Time isn't valid
+/// \retval _0                  Time is a zero bit
+/// \retval _1                  Time is a one bit
+/// \retval Ackreq              Time is a ackreq bit
+/// \retval Invalid             Time isn't valid
 constexpr Bit time2bit(uint32_t time, size_t transfer_rate_index) {
   if (is_zero(time, transfer_rate_index)) return _0;
   else if (is_one(time, transfer_rate_index)) return _1;

@@ -54,8 +54,8 @@ struct Base : Ts... {
 
   /// Get active status (MDU is active when at least one preamble was received)
   ///
-  /// \return true  MDU active
-  /// \return false MDU not active
+  /// \retval true  MDU active
+  /// \retval false MDU not active
   bool active() const { return _active; }
 
   /// Execute
@@ -108,16 +108,16 @@ protected:
   ///
   /// \param  addr  CV address
   /// \param  pos   Bit position to test
-  /// \return true  Bit set
-  /// \return false Bit clear
+  /// \retval true  Bit set
+  /// \retval false Bit clear
   virtual bool readCv(uint32_t addr, uint32_t pos) const = 0;
 
   /// Write CV
   ///
   /// \param  addr  CV address
   /// \param  value CV value
-  /// \return true  Success
-  /// \return false Failure
+  /// \retval true  Success
+  /// \retval false Failure
   virtual bool writeCv(uint32_t addr, uint8_t value) = 0;
 
   /// Wait for preamble
@@ -178,8 +178,8 @@ protected:
   /// Shift bit in
   ///
   /// \param  bit   Bit
-  /// \return true  Byte done
-  /// \return false Byte not yet done
+  /// \retval true  Byte done
+  /// \retval false Byte not yet done
   bool shiftIn(uint32_t bit) {
     assert(bit <= 1u);
     _byte |= static_cast<decltype(_byte)>(bit << (7uz - _bit_count++));
@@ -204,8 +204,8 @@ protected:
 
   /// Check busy and CRC
   ///
-  /// \return true  Packet valid
-  /// \return false Packet not valid
+  /// \retval true  Packet valid
+  /// \retval false Packet not valid
   bool packetValid() {
     auto const deque_almost_full{size(_deque) >= _deque.max_size() - 1uz};
     auto const command{packet2command(*cend(_deque))};
@@ -216,8 +216,8 @@ protected:
   ///
   /// \param  cmd               Command
   /// \param  deque_almost_full Only 1 slot left in deque
-  /// \return true              Busy
-  /// \return false             Not busy
+  /// \retval true              Busy
+  /// \retval false             Not busy
   bool busy(Command cmd, bool deque_almost_full) {
     if (cmd == Command::Busy) {
       nack(_crc8);
@@ -229,8 +229,8 @@ protected:
   /// Check if CRC is valid, setup nack/ack transmission
   ///
   /// \param  cmd   Command
-  /// \return true  CRC is valid
-  /// \return false CRC is not valid
+  /// \retval true  CRC is valid
+  /// \retval false CRC is not valid
   bool crcCheck(Command cmd) {
     uint32_t crc;
     // Commands with CRC32 also transmit failures in channel2
@@ -253,8 +253,8 @@ protected:
 
   /// Get selected status
   ///
-  /// \return true  Decoder selected
-  /// \return false Decoder not selected
+  /// \retval true  Decoder selected
+  /// \retval false Decoder not selected
   bool selected() const { return _selected; }
 
   /// Set selected status
@@ -264,8 +264,8 @@ protected:
 
   /// Get nack status
   ///
-  /// \return true  Transmit ackbit in channel1
-  /// \return false Do not transmit ackbit in channel1
+  /// \retval true  Transmit ackbit in channel1
+  /// \retval false Do not transmit ackbit in channel1
   bool nack() const { return _nack; }
 
   /// Set nack status
@@ -275,8 +275,8 @@ protected:
 
   /// Get ack status
   ///
-  /// \return true  Transmit ackbit in channel2
-  /// \return false Do not transmit ackbit in channel2
+  /// \retval true  Transmit ackbit in channel2
+  /// \retval false Do not transmit ackbit in channel2
   bool ack() const { return _ack; }
 
   /// Set ack status

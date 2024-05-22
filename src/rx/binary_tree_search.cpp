@@ -17,8 +17,8 @@ namespace mdu::rx {
 /// \param  serial_number Serial number
 /// \param  decoder_id    Decoder ID
 /// \param  pos           Bit position
-/// \return true          Transmit ackbit in channel2
-/// \return false         Do not transmit ackbit in channel2
+/// \retval true          Transmit ackbit in channel2
+/// \retval false         Do not transmit ackbit in channel2
 bool BinaryTreeSearch::operator()(uint32_t serial_number,
                                   uint32_t decoder_id,
                                   uint32_t pos) {

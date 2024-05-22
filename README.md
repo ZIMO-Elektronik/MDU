@@ -6,11 +6,11 @@
 
 MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.com/ZIMO-Elektronik/ZPP) and [ZSU](https://github.com/ZIMO-Elektronik/ZSU) updates over the track. The protocol is currently supported by the following products:
 - Command stations
-  - [ZIMO MXULF](http://www.zimo.at/web2010/products/InfMXULF_EN.htm)
+  - [ZIMO MXULF](https://www.zimo.at/web2010/products/InfMXULF_EN.htm)
   - [Z21](https://www.z21.eu/en)
 - Decoders
-  - [ZIMO MN decoders](http://www.zimo.at/web2010/products/mn-nicht-sound-decoder_EN.htm)
-  - [ZIMO Small-](http://www.zimo.at/web2010/products/ms-sound-decoder_EN.htm) and [large-scale MS decoders](http://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn_EN.htm)
+  - [ZIMO MN decoders](https://www.zimo.at/web2010/products/mn-nicht-sound-decoder_EN.htm)
+  - [ZIMO Small-](https://www.zimo.at/web2010/products/ms-sound-decoder_EN.htm) and [large-scale MS decoders](https://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn_EN.htm)
 
 <details>
   <summary>Table of contents</summary>
@@ -30,6 +30,11 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
         <li><a href="#typical-processes">Typical processes</a></li>
       </ul>
     <li><a href="#getting-started">Getting started</a></li>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#build">Build</a></li>
+      </ul>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#configuration">Configuration</a></li>
   </ol>
@@ -37,7 +42,7 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
 
 ## Protocol
 ### Entry
-Activation of the MDU protocol is accomplished through a sequence of commands to **verify** configuration variables (CVs) in DCC operations mode. The entire sequence must be broadcast and thus sent to broadcast address 0. Details on the command structure can be found in [RCN-214](http://normen.railcommunity.de/RCN-214.pdf), especially point 2 ("Configuration variable access command - long form"). Depending on the type of update desired, ZPP or ZSU, the following sequences are to be sent:
+Activation of the MDU protocol is accomplished through a sequence of commands to **verify** configuration variables (CVs) in DCC operations mode. The entire sequence must be broadcast and thus sent to broadcast address 0. Details on the command structure can be found in [RCN-214](https://normen.railcommunity.de/RCN-214.pdf), especially point 2 ("Configuration variable access command - long form"). Depending on the type of update desired, ZPP or ZSU, the following sequences are to be sent:
 
 | ZPP           | ZSU           |
 | ------------- | ------------- |
@@ -57,9 +62,9 @@ By specifying a serial number(SN), it is possible to activate only a very specif
 As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
 
 ### Transmission
-Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](http://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the track signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.
+Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](https://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the track signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.
 
-At the end of a data packet, so-called acknowledgment bits are sent by the command station. **Selected decoders** (see [Ping command](#ping)) can respond within this time by means of current pulses (ack bits). This is comparable to the programming mode of the DCC protocol (service mode) described in [RCN-216](http://normen.railcommunity.de/RCN-216.pdf). The feedback phase is divided into two channels.
+At the end of a data packet, so-called acknowledgment bits are sent by the command station. **Selected decoders** (see [Ping command](#ping)) can respond within this time by means of current pulses (ack bits). This is comparable to the programming mode of the DCC protocol (service mode) described in [RCN-216](https://normen.railcommunity.de/RCN-216.pdf). The feedback phase is divided into two channels.
 
 **Channel 1** (ackreq bits 2-4) is intended for transmission and checksum errors (CRC). Decoders that have not completely received a packet or whose CRC check failed can declare a packet invalid by sending ack bits. command stations must then repeat the last packet sent.
 
@@ -320,7 +325,7 @@ The Binary-Tree-Search command is used to search for decoders that support MDU. 
 ```c
 uint64_t unique_id = (decoder_id << 32u) | serial_number;
 ```
-With the exception of the MSB (always 0), that number can be queried bit by bit. Again, reference is made to [RCN-214](http://normen.railcommunity.de/RCN-214.pdf), which provides a similar command for the programming mode of the DCC protocol to read CVs bit by bit.
+With the exception of the MSB (always 0), that number can be queried bit by bit. Again, reference is made to [RCN-214](https://normen.railcommunity.de/RCN-214.pdf), which provides a similar command for the programming mode of the DCC protocol to read CVs bit by bit.
 
 Since, in contrast to DCC, several decoders can send an acknowledgment at the same time, further commands are required in addition to querying a bit, which are represented with the help of special values or closed intervals.
 - 255  
@@ -412,7 +417,9 @@ A ZPP-LC-DC query can be used to check whether the decoders contain a valid load
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
-With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2. :warning: **After the command, a delay of at least 3.5s must be observed.**
+With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2.
+> [!WARNING]  
+> After the command, a delay of at least 3.5s must be observed.
 
 #### ZPP-Update
 | Command phase   | Description                                 |
@@ -424,7 +431,9 @@ With the help of ZPP-Erase, a certain memory area of the flash can be deleted. I
 | Data (CRC)      | 4-byte CRC32                                |
 | Acknowledgement | Invalid address or CRC32 error              |
 
-ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 error is received, there must be an acknowledgment in channel 2. :warning: **Current implementations only support payloads up to 256 bytes.**
+ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 error is received, there must be an acknowledgment in channel 2.
+> [!WARNING]  
+> Current implementations only support payloads up to 256 bytes.
 
 #### ZPP-Update-End
 | Command phase   | Description                        |
@@ -470,7 +479,9 @@ The ZSU command set is used to update the decoder software. Among other things, 
 | Data (CRC)      | 1-byte CRC8                          |
 | Acknowledgement | CRC8 error                           |
 
-ZSU-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa20 encryption. :warning: **For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.**
+ZSU-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa20 encryption.
+> [!WARNING]  
+> For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.
 
 #### ZSU-Erase
 | Command phase   | Description                        |
@@ -482,7 +493,9 @@ ZSU-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
-The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2. :warning: **After the command, a delay of at least 3.5s must be observed.**
+The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2.
+> [!WARNING]  
+> After the command, a delay of at least 3.5s must be observed.
 
 #### ZSU-Update
 | Command phase   | Description                        |
@@ -494,7 +507,9 @@ The processor flash is deleted before an update package is written. If an invali
 | Data (CRC)      | 4-byte CRC32                       |
 | Acknowledgement | Invalid address or CRC32 error     |
 
-ZSU-Update is used to transfer firmware data. If an invalid address or a CRC32 error is received, there must be an acknowledgment in channel 2. :warning: **Current implementations only support payloads of exactly 64 bytes. Smaller payloads must contain appropriate padding.**
+ZSU-Update is used to transfer firmware data. If an invalid address or a CRC32 error is received, there must be an acknowledgment in channel 2.
+> [!WARNING]  
+> Current implementations only support payloads of exactly 64 bytes. Smaller payloads must contain appropriate padding.
 
 #### ZSU-CRC32-Start
 | Command phase   | Description                        |
@@ -507,7 +522,9 @@ ZSU-Update is used to transfer firmware data. If an invalid address or a CRC32 e
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Invalid memory area                |
 
-ZSU-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via ZSU-Update packets, then a response must be made in channel 2. :warning: **The transferred memory area is a closed interval. The last address actually written corresponds to the end address!**
+ZSU-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via ZSU-Update packets, then a response must be made in channel 2.
+> [!WARNING]  
+> The transferred memory area is a closed interval. The last address actually written corresponds to the end address!
 
 #### ZSU-CRC32-Result
 | Command phase   | Description                        |
@@ -554,13 +571,62 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 9. Leave track voltage switched on for at least 1s
 
 ## Getting started
-TODO
+### Prerequisites
+- C++23 compatible compiler
+- [CMake](https://cmake.org/) ( >= 3.25 )
+- Optional
+  - for building [ESP32](https://www.espressif.com/en/products/socs/esp32) [RMT](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/rmt.html) encoder example
+    - [ESP-IDF](https://github.com/espressif/esp-idf) ( >= 5.0.3 )
+
+### Installation
+This library is meant to be consumed with CMake,
+
+```cmake
+# Either by including it with CPM
+cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.15.4")
+
+# or the FetchContent module
+FetchContent_Declare(
+  MDU
+  GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/MDU"
+  GIT_TAG v0.15.4)
+
+target_link_libraries(YourTarget PRIVATE MDU::MDU)
+```
+
+or, on [ESP32 platforms](https://www.espressif.com/en/products/socs/esp32), with the [IDF Component Manager](https://docs.espressif.com/projects/idf-component-manager/en/latest/) by adding it to a `idf_component.yml` file.
+```yaml
+dependencies:
+  zimo-elektronik/mdu:
+    version: "0.15.4"
+```
+
+### Build
+The library itself can be built via CMake as follows. Depending on the target platform, it may be necessary to pass along a suitable [toolchain file](https://cmake.org/cmake/help/latest/variable/CMAKE_TOOLCHAIN_FILE.html).
+```sh
+cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=toolchain-arm-none-eabi-gcc.cmake
+cmake --build build --target MDU
+```
+
+#### Host
+On host platforms, a target for the skeleton code of a ZPP update is also created. More useful examples are on the TODO list.
+```sh
+cmake -Bbuild
+cmake --build build --target MDUZppLoad
+```
+
+#### ESP32
+On [ESP32 platforms](https://www.espressif.com/en/products/socs/esp32) examples from the [examples](https://github.com/ZIMO-Elektronik/MDU/raw/master/examples) subfolder can be built directly using the [IDF Frontend](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/tools/idf-py.html).
+
+```sh
+idf.py create-project-from-example "zimo-elektronik/mdu^0.15.4:esp32"
+```
 
 ## Usage
 To use the MDU library, a number of virtual functions must be implemented. Depending on whether ZPP or ZSU is to be transferred, one of the following abstract classes must be derived:
-- mdu::rx::ZppBase
-- mdu::rx::ZsuBase
-- mdu::rx::ZppZsuBase
+- `mdu::rx::ZppBase`
+- `mdu::rx::ZsuBase`
+- `mdu::rx::ZppZsuBase`
 
 The following example shows the skeleton code for implementing the ZPP update.
 ```cpp

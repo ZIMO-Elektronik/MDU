@@ -13,8 +13,8 @@ endif()
 
 FetchContent_Declare(
   CMakeModules
-  GIT_REPOSITORY https://github.com/ZIMO-Elektronik/CMakeModules
-  GIT_TAG v0.8.0
+  GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/CMakeModules"
+  GIT_TAG v0.9.1
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
@@ -47,7 +47,7 @@ target_compile_definitions(
          MDU_TX_MIN_PREAMBLE_BITS=${MDU_TX_MIN_PREAMBLE_BITS}
          MDU_TX_MIN_ACKREQ_BITS=${MDU_TX_MIN_ACKREQ_BITS})
 
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+if(PROJECT_IS_TOP_LEVEL)
   target_include_directories(
     MDU
     INTERFACE include
@@ -79,13 +79,18 @@ endif()
 
 target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)
 
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+if(PROJECT_IS_TOP_LEVEL)
   include(CTest)
+  add_subdirectory(examples)
+  file(
+    DOWNLOAD
+    "https://github.com/ZIMO-Elektronik/.clang-format/raw/master/.clang-format"
+    ${CMAKE_CURRENT_LIST_DIR}/.clang-format)
+  file(GLOB_RECURSE SRC examples/*.[ch]pp include/*.[ch]pp src/*.[ch]pp
+       tests/*.[ch]pp)
+  add_clang_format_target(MDUFormat OPTIONS -i FILES ${SRC})
 endif()
 
-if(BUILD_TESTING
-   AND CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME
-   AND CMAKE_SYSTEM_NAME STREQUAL CMAKE_HOST_SYSTEM_NAME)
-  add_subdirectory(examples)
+if(BUILD_TESTING AND CMAKE_SYSTEM_NAME STREQUAL CMAKE_HOST_SYSTEM_NAME)
   add_subdirectory(tests)
 endif()
