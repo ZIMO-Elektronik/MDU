@@ -36,8 +36,8 @@ struct Zsu {
   /// \param  cmd         Command
   /// \param  packet      Packet
   /// \param  decoder_id  Decoder ID
-  /// \return true        Transmit ackbit in channel2
-  /// \return false       Do not transmit ackbit in channel2
+  /// \retval true        Transmit ackbit in channel2
+  /// \retval false       Do not transmit ackbit in channel2
   bool execute(Command cmd, Packet const& packet, uint32_t decoder_id) {
     switch (cmd) {
       case Command::ZsuSalsa20IV: {
@@ -74,16 +74,16 @@ private:
   ///
   /// \param  begin_addr  Begin address
   /// \param  end_addr    End address
-  /// \return true        Success
-  /// \return false       Failure
+  /// \retval true        Success
+  /// \retval false       Failure
   virtual bool eraseZsu(uint32_t begin_addr, uint32_t end_addr) = 0;
 
   /// Write ZSU
   ///
   /// \param  addr  Address
   /// \param  bytes Bytes
-  /// \return true  Success
-  /// \return false Failure
+  /// \retval true  Success
+  /// \retval false Failure
   virtual bool writeZsu(uint32_t addr,
                         std::span<uint8_t const, 64uz> bytes) = 0;
 
@@ -94,8 +94,8 @@ private:
   ///
   /// \param  decoder_id  Decoder ID
   /// \param  iv          Initialization vector
-  /// \return true        Transmit ackbit in channel2
-  /// \return false       Do not transmit ackbit in channel2
+  /// \retval true        Transmit ackbit in channel2
+  /// \retval false       Do not transmit ackbit in channel2
   bool executeSalsa20IV(uint32_t decoder_id, std::span<uint8_t const, 8uz> iv) {
     _ctx = make_salsa20_context(decoder_id, iv, _salsa20_master_key);
     return false;
@@ -105,8 +105,8 @@ private:
   ///
   /// \param  begin_addr  Begin address
   /// \param  end_addr    End address
-  /// \return true        Transmit ackbit in channel2
-  /// \return false       Do not transmit ackbit in channel2
+  /// \retval true        Transmit ackbit in channel2
+  /// \retval false       Do not transmit ackbit in channel2
   bool executeErase(uint32_t begin_addr, uint32_t end_addr) {
     auto const success{eraseZsu(begin_addr, end_addr)};
     return !success;
@@ -116,8 +116,8 @@ private:
   ///
   /// \param  addr  Address
   /// \param  bytes Bytes
-  /// \return true  Transmit ackbit in channel2
-  /// \return false Do not transmit ackbit in channel2
+  /// \retval true  Transmit ackbit in channel2
+  /// \retval false Do not transmit ackbit in channel2
   bool executeUpdate(uint32_t addr, std::span<uint8_t const, 64uz> bytes) {
     if (!_first_addr) _first_addr = addr;
     // Lost packet
@@ -140,8 +140,8 @@ private:
   /// \param  begin_addr  Begin address
   /// \param  end_addr    End address
   /// \param  crc32       CRC32
-  /// \return true        Transmit ackbit in channel2
-  /// \return false       Do not transmit ackbit in channel2
+  /// \retval true        Transmit ackbit in channel2
+  /// \retval false       Do not transmit ackbit in channel2
   bool
   executeCrc32Start(uint32_t begin_addr, uint32_t end_addr, uint32_t crc32) {
     if (begin_addr != _first_addr || end_addr + 1u != _last_addr) return true;
@@ -153,8 +153,8 @@ private:
   ///
   /// \param  exit  true  Exit
   ///               false Do not exit
-  /// \return true  Transmit ackbit in channel2
-  /// \return false Do not transmit ackbit in channel2
+  /// \retval true  Transmit ackbit in channel2
+  /// \retval false Do not transmit ackbit in channel2
   bool executeCrc32Result(bool exit) {
     if (exit && _crc32valid) {
       exitZsu();

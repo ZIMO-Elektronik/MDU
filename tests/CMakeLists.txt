@@ -13,7 +13,17 @@ target_compile_definitions(
 
 target_common_warnings(MDUTests PRIVATE)
 
-cpmaddpackage("gh:google/googletest#main")
+cpmaddpackage(
+  NAME
+  googletest
+  GITHUB_REPOSITORY
+  "google/googletest"
+  GIT_TAG
+  main
+  SYSTEM
+  YES
+  OPTIONS
+  "INSTALL_GTEST OFF")
 cpmaddpackage("gh:ericniebler/range-v3#0.12.0")
 
 target_link_libraries(MDUTests PRIVATE MDU::MDU GTest::gtest GTest::gmock

@@ -49,8 +49,8 @@ consteval auto make_zero_sequence() {
 /// Index is what we are looking for
 ///
 /// \param  cv_addr CV address to check
-/// \return true    Right CV address
-/// \return false   Wrong CV address
+/// \retval true    Right CV address
+/// \retval false   Wrong CV address
 constexpr bool is_cv_addr(uint32_t cv_addr) {
   return cv_addr == 8uz - 1uz || cv_addr == 105uz - 1uz ||
          cv_addr == 106uz - 1uz;

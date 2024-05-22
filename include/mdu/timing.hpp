@@ -70,8 +70,8 @@ inline constexpr auto& fallback_timing{timings[0uz]};
 /// Check if time is a fallback one bit
 ///
 /// \param  time  Time in µs
-/// \return true  Time equals fallback one bit
-/// \return false Time does not equal fallback one bit
+/// \retval true  Time equals fallback one bit
+/// \retval false Time does not equal fallback one bit
 constexpr bool is_fallback_one(uint32_t time) {
   return (time >= fallback_timing.one_min && time <= fallback_timing.one_max);
 }
@@ -80,8 +80,8 @@ constexpr bool is_fallback_one(uint32_t time) {
 ///
 /// \param  time                Time is µs
 /// \param  transfer_rate_index Current index of transfer rate
-/// \return true                Time equals one bit
-/// \return false               Time does not equal one bit
+/// \retval true                Time equals one bit
+/// \retval false               Time does not equal one bit
 constexpr bool is_one(uint32_t time, size_t transfer_rate_index) {
   auto const i{transfer_rate_index};
   return (time >= timings[i].one_min && time <= timings[i].one_max) ||
@@ -91,8 +91,8 @@ constexpr bool is_one(uint32_t time, size_t transfer_rate_index) {
 /// Check if time is a fallback zero bit
 ///
 /// \param  time  Time in µs
-/// \return true  Time equals fallback zero bit
-/// \return false Time does not equal fallback zero bit
+/// \retval true  Time equals fallback zero bit
+/// \retval false Time does not equal fallback zero bit
 constexpr bool is_fallback_zero(uint32_t time) {
   return (time >= fallback_timing.zero_min && time <= fallback_timing.zero_max);
 }
@@ -101,8 +101,8 @@ constexpr bool is_fallback_zero(uint32_t time) {
 ///
 /// \param  time                Time is µs
 /// \param  transfer_rate_index Current index of transfer rate
-/// \return true                Time equals zero bit
-/// \return false               Time does not equal zero bit
+/// \retval true                Time equals zero bit
+/// \retval false               Time does not equal zero bit
 constexpr bool is_zero(uint32_t time, size_t transfer_rate_index) {
   auto const i{transfer_rate_index};
   return (time >= timings[i].zero_min && time <= timings[i].zero_max) ||
@@ -112,8 +112,8 @@ constexpr bool is_zero(uint32_t time, size_t transfer_rate_index) {
 /// Check if time is a fallback ackreq bit
 ///
 /// \param  time  Time in µs
-/// \return true  Time equals fallback ackreq bit
-/// \return false Time does not equal fallback ackreq bit
+/// \retval true  Time equals fallback ackreq bit
+/// \retval false Time does not equal fallback ackreq bit
 constexpr bool is_fallback_ackreq(uint32_t time) {
   return (time >= fallback_timing.ackreq_min &&
           time <= fallback_timing.ackreq_max);
@@ -123,8 +123,8 @@ constexpr bool is_fallback_ackreq(uint32_t time) {
 ///
 /// \param  time                Time is µs
 /// \param  transfer_rate_index Current index of transfer rate
-/// \return true                Time equals ackreq bit
-/// \return false               Time does not equal ackreq bit
+/// \retval true                Time equals ackreq bit
+/// \retval false               Time does not equal ackreq bit
 constexpr bool is_ackreq(uint32_t time, size_t transfer_rate_index) {
   auto const i{transfer_rate_index};
   return (time >= timings[i].ackreq_min && time <= timings[i].ackreq_max) ||

@@ -16,8 +16,8 @@ namespace mdu::rx::mixin {
 ///
 /// \param  cmd     Command
 /// \param  packet  Packet
-/// \return true    Transmit ackbit in channel2
-/// \return false   Do not transmit ackbit in channel2
+/// \retval true    Transmit ackbit in channel2
+/// \retval false   Do not transmit ackbit in channel2
 bool Zpp::execute(Command cmd, Packet const& packet, uint32_t) {
   // The following commands may run without ZPP validation
   switch (cmd) {
@@ -62,8 +62,8 @@ bool Zpp::execute(Command cmd, Packet const& packet, uint32_t) {
 ///
 /// \param  zpp_id          ZPP ID
 /// \param  zpp_flash_size  ZPP flash size
-/// \return true            Transmit ackbit in channel2
-/// \return false           Do not transmit ackbit in channel2
+/// \retval true            Transmit ackbit in channel2
+/// \retval false           Do not transmit ackbit in channel2
 bool Zpp::executeValidQuery(std::string_view zpp_id, size_t zpp_flash_size) {
   _zpp_valid = zppValid(zpp_id, zpp_flash_size);
   return !_zpp_valid;
@@ -72,8 +72,8 @@ bool Zpp::executeValidQuery(std::string_view zpp_id, size_t zpp_flash_size) {
 /// Execute ZppLcDcQuery command
 ///
 /// \param  developer_code  Developer code
-/// \return true            Transmit ackbit in channel2
-/// \return false           Do not transmit ackbit in channel2
+/// \retval true            Transmit ackbit in channel2
+/// \retval false           Do not transmit ackbit in channel2
 bool Zpp::executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const {
   bool const valid{loadCodeValid(developer_code)};
   return !valid;
@@ -83,8 +83,8 @@ bool Zpp::executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const {
 ///
 /// \param  begin_addr  Begin address
 /// \param  end_addr    End address
-/// \return true        Transmit ackbit in channel2
-/// \return false       Do not transmit ackbit in channel2
+/// \retval true        Transmit ackbit in channel2
+/// \retval false       Do not transmit ackbit in channel2
 bool Zpp::executeErase(uint32_t begin_addr, uint32_t end_addr) {
   auto const success{eraseZpp(begin_addr, end_addr)};
   return !success;
@@ -94,8 +94,8 @@ bool Zpp::executeErase(uint32_t begin_addr, uint32_t end_addr) {
 ///
 /// \param  addr  Address
 /// \param  bytes Bytes
-/// \return true  Transmit ackbit in channel2
-/// \return false Do not transmit ackbit in channel2
+/// \retval true  Transmit ackbit in channel2
+/// \retval false Do not transmit ackbit in channel2
 bool Zpp::executeUpdate(uint32_t addr, std::span<uint8_t const> bytes) {
   if (!_first_addr) _first_addr = addr;
   // Lost packet
@@ -113,8 +113,8 @@ bool Zpp::executeUpdate(uint32_t addr, std::span<uint8_t const> bytes) {
 ///
 /// \param  begin_addr  Begin address
 /// \param  end_addr    End address
-/// \return true        Transmit ackbit in channel2
-/// \return false       Do not transmit ackbit in channel2
+/// \retval true        Transmit ackbit in channel2
+/// \retval false       Do not transmit ackbit in channel2
 bool Zpp::executeEnd(uint32_t begin_addr, uint32_t end_addr) {
   if (!_first_addr || !_last_addr) return false;
   _addrs_valid = begin_addr == _first_addr && end_addr == _last_addr;
@@ -127,15 +127,14 @@ bool Zpp::executeEnd(uint32_t begin_addr, uint32_t end_addr) {
 /// Execute ZppExit or ZppExitReset command
 ///
 /// \param  reset_cvs Reset CVs
-/// \return true      Transmit ackbit in channel2
-/// \return false     Do not transmit ackbit in channel2
+/// \retval true      Transmit ackbit in channel2
+/// \retval false     Do not transmit ackbit in channel2
 bool Zpp::executeExit(bool reset_cvs) {
   if (_addrs_valid || (!_first_addr && !_last_addr)) {
     exitZpp(reset_cvs);
     return false;
   }
-  while (!eraseZpp(*_first_addr, *_last_addr))
-    ;
+  while (!eraseZpp(*_first_addr, *_last_addr));
   _first_addr = _last_addr = {};
   return true;
 }
