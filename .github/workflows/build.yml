@@ -14,7 +14,7 @@ jobs:
   esp-elf-gcc:
     uses: ZIMO-Elektronik/.github-workflows/.github/workflows/esp-elf-gcc.yml@v0.0.6
     with:
-      path: examples/rmt
+      path: examples/esp32
       target: esp32
 
   x86_64-linux-gnu-gcc:
