@@ -26,7 +26,7 @@ cpmaddpackage(
   "INSTALL_GTEST OFF")
 cpmaddpackage("gh:ericniebler/range-v3#0.12.0")
 
-target_link_libraries(MDUTests PRIVATE MDU::MDU GTest::gtest GTest::gmock
+target_link_libraries(MDUTests PRIVATE MDU::MDU GTest::gtest_main GTest::gmock
                                        range-v3)
 
 gtest_discover_tests(MDUTests)

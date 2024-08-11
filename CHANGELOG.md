@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.16.1
+- Bugfix `ESP_GOTO_ON_FALSE` condition
+
 ## 0.16.0
 - Add `MDU_TX_MAX_PREAMBLE_BITS` definition
 - Add `MDU_TX_MAX_ACKREQ_BITS` definition
