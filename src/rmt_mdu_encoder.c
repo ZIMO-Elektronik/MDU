@@ -396,9 +396,11 @@ esp_err_t rmt_new_mdu_encoder(mdu_encoder_config_t const* config,
   ESP_GOTO_ON_FALSE(
     config && ret_encoder &&                                           //
       (config->transfer_rate >= 0u && config->transfer_rate <= 4u) &&  //
-      config->num_preamble >= MDU_TX_MIN_PREAMBLE_BITS &&              //
-      (config->num_ackreq == 0u ||
-       config->num_ackreq >= MDU_TX_MIN_ACKREQ_BITS),  //
+      (config->num_preamble >= MDU_TX_MIN_PREAMBLE_BITS &&             //
+       config->num_preamble <= MDU_TX_MAX_PREAMBLE_BITS)               //
+      (config->num_ackreq == 0u ||                                     //
+       (config->num_ackreq >= MDU_TX_MIN_ACKREQ_BITS &&                //
+        config->num_ackreq <= MDU_TX_MAX_ACKREQ_BITS)),                //
     ESP_ERR_INVALID_ARG,
     err,
     TAG,
