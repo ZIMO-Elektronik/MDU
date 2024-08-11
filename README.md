@@ -683,19 +683,3 @@ mdu::rx::entry::Point entry_point{
 // Forward DCC verifies
 entry_point.verify(index, value);
 ```
-
-## Configuration
-- MDU_UNITY_BUILD  
-  Enable unity build
-
-- MDU_RX_MIN_PREAMBLE_BITS  
-  Minimum number of preambel bits of decoder
-
-- MDU_TX_MIN_PREAMBLE_BITS  
-  Minimum number of preambel bits of command station
-
-- MDU_TX_MIN_ACKREQ_BITS  
-  Minimum number of ackreq bits of command station
-
-- MDU_TESTS_MASTER_KEY  
-  Pass master key for ZSU decryption to tests

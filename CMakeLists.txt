@@ -14,7 +14,7 @@ endif()
 FetchContent_Declare(
   CMakeModules
   GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/CMakeModules"
-  GIT_TAG v0.9.1
+  GIT_TAG v0.9.2
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
@@ -31,9 +31,15 @@ set(MDU_RX_MIN_PREAMBLE_BITS
 set(MDU_TX_MIN_PREAMBLE_BITS
     14u
     CACHE STRING "Minimum number of preambel bits of command station")
+set(MDU_TX_MAX_PREAMBLE_BITS
+    30u
+    CACHE STRING "Maximum number of preambel bits of command station")
 set(MDU_TX_MIN_ACKREQ_BITS
     10u
     CACHE STRING "Minimum number of ackreq bits of command station")
+set(MDU_TX_MAX_ACKREQ_BITS
+    30u
+    CACHE STRING "Maximum number of ackreq bits of command station")
 
 file(GLOB_RECURSE SRC src/*.cpp)
 add_library(MDU STATIC ${SRC})
@@ -45,7 +51,9 @@ target_compile_definitions(
   MDU
   PUBLIC MDU_RX_MIN_PREAMBLE_BITS=${MDU_RX_MIN_PREAMBLE_BITS}
          MDU_TX_MIN_PREAMBLE_BITS=${MDU_TX_MIN_PREAMBLE_BITS}
-         MDU_TX_MIN_ACKREQ_BITS=${MDU_TX_MIN_ACKREQ_BITS})
+         MDU_TX_MAX_PREAMBLE_BITS=${MDU_TX_MAX_PREAMBLE_BITS}
+         MDU_TX_MIN_ACKREQ_BITS=${MDU_TX_MIN_ACKREQ_BITS}
+         MDU_TX_MAX_ACKREQ_BITS=${MDU_TX_MAX_ACKREQ_BITS})
 
 if(PROJECT_IS_TOP_LEVEL)
   target_include_directories(
@@ -84,7 +92,7 @@ if(PROJECT_IS_TOP_LEVEL)
   add_subdirectory(examples)
   file(
     DOWNLOAD
-    "https://github.com/ZIMO-Elektronik/.clang-format/raw/master/.clang-format"
+    "https://github.com/ZIMO-Elektronik/.github/raw/master/data/.clang-format"
     ${CMAKE_CURRENT_LIST_DIR}/.clang-format)
   file(GLOB_RECURSE SRC examples/*.[ch]pp include/*.[ch]pp src/*.[ch]pp
        tests/*.[ch]pp)

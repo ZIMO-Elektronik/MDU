@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.16.0
+- Add `MDU_TX_MAX_PREAMBLE_BITS` definition
+- Add `MDU_TX_MAX_ACKREQ_BITS` definition
+
 ## 0.15.4
 - Bugfix remove extra preamble symbol from encoder
 
@@ -13,7 +17,7 @@
 - Absolute image paths for [ESP registry](https://components.espressif.com/)
 
 ## 0.15.0
-- Bugfix RMT encoder [#13032](https://github.com/espressif/esp-idf/issues/13032)
+- Bugfix RMT encoder ([#13032](https://github.com/espressif/esp-idf/issues/13032))
 
 ## 0.14.0
 - Consistent spelling of 'load code'
@@ -35,12 +39,12 @@
 
 ## 0.11.0
 - Methods which potentially mutate state are no longer const
-  - rx::Base::writeCv
-  - rx::FirmwareBase::eraseFirmware
-  - rx::FirmwareBase::writeFirmware
-  - rx::FirmwareBase::exitFirmware
-  - rx::ZppBase::eraseZpp
-  - rx::ZppBase::exitZpp
+  - `rx::Base::writeCv`
+  - `rx::FirmwareBase::eraseFirmware`
+  - `rx::FirmwareBase::writeFirmware`
+  - `rx::FirmwareBase::exitFirmware`
+  - `rx::ZppBase::eraseZpp`
+  - `rx::ZppBase::exitZpp`
 
 ## 0.10.0
 - ZPP-Valid-Query command is mandatory
@@ -78,7 +82,7 @@
 - Update to ZTL 0.12
 
 ## 0.4
-- Inline FirmwareMixin to allow more aggressiv optimizations
+- Inline FirmwareMixin to allow more aggressive optimizations
 
 ## 0.3
 - Removed CMake exports
