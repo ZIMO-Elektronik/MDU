@@ -115,10 +115,10 @@ protected:
   /// Write CV
   ///
   /// \param  addr  CV address
-  /// \param  value CV value
+  /// \param  byte  CV value
   /// \retval true  Success
   /// \retval false Failure
-  virtual bool writeCv(uint32_t addr, uint8_t value) = 0;
+  virtual bool writeCv(uint32_t addr, uint8_t byte) = 0;
 
   /// Wait for preamble
   ///

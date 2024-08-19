@@ -21,7 +21,7 @@ private:
   bool readCv(uint32_t addr, uint32_t pos) const final { return {}; }
 
   // Write CV
-  bool writeCv(uint32_t addr, uint8_t value) final { return {}; }
+  bool writeCv(uint32_t addr, uint8_t byte) final { return {}; }
 
   // Check if ZPP is valid
   bool zppValid(std::string_view zpp_id, size_t zpp_flash_size) const final {
