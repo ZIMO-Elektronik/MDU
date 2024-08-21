@@ -106,19 +106,19 @@ protected:
 
   /// Read CV bit
   ///
-  /// \param  addr  CV address
-  /// \param  pos   Bit position to test
-  /// \retval true  Bit set
-  /// \retval false Bit clear
-  virtual bool readCv(uint32_t addr, uint32_t pos) const = 0;
+  /// \param  cv_addr CV address
+  /// \param  pos     Bit position to test
+  /// \retval true    Bit set
+  /// \retval false   Bit clear
+  virtual bool readCv(uint32_t cv_addr, uint32_t pos) const = 0;
 
   /// Write CV
   ///
-  /// \param  addr  CV address
-  /// \param  byte  CV value
-  /// \retval true  Success
-  /// \retval false Failure
-  virtual bool writeCv(uint32_t addr, uint8_t byte) = 0;
+  /// \param  cv_addr CV address
+  /// \param  byte    CV value
+  /// \retval true    Success
+  /// \retval false   Failure
+  virtual bool writeCv(uint32_t cv_addr, uint8_t byte) = 0;
 
   /// Wait for preamble
   ///
@@ -336,19 +336,19 @@ protected:
 
   /// Execute CV read
   ///
-  /// \param  addr  CV address
-  /// \param  pos   Bit position to test
-  void executeCvRead(uint32_t addr, uint32_t pos) {
-    bool const bit{readCv(addr, pos)};
+  /// \param  cv_addr CV address
+  /// \param  pos     Bit position to test
+  void executeCvRead(uint32_t cv_addr, uint32_t pos) {
+    bool const bit{readCv(cv_addr, pos)};
     ack(bit);
   }
 
   /// Execute CV write
   ///
-  /// \param  addr  CV address
-  /// \param  value CV value
-  void executeCvWrite(uint32_t addr, uint8_t value) {
-    bool const success{writeCv(addr, value)};
+  /// \param  cv_addr CV address
+  /// \param  byte    CV value
+  void executeCvWrite(uint32_t cv_addr, uint8_t byte) {
+    bool const success{writeCv(cv_addr, byte)};
     ack(!success);
   }
 

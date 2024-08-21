@@ -18,10 +18,10 @@ private:
   void ackbit(uint32_t us) const final {}
 
   // Read CV bit
-  bool readCv(uint32_t addr, uint32_t pos) const final { return {}; }
+  bool readCv(uint32_t cv_addr, uint32_t pos) const final { return {}; }
 
   // Write CV
-  bool writeCv(uint32_t addr, uint8_t byte) final { return {}; }
+  bool writeCv(uint32_t cv_addr, uint8_t byte) final { return {}; }
 
   // Check if ZPP is valid
   bool zppValid(std::string_view zpp_id, size_t zpp_flash_size) const final {
@@ -37,7 +37,7 @@ private:
   bool eraseZpp(uint32_t begin_addr, uint32_t end_addr) final { return {}; }
 
   // Write ZPP
-  bool writeZpp(uint32_t addr, std::span<uint8_t const> bytes) final {
+  bool writeZpp(uint32_t cv_addr, std::span<uint8_t const> bytes) final {
     return {};
   }
 
