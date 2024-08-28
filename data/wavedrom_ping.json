@@ -1,0 +1,30 @@
+// Ping 0x03FCF3C0
+{ signal : [
+    { wave: "p.....|hn...lp...hn...lp...hlhlhlhnlp..hlhn.lhnlphlhlhlhn..lhnhlnhlnhlnhlnhln",
+    },
+    { wave: "=......==...==...==...==...==......==....==....==......==....==..............", data: [
+        "Preamble",
+        "Start",
+        "Command byte 0",
+        "Start",
+        "Command byte 1",
+        "Start",
+        "Command byte 2",
+        "Start",
+        "Command byte 3",
+        "Start",
+        "ID byte 0",
+        "Start",
+        "ID byte 1",
+        "Start",
+        "ID byte 2",
+        "Start",
+        "ID byte 3",
+        "Start",
+        "CRC8",
+        "End",
+        "Ackreq"
+      ]
+    },
+  ],
+}

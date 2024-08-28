@@ -1,4 +1,3 @@
-- Flowchart for command station
 - Other entry points still missing (verify 105 == 0 || DCC adresse MSB).
 - executeConfig should be tested for fallback timings
 - Document that there's a short version of Ping
