@@ -1,0 +1,15 @@
+{ signal : [
+    { wave: "p.....|hn...lphlppplhplhplhplhplhp",
+    },
+    { wave: "=......==...==....==..............", data: [
+        "Preamble",
+        "Start",
+        "Byte n (0xFF)",
+        "Start",
+        "Byte n+1 (0xCF)",
+        "End",
+        "Ackreq"
+      ]
+    },
+  ],
+}

@@ -42,7 +42,7 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
 
 ## Protocol
 ### Entry
-Activation of the MDU protocol is accomplished through a sequence of commands to **verify** configuration variables (CVs) in DCC operations mode. The entire sequence must be broadcast and thus sent to broadcast address 0. Details on the command structure can be found in [RCN-214](https://normen.railcommunity.de/RCN-214.pdf), especially point 2 ("Configuration variable access command - long form"). Depending on the type of update desired, ZPP or ZSU, the following sequences are to be sent:
+Activation of the MDU protocol is accomplished through a sequence of commands to **verify** configuration variables (CVs) in [DCC](https://github.com/ZIMO-Elektronik/DCC) operations mode. The entire sequence must be broadcast and thus sent to broadcast address 0. Details on the command structure can be found in [RCN-214](https://normen.railcommunity.de/RCN-214.pdf), especially point 2 ("Configuration variable access command - long form"). Depending on the type of update desired, ZPP or ZSU, the following sequences are to be sent:
 
 | ZPP           | ZSU           |
 | ------------- | ------------- |
@@ -72,6 +72,8 @@ At the end of a data packet, so-called acknowledgment bits are sent by the comma
 
 Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For Roco's Z21, for example, 90% duty cycle with a period of 10µs turned out to be ideal.
 
+![wavedrom](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/wavedrom.png)
+
 ### Bit timings
 At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
 
@@ -86,7 +88,7 @@ At the beginning of a transfer, all devices start with the default setting. The 
 ### Structure of a data packet
 The following flowchart describes the general structure of an MDU data packet.
 
-![data packet](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/data_packet.png)
+![flowchart](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/flowchart.png)
 
 In principle, each command packet contains the phases preamble, data and acknowledgement. The meaning of the transmitted data and the acknowledgment depends on the command package itself and will be itemized later for each command.
 
@@ -289,13 +291,13 @@ The general command set contains commands for searching and selecting decoders, 
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFFF                        |
 | Data            | 4-byte serial number               |
-| Data            | 4-byte decoder ID (MSB first)      |
+| Data            | 4-byte decoder ID (optional)       |
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Ping successful                    |
 
 A ping command allows individual decoders or decoder types to be selected. Only **selected decoders** may execute commands and send acknowledgements to the command station. In the initial state after a reset, all decoders are selected. The selection is made by transmitting a 4-byte serial number and a 4-byte decoder ID. A decoder is considered to be selected if all received numbers that are not 0 match those of the decoder. If only 0 is transmitted, all decoders are selected. This results in the following variants:
 - If a serial number and a decoder ID are transmitted, a single decoder with the corresponding serial number and ID is selected.
-- If a serial number and decoder ID 0 is transmitted, all decoders with the corresponding serial number are selected.
+- If a serial number and decoder ID 0 is transmitted, all decoders with the corresponding serial number are selected. (In this case, the ID can be omitted entirely.)
 - If serial number 0 and a decoder ID is transmitted, all decoders with the corresponding ID are selected.
 - If serial number 0 and decoder ID 0 is transmitted, all decoders are selected.
 
