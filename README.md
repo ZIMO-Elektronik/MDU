@@ -10,7 +10,7 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
   - [Z21](https://www.z21.eu/en)
 - Decoders
   - [ZIMO MN decoders](https://www.zimo.at/web2010/products/mn-nicht-sound-decoder_EN.htm)
-  - [ZIMO Small-](https://www.zimo.at/web2010/products/ms-sound-decoder_EN.htm) and [large-scale MS decoders](https://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn_EN.htm)
+  - [ZIMO small-](https://www.zimo.at/web2010/products/ms-sound-decoder_EN.htm) and [large-scale MS decoders](https://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn_EN.htm)
 
 <details>
   <summary>Table of contents</summary>
