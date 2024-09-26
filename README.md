@@ -13,23 +13,23 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
   - [ZIMO small-](https://www.zimo.at/web2010/products/ms-sound-decoder_EN.htm) and [large-scale MS decoders](https://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn_EN.htm)
 
 <details>
-  <summary>Table of contents</summary>
+  <summary>Table of Contents</summary>
   <ol>
     <li><a href="#protocol">Protocol</a></li>
       <ul>
         <li><a href="#entry">Entry</a></li>
-        <li><a href="#alternative-entry">Alternative entry</a></li>
+        <li><a href="#alternative-entry">Alternative Entry</a></li>
         <li><a href="#transmission">Transmission</a></li>
-        <li><a href="#bit-timings">Bit timings</a></li>
-        <li><a href="#structure-of-a-data-packet">Structure of a data packet</a></li>
+        <li><a href="#bit-timings">Bit Timings</a></li>
+        <li><a href="#structure-of-a-data-packet">Structure of a Data Packet</a></li>
         <li><a href="#commands">Commands</a></li>
         <li><a href="#acknowledgment">Acknowledgment</a></li>
-        <li><a href="#general-commands">General commands</a></li>
-        <li><a href="#zpp-commands">ZPP commands</a></li>
+        <li><a href="#general-commands">General Commands</a></li>
+        <li><a href="#zpp-commands">ZPP Commands</a></li>
         <li><a href="#zsu-commands">ZSU commands</a></li>
         <li><a href="#typical-processes">Typical processes</a></li>
       </ul>
-    <li><a href="#getting-started">Getting started</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
@@ -58,7 +58,7 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 
 By specifying a serial number(SN), it is possible to activate only a very specific decoder. Setting the SN bytes to zero will activate the desired state in all connected decoders(ZPP), or all connected decoders with a certain ID(ZSU).
 
-### Alternative entry
+### Alternative Entry
 As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
 
 ### Transmission
@@ -70,11 +70,11 @@ At the end of a data packet, so-called acknowledgment bits are sent by the comma
 
 **Channel 2** (ackreq bits 6-8) is for data acknowledgment. The meaning depends on the last command transmitted. For an overview, refer to the table in the [acknowledgment](#acknowledgment) chapter. The detailed description of individual commands that follows later also goes into more detail about the meaning.
 
-Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For Roco's Z21, for example, 90% duty cycle with a period of 10µs turned out to be ideal.
+Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For ROCO's Z21, for example, 90% duty cycle with a period of 10µs turned out to be ideal.
 
 ![wavedrom](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/wavedrom.png)
 
-### Bit timings
+### Bit Timings
 At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
 
 | Speed        | One bit [µs] | Zero bit [µs] | Ackreq bit [µs] | Ack bit [µs] | Decoder tolerance [%] |
@@ -85,14 +85,14 @@ At the beginning of a transfer, all devices start with the default setting. The 
 | 3            | 40           | 80            | 120             | 80           | 20                    |
 | 4 (default)  | 75           | 150           | 225             | 100          | 10                    |
 
-### Structure of a data packet
+### Structure of a Data Packet
 The following flowchart describes the general structure of an MDU data packet.
 
 ![flowchart](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/flowchart.png)
 
 In principle, each command packet contains the phases preamble, data and acknowledgement. The meaning of the transmitted data and the acknowledgment depends on the command package itself and will be itemized later for each command.
 
-| Command phase              | Description                                                    |
+| Command Phase              | Description                                                    |
 | -------------------------- | -------------------------------------------------------------- |
 | Preamble                   | Identification and synchronization of an MDU packet            |
 | Data (coding)              | 4-byte identification of the command                           |
@@ -103,9 +103,9 @@ In principle, each command packet contains the phases preamble, data and acknowl
 ### Commands
 The supported commands of the MDU protocol are divided into 3 categories: general, ZPP and ZSU. Devices that only want to support either ZPP or ZSU updates only have to support the command set actually used. However, the general command set must be implemented.
 
-| General commands                              | Coding      | ZPP commands                        | Coding      | ZSU commands                                        | Coding      |
-| --------------------------------------------- | ----------- | ----------------------------------- | ----------- | --------------------------------------------------- | ----------- |
-|                                               |             | [ZPP-Valid-Query](#zpp-valid-query) | 0xFFFF'FF06 |                                                     |             |
+| [General Commands](#general-commands)         | Coding      | [ZPP Commands](#zpp-commands)       | Coding      | [ZSU Commands](#zsu-commands)                  | Coding      |
+| --------------------------------------------- | ----------- | ----------------------------------- | ----------- | ---------------------------------------------- | ----------- |
+|                                               |             | [ZPP-Valid-Query](#zpp-valid-query) | 0xFFFF'FF06 |                                                |             |
 | [Ping](#ping)                                 | 0xFFFF'FFFF | [ZPP-LC-DC-Query](#zpp-lc-dc-query) | 0xFFFF'FF07 | [ZSU-Salsa20-IV](#zsu-salsa20-iv)              | 0xFFFF'FFF7 |
 | [Config-Transfer-Rate](#config-transfer-rate) | 0xFFFF'FFFE | [ZPP-Erase](#zpp-erase)             | 0xFFFF'FF05 | [ZSU-Erase](#zsu-erase)                        | 0xFFFF'FFF5 |
 | [Binary-Tree-Search](#binary-tree-search)     | 0xFFFF'FFFA | [ZPP-Update](#zpp-update)           | 0xFFFF'FF08 | [ZSU-Update](#zsu-update)                      | 0xFFFF'FFF8 |
@@ -116,7 +116,7 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
 ### Acknowledgment
 <table>
   <tr>
-    <th style="text-align: center">Ackreq bit</th>
+    <th style="text-align: center">Ackreq Bit</th>
     <th style="text-align: center">0</th>
     <th style="text-align: center">1</th>
     <th style="text-align: center">2</th>
@@ -282,11 +282,11 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
   </tr>
 </table>
 
-### General commands
+### General Commands
 The general command set contains commands for searching and selecting decoders, setting the bit timings, writing and reading configuration variables, and a busy query.
 
 #### Ping
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFFF                        |
@@ -304,7 +304,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 ![ping](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/ping.png)
 
 #### Config-Transfer-Rate
-| Command phase   | Description                                   |
+| Command Phase   | Description                                   |
 | --------------- | --------------------------------------------- |
 | Preamble        | Identification and synchronization            |
 | Data (coding)   | 0xFFFF'FFFE                                   |
@@ -315,7 +315,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 With the help of a Config-Transfer-Rate command, the transmission speed can be adapted to the decoder by setting the bit timings. The exact times for one bit, zero bit, ackreq bit and ack bit can be found in the [bit timings](#bit-timings). If a decoder does not support the selected transmission speed, an acknowledgement must be sent in channel 2.
 
 #### Binary-Tree-Search
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFFA                        |
@@ -350,7 +350,7 @@ The following flowchart shows the search process from the perspective of the dec
 ![binary tree search](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/binary_tree_search.png)
 
 #### CV-Read
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFF6                        |
@@ -362,7 +362,7 @@ The following flowchart shows the search process from the perspective of the dec
 CV-Read reads a single bit of the configuration variable with the received number. If the bit is set, an acknowledgement is sent in channel 2.
 
 #### CV-Write
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFF9                        |
@@ -374,7 +374,7 @@ CV-Read reads a single bit of the configuration variable with the received numbe
 CV-Write writes a configuration variable with the received number-value pair. Any write errors must be answered with an acknowledgement in channel 2.
 
 #### Busy
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFF2                        |
@@ -383,11 +383,11 @@ CV-Write writes a configuration variable with the received number-value pair. An
 
 The Busy command can be used to check whether the decoder is still busy with the last packet. If a decoder is not yet ready for a new packet, it can reply with an acknowledgment in channel 2. If the command station sends packets other than Busy to decoders that are still busy, the packets are discarded and acknowlegded with a response in channel 1.
 
-### ZPP commands
+### ZPP Commands
 The ZPP command set is used to update the ZPP project. It contains, among other things, an erase and update command, commands for ending the transfer and an exit command.
 
 #### ZPP-Valid-Query
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FF06                        |
@@ -399,7 +399,7 @@ The ZPP command set is used to update the ZPP project. It contains, among other 
 A ZPP-Valid-Query can be used to check whether the decoders are able to load the desired ZPP at all. The check includes the 2-character identifier of the ZPP file and the size of its flash data. If the ZPP cannot be loaded, an acknowledgment must be sent in channel 2.
 
 #### ZPP-LC-DC-Query
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FF07                        |
@@ -410,7 +410,7 @@ A ZPP-Valid-Query can be used to check whether the decoders are able to load the
 A ZPP-LC-DC query can be used to check whether the decoders contain a valid load code before deleting the flash. If the received load code is not correct, an acknowledgment must be sent in channel 2.
 
 #### ZPP-Erase
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FF05                        |
@@ -424,7 +424,7 @@ With the help of ZPP-Erase, a certain memory area of the flash can be deleted. I
 > After the command, a delay of at least 3.5s must be observed.
 
 #### ZPP-Update
-| Command phase   | Description                                 |
+| Command Phase   | Description                                 |
 | --------------- | ------------------------------------------- |
 | Preamble        | Identification and synchronization          |
 | Data (coding)   | 0xFFFF'FF08                                 |
@@ -438,7 +438,7 @@ ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 er
 > Current implementations only support payloads up to 256 bytes.
 
 #### ZPP-Update-End
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FF0B                        |
@@ -450,7 +450,7 @@ ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 er
 ZPP-Update-End marks the end of the current data transmission and retransmits the written memory area. Any ZPP data that is still buffered must be written when this command is received. If an invalid memory area is received, an acknowledgment must be given in channel 2.
 
 #### ZPP-Exit
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FF0C                        |
@@ -460,7 +460,7 @@ ZPP-Update-End marks the end of the current data transmission and retransmits th
 ZPP-Exit is used to reset the decoder. The reset is only carried out if the memory area previously transferred via the ZPP-Update-End matches that written by the decoder. If this is not the case, the decoder discards all written data.
 
 #### ZPP-Exit&Reset
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FF0D                        |
@@ -473,7 +473,7 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 The ZSU command set is used to update the decoder software. Among other things, it contains an update command, commands for a final CRC32 check and a command for transmitting the initialization vector of the [Salsa20](https://en.wikipedia.org/wiki/Salsa20) encryption used.
 
 #### ZSU-Salsa20-IV
-| Command phase   | Description                          |
+| Command Phase   | Description                          |
 | --------------- | ------------------------------------ |
 | Preamble        | Identification and synchronization   |
 | Data (coding)   | 0xFFFF'FFF7                          |
@@ -486,7 +486,7 @@ ZSU-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa
 > For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.
 
 #### ZSU-Erase
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFF5                        |
@@ -500,7 +500,7 @@ The processor flash is deleted before an update package is written. If an invali
 > After the command, a delay of at least 3.5s must be observed.
 
 #### ZSU-Update
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFF8                        |
@@ -514,7 +514,7 @@ ZSU-Update is used to transfer firmware data. If an invalid address or a CRC32 e
 > Current implementations only support payloads of exactly 64 bytes. Smaller payloads must contain appropriate padding.
 
 #### ZSU-CRC32-Start
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFFB                        |
@@ -529,7 +529,7 @@ ZSU-CRC32-Start transfers the written memory area and the CRC32 of the encrypted
 > The transferred memory area is a closed interval. The last address actually written corresponds to the end address!
 
 #### ZSU-CRC32-Result
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFFC                        |
@@ -539,7 +539,7 @@ ZSU-CRC32-Start transfers the written memory area and the CRC32 of the encrypted
 With the help of the ZSU-CRC32-Result command, the command station queries the result of the checksum previously transmitted via ZSU-CRC32-Start. If the checksum is not correct, there must be an acknowledgment in channel 2.
 
 #### ZSU-CRC32-Result&Exit
-| Command phase   | Description                        |
+| Command Phase   | Description                        |
 | --------------- | ---------------------------------- |
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFFD                        |
@@ -549,7 +549,7 @@ With the help of the ZSU-CRC32-Result command, the command station queries the r
 See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a reset.
 
 ### Typical processes
-#### ZPP update
+#### ZPP Update
 1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
 2. [ZPP-Valid-Query](#zpp-valid-query)
    - [ZPP-Exit](#zpp-exit) on answer
@@ -561,7 +561,7 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 7. [ZPP-Exit](#zpp-exit) | [ZPP-Exit&Reset](#zpp-exitreset)
 8. Leave track voltage switched on for at least 1s
 
-#### ZSU update
+#### ZSU Update
 1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
 2. [Binary-Tree-Search](#binary-tree-search) to find all connected decoders
 3. [Ping](#ping) the desired decoders
@@ -572,7 +572,7 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 8. [ZSU-CRC32-Result](#zsu-crc32-result) | [ZSU-CRC32-Result&Exit](#zsu-crc32-resultexit)
 9. Leave track voltage switched on for at least 1s
 
-## Getting started
+## Getting Started
 ### Prerequisites
 - C++23 compatible compiler
 - [CMake](https://cmake.org/) ( >= 3.25 )
