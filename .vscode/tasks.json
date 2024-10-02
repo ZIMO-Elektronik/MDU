@@ -20,10 +20,10 @@
       "command": "./build/tests/MDUTests"
     },
     {
-      "label": "Run dot",
+      "label": "Run PlantUML",
       "type": "shell",
       "isBackground": true,
-      "command": "dot -Tpng ./data/binary_tree_search.dot > ./data/images/binary_tree_search.png; dot -Tpng ./data/data_packet.dot > ./data/images/data_packet.png; dot -Tpng ./data/ping.dot > ./data/images/ping.png"
+      "command": "plantuml -o ./images ./data/binary_tree_search.pu ./data/ping.pu ./data/structure_of_a_data_packet.pu ./data/transmission.pu"
     }
   ]
 }

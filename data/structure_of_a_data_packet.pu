@@ -1,0 +1,50 @@
+@startuml
+
+start
+
+repeat
+  :>=10 one bits;
+  note left
+  A MDU data packet is identified and synchronized to the byte boundaries with a
+  sequence of one bits. Command stations must send at least 14 one bits in a row.
+  Decoders must be able to receive a packet with ≥10 one bits.
+  end note
+repeat while (Bit == 0) is (false) not (true)
+
+repeat
+  :8 data bits;
+  note left
+  The packet start bit is a zero bit immediately following the sync bits. The
+  start bit completes the synchronization and indicates to the decoder that the
+  following bits belong to the first byte of the packet. 8 bits of user data
+  follow, the meaning of which depends on the command package.
+  end note
+repeat while (Bit == 1) is (false) not (true)
+
+:Ackreq Bits 0-1;
+note left
+The first two acknowledgment bits can be used by command stations to carry out a
+reference current measurement. No ackbits may be sent during this time.
+end note
+
+:Ackreq Bits 2-4 (channel 1);
+note left
+Channel 1 can be used by decoders to report back transmission and checksum
+errors.
+end note
+
+:Ackreq Bit 5;
+
+:Ackreq Bits 6-8 (channel 2);
+note left
+Channel 2 can be used by decoders to report back data. The exact meaning of the
+acknowledgement can be found in the detailed description of the respective
+command packages.
+end note
+
+repeat
+repeat while (Bit == Ackreq) is (true) not (false)
+
+stop
+
+@enduml

@@ -1,6 +1,6 @@
 # MDU
 
-[![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)
+[![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)[![license](https://img.shields.io/github/license/ZIMO-Elektronik/MDU)](https://github.com/ZIMO-Elektronik/MDU/raw/master/LICENSE)
 
 <img src="https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/logo.png" align="right">
 
@@ -56,7 +56,7 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 | CV105 == SN   | CV105 == SN   |
 | CV106 == SN   | CV106 == SN   |
 
-By specifying a serial number(SN), it is possible to activate only a very specific decoder. Setting the SN bytes to zero will activate the desired state in all connected decoders(ZPP), or all connected decoders with a certain ID(ZSU).
+By specifying a serial number(SN), it is possible to activate only a very specific decoder. Setting the SN bytes to zero will activate the desired state in all connected decoders(ZPP), or all connected decoders with a certain ID(ZSU). Also, setting the ID and SN bytes zero will active all connected decoders(ZSU).
 
 ### Alternative Entry
 As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
@@ -72,12 +72,12 @@ At the end of a data packet, so-called acknowledgment bits are sent by the comma
 
 Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For ROCO's Z21, for example, 90% duty cycle with a period of 10µs turned out to be ideal.
 
-![wavedrom](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/wavedrom.png)
+![transmission](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/transmission.png)
 
 ### Bit Timings
 At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
 
-| Speed        | One bit [µs] | Zero bit [µs] | Ackreq bit [µs] | Ack bit [µs] | Decoder tolerance [%] |
+| Speed        | One Bit [µs] | Zero Bit [µs] | Ackreq Bit [µs] | Ack Bit [µs] | Decoder Tolerance [%] |
 | ------------ | ------------ | ------------- | --------------- | ------------ | --------------------- |
 | 0 (fallback) | 1200         | 2400          | 3600            | 100          | 10                    |
 | 1            | 10           | 20            | 60              | 40           | 30                    |
@@ -86,15 +86,15 @@ At the beginning of a transfer, all devices start with the default setting. The 
 | 4 (default)  | 75           | 150           | 225             | 100          | 10                    |
 
 ### Structure of a Data Packet
-The following flowchart describes the general structure of an MDU data packet.
+The following flowchart describes the general structure of a MDU data packet.
 
-![flowchart](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/flowchart.png)
+![structure of a data packet](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/structure_of_a_data_packet.png)
 
 In principle, each command packet contains the phases preamble, data and acknowledgement. The meaning of the transmitted data and the acknowledgment depends on the command package itself and will be itemized later for each command.
 
 | Command Phase              | Description                                                    |
 | -------------------------- | -------------------------------------------------------------- |
-| Preamble                   | Identification and synchronization of an MDU packet            |
+| Preamble                   | Identification and synchronization of a MDU packet             |
 | Data (coding)              | 4-byte identification of the command                           |
 | Data (optional)            | Optional transmission of data depending on the command package |
 | Data (CRC)                 | 1- or 4-byte checksum of the packet                            |
@@ -291,13 +291,13 @@ The general command set contains commands for searching and selecting decoders, 
 | Preamble        | Identification and synchronization |
 | Data (coding)   | 0xFFFF'FFFF                        |
 | Data            | 4-byte serial number               |
-| Data            | 4-byte decoder ID (optional)       |
+| Data            | 4-byte decoder ID                  |
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Ping successful                    |
 
 A ping command allows individual decoders or decoder types to be selected. Only **selected decoders** may execute commands and send acknowledgements to the command station. In the initial state after a reset, all decoders are selected. The selection is made by transmitting a 4-byte serial number and a 4-byte decoder ID. A decoder is considered to be selected if all received numbers that are not 0 match those of the decoder. If only 0 is transmitted, all decoders are selected. This results in the following variants:
 - If a serial number and a decoder ID are transmitted, a single decoder with the corresponding serial number and ID is selected.
-- If a serial number and decoder ID 0 is transmitted, all decoders with the corresponding serial number are selected. (In this case, the ID can be omitted entirely.)
+- If a serial number and decoder ID 0 is transmitted, all decoders with the corresponding serial number are selected.
 - If serial number 0 and a decoder ID is transmitted, all decoders with the corresponding ID are selected.
 - If serial number 0 and decoder ID 0 is transmitted, all decoders are selected.
 
@@ -563,6 +563,8 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 
 #### ZSU Update
 1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
+> [!WARNING]  
+> Due to a bug in bootloader versions < 2.10.7 of the MN/S decoder, the speed must be limited to 3 regardless of the reported capabilities.
 2. [Binary-Tree-Search](#binary-tree-search) to find all connected decoders
 3. [Ping](#ping) the desired decoders
 4. [ZSU-Salsa20-IV](#zsu-salsa20-iv)
