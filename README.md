@@ -1,6 +1,6 @@
 # MDU
 
-[![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)[![license](https://img.shields.io/github/license/ZIMO-Elektronik/MDU)](https://github.com/ZIMO-Elektronik/MDU/raw/master/LICENSE)
+[![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml) [![license](https://img.shields.io/github/license/ZIMO-Elektronik/MDU)](https://github.com/ZIMO-Elektronik/MDU/raw/master/LICENSE)
 
 <img src="https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/logo.png" align="right">
 
