@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.17.0
+- ZSU update entry by a CV verify sequence with decoder ID and serial number 0
+
 ## 0.16.1
 - Bugfix `ESP_GOTO_ON_FALSE` condition
 

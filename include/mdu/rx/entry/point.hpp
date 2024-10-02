@@ -23,10 +23,17 @@ struct Point {
   void verify(uint32_t cv_addr, uint8_t byte);
 
 private:
-  void
-  verifySequence(std::array<std::pair<uint8_t, uint8_t>, 5uz> const& sequence,
-                 std::function<void()> const& f);
   Config const _cfg;
+  std::array<std::pair<uint8_t, uint8_t>, 4uz> const _sn_sequence{
+    {{105u - 1u, static_cast<uint8_t>(_cfg.serial_number >> 24u)},
+     {106u - 1u, static_cast<uint8_t>(_cfg.serial_number >> 16u)},
+     {105u - 1u, static_cast<uint8_t>(_cfg.serial_number >> 8u)},
+     {106u - 1u, static_cast<uint8_t>(_cfg.serial_number >> 0u)}}};
+  std::array<std::pair<uint8_t, uint8_t>, 4uz> const _id_sequence{
+    {{105u - 1u, static_cast<uint8_t>(_cfg.decoder_id >> 24u)},
+     {106u - 1u, static_cast<uint8_t>(_cfg.decoder_id >> 16u)},
+     {105u - 1u, static_cast<uint8_t>(_cfg.decoder_id >> 8u)},
+     {106u - 1u, static_cast<uint8_t>(_cfg.decoder_id >> 0u)}}};
   ztl::inplace_deque<std::pair<uint8_t, uint8_t>, 9uz> _deque{};
 };
 

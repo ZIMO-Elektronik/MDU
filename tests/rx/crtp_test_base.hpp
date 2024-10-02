@@ -24,8 +24,8 @@ struct CrtpTestBase : ::testing::Test {
 
   void Execute() { impl()._mock->execute(); }
 
-  static constexpr auto _serial_number{0x70411AFCu};
-  static constexpr auto _decoder_id{0x06043200u};
+  static constexpr uint32_t _serial_number{0x70411AFCu};
+  static constexpr uint32_t _decoder_id{0x06043200u};
   static constexpr mdu::rx::Config _cfg{.serial_number = _serial_number,
                                         .decoder_id = _decoder_id};
 
