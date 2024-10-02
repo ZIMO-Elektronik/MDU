@@ -1,6 +1,6 @@
 # MDU
 
-[![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)
+[![build](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/build.yml) [![tests](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml/badge.svg)](https://github.com/ZIMO-Elektronik/MDU/actions/workflows/tests.yml)[![license](https://img.shields.io/github/license/ZIMO-Elektronik/MDU)](https://github.com/ZIMO-Elektronik/MDU/raw/master/LICENSE)
 
 <img src="https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/logo.png" align="right">
 
@@ -72,7 +72,7 @@ At the end of a data packet, so-called acknowledgment bits are sent by the comma
 
 Command stations must send at least 10 acknowledgment bits. Decoders that want to give feedback in a channel must answer at least 2 of 3 ackreq bits within this channel with an ack bit. Even a single received ack bit is to be evaluated by the command station as a response. In order not to overload command stations with sensitive overcurrent shutdown, the ack bits can also be transmitted as PWM instead of continuous current pulses. For ROCO's Z21, for example, 90% duty cycle with a period of 10µs turned out to be ideal.
 
-![transmission](./data/images/transmission.png)
+![transmission](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/transmission.png)
 
 ### Bit Timings
 At the beginning of a transfer, all devices start with the default setting. The command station can now gradually increase the transmission speed. If one of the decoders responds with an ack bit to signal that the desired speed is not supported, the station must transmit a Config-Transfer-Rate command to revise the setting with fallback timings. This is the only way to ensure that the settings on the decoders do not diverge. The fallback timings (speed 0) are therefore always active and must always be able to be received regardless of the selected speed.
@@ -88,7 +88,7 @@ At the beginning of a transfer, all devices start with the default setting. The 
 ### Structure of a Data Packet
 The following flowchart describes the general structure of a MDU data packet.
 
-![structure of a data packet](data/images/structure_of_a_data_packet.png)
+![structure of a data packet](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/structure_of_a_data_packet.png)
 
 In principle, each command packet contains the phases preamble, data and acknowledgement. The meaning of the transmitted data and the acknowledgment depends on the command package itself and will be itemized later for each command.
 
@@ -301,7 +301,7 @@ A ping command allows individual decoders or decoder types to be selected. Only 
 - If serial number 0 and a decoder ID is transmitted, all decoders with the corresponding ID are selected.
 - If serial number 0 and decoder ID 0 is transmitted, all decoders are selected.
 
-![ping](data/images/ping.png)
+![ping](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/ping.png)
 
 #### Config-Transfer-Rate
 | Command Phase   | Description                                   |
@@ -347,7 +347,7 @@ Since, in contrast to DCC, several decoders can send an acknowledgment at the sa
 
 The following flowchart shows the search process from the perspective of the decoder. See [Maxim Integrated's application note](https://www.analog.com/en/app-notes/1wire-search-algorithm.html) [1-Wire Search Algorithm](data/1wire-search-algorithm.pdf) for more information.
 
-![binary tree search](./data/images/binary_tree_search.png)
+![binary tree search](https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/binary_tree_search.png)
 
 #### CV-Read
 | Command Phase   | Description                        |
