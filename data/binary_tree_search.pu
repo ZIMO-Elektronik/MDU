@@ -1,0 +1,30 @@
+@startuml
+
+start
+
+switch (byte)
+case ( == 255)
+  :Arm;
+  stop
+case ( <= 62) 
+  if (UID & (1 << byte)) then (true)
+    :Ack;
+  endif
+case ( >= 64 && <= 64 + 62 )
+  if (!(UID & (1 << byte - 64))) then (true)
+    :Ack;
+  endif
+case ( >= 128 && <= 128 + 62 )
+  if (UID & (1 << byte - 128)) then (true)
+    :Disarm;
+  endif
+case ( >= 192 && <= 192 + 62 )
+  if (!(UID & (1 << byte - 192))) then (true)
+    :Disarm;
+  endif
+case ( )
+endswitch
+
+stop
+
+@enduml

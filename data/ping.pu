@@ -1,0 +1,32 @@
+@startuml
+
+start
+
+if (SN && ID) then (true)
+  if (SN == own && ID == own) then (true)
+    :Select;
+  else (false)
+    :Deselect;
+  endif
+  stop
+else if (SN) then (true)
+  if (SN == own) then (true)
+    :Select;
+  else (false)
+    :Deselect;
+  endif
+  stop
+else if (ID) then (true)
+  if (ID == own) then (true)
+    :Select;
+  else (false)
+    :Deselect;
+  endif
+  stop
+else
+  :Select;
+  stop
+endif
+
+
+@enduml

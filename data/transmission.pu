@@ -1,0 +1,97 @@
+@startuml
+
+mode compact
+scale 300 as 50 pixels
+hide time-axis
+
+binary "Track" as T
+T is 50 pixels height
+
+concise " " as RX
+
+binary "Ack" as ACK
+ACK is 50 pixels height
+
+concise " " as TX
+
+@T
+0 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++75 is high
++150 is low
++75 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++150 is high
++75 is low
++75 is high
++150 is low
++150 is high
++75 is low
++75 is high
++75 is low
++75 is high
++75 is low
++225 is high
++225 is low
++225 is high
++225 is low
++225 is high
++225 is low
++225 is high
++225 is low
++225 is high
++225 is low
+
+@RX
+0 is Preamble
++1050 is {hidden}
++150 is "Byte n (0xFF)"
++600 is {hidden}
++150 is "Byte n+1 (0xCF)"
++750 is {hidden}
++75 is Ackreq
++2250 is {hidden}
+
+@ACK
+0 is low
++50 is low
++3225 is {low,high}
++100 is low
++125 is {low,high}
++100 is low
++125 is {low,high}
++100 is low
++225 is low
++125 is {low,high}
++100 is low
++125 is {low,high}
++100 is low
++125 is {low,high}
++100 is low
+
+@TX
+2775 is Reference
++450 is "Channel 1"
++675 is {hidden}
++225 is "Channel 2"
++675 is {hidden}
+
+@enduml
