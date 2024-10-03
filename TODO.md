@@ -1,3 +1,2 @@
-- Other entry points still missing (verify 105 == 0 || DCC address MSB).
 - executeConfig should be tested for fallback timings
 - Document that there's a short version of Ping

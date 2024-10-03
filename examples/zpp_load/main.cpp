@@ -1,6 +1,6 @@
 #include <mdu/mdu.hpp>
 
-#define SERIAL_NUMBER 0x12345678u
+#define SN 0x12345678u
 #define ID 0x87654321u
 #define TIMER_VALUE 42u
 
@@ -9,7 +9,7 @@ public:
   // Ctor takes configuration struct containing serial number, decoder ID and
   // supported tranfer rate
   ZppLoad()
-    : mdu::rx::ZppBase{{.serial_number = SERIAL_NUMBER,
+    : mdu::rx::ZppBase{{.serial_number = SN,
                         .decoder_id = ID,
                         .transfer_rate = mdu::TransferRate::Fast}} {}
 
@@ -53,9 +53,11 @@ private:
 
 void enter_zpp_update() {}
 
-// Ctor takes ID und function object hooks with void() signature
-mdu::rx::entry::Point entry_point{
-  {.decoder_id = ID, .zpp_entry = enter_zpp_update, .zsu_entry = nullptr}};
+// Ctor takes SN, ID und function object hooks with void() signature
+mdu::rx::entry::Point entry_point{{.serial_number = SN,
+                                   .decoder_id = ID,
+                                   .zpp_entry = enter_zpp_update,
+                                   .zsu_entry = nullptr}};
 
 int main() {
   ZppLoad zpp_load{};

@@ -587,13 +587,13 @@ This library is meant to be consumed with CMake,
 
 ```cmake
 # Either by including it with CPM
-cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.15.4")
+cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.17.0")
 
 # or the FetchContent module
 FetchContent_Declare(
   MDU
   GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/MDU"
-  GIT_TAG v0.15.4)
+  GIT_TAG v0.17.0)
 
 target_link_libraries(YourTarget PRIVATE MDU::MDU)
 ```
@@ -678,12 +678,14 @@ private:
 };
 ```
 
-The entry into the MDU protocol can be handled by the `receive::entry::Point` class. The ctor takes the decoder ID and two optional function objects hooks to call before starting the ZPP or ZSU update.
+The entry into the MDU protocol can be handled by the `rx::entry::Point` class. The ctor takes the decoder SN, ID and two optional function objects hooks to call before starting the ZPP or ZSU update.
 ```cpp
-// Ctor takes ID und function object hooks with void() signature
-mdu::rx::entry::Point entry_point{
-  {.decoder_id = ID, .zpp_entry = enter_zpp_update, .zsu_entry = nullptr}};                                 
+// Ctor takes SN, ID und function object hooks with void() signature
+mdu::rx::entry::Point entry_point{{.serial_number = SN,
+                                   .decoder_id = ID,
+                                   .zpp_entry = enter_zpp_update,
+                                   .zsu_entry = nullptr}};
 
 // Forward DCC verifies
-entry_point.verify(index, value);
+entry_point.verify(index, byte);
 ```
