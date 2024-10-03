@@ -9,14 +9,14 @@ if (SN && ID) then (true)
     :Deselect;
   endif
   stop
-else if (SN) then (true)
+elseif (SN) then (true)
   if (SN == own) then (true)
     :Select;
   else (false)
     :Deselect;
   endif
   stop
-else if (ID) then (true)
+elseif (ID) then (true)
   if (ID == own) then (true)
     :Select;
   else (false)
