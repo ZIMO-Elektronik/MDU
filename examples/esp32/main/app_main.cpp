@@ -3,12 +3,15 @@
 #include <esp_task.h>
 #include <rmt_mdu_encoder.h>
 #include <array>
+#include <mdu/mdu.hpp>
+
+#define RMT_GPIO_NUM GPIO_NUM_21
 
 extern "C" void app_main() {
   printf("DCC RMT encoder example");
 
   // Setup RMT on GPIO21
-  rmt_tx_channel_config_t chan_config{.gpio_num = GPIO_NUM_21,
+  rmt_tx_channel_config_t chan_config{.gpio_num = RMT_GPIO_NUM,
                                       .clk_src = RMT_CLK_SRC_DEFAULT,
                                       .resolution_hz = 1'000'000u,  // 1MHz
                                       .mem_block_symbols =
@@ -25,17 +28,12 @@ extern "C" void app_main() {
   rmt_encoder_handle_t rmt_encoder{};
   ESP_ERROR_CHECK(rmt_new_mdu_encoder(&encoder_config, &rmt_encoder));
 
-  std::array<char, 4uz> const chunk{
-    0b1100'0000u,
-    0b0011'0000u,
-    0b0000'1100u,
-    0b0000'0011u,
-  };
+  auto busy_packet{mdu::make_busy_packet()};
   rmt_transmit_config_t rmt_transmit_config{};
   for (;;)
     ESP_ERROR_CHECK(rmt_transmit(rmt_channel,
                                  rmt_encoder,
-                                 data(chunk),
-                                 size(chunk),
+                                 data(busy_packet),
+                                 size(busy_packet),
                                  &rmt_transmit_config));
 }
