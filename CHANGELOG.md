@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.17.1
+- Bugfix CMake always includes tests
+
 ## 0.17.0
 - ZSU update entry by a CV verify sequence with decoder ID and serial number 0
 

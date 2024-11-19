@@ -2,18 +2,6 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "CMake MDUTests",
-      "type": "shell",
-      "isBackground": true,
-      "command": "cmake -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Debug"
-    },
-    {
-      "label": "Ninja MDUTests",
-      "type": "shell",
-      "isBackground": true,
-      "command": "ninja -C build MDUTests"
-    },
-    {
       "label": "Run MDUTests",
       "type": "shell",
       "isBackground": true,
