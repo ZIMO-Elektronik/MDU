@@ -82,7 +82,7 @@ if(NOT TARGET Salsa20::Salsa20)
 endif()
 
 if(NOT TARGET ZTL::ZTL)
-  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.19.0")
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.19.1")
 endif()
 
 target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)
