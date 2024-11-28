@@ -7,7 +7,7 @@
 class ZppLoad : public mdu::rx::ZppBase {
 public:
   // Ctor takes configuration struct containing serial number, decoder ID and
-  // supported tranfer rate
+  // supported transfer rate
   ZppLoad()
     : mdu::rx::ZppBase{{.serial_number = SN,
                         .decoder_id = ID,

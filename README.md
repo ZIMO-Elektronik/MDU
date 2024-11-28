@@ -381,7 +381,7 @@ CV-Write writes a configuration variable with the received number-value pair. An
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Decoder busy                       |
 
-The Busy command can be used to check whether the decoder is still busy with the last packet. If a decoder is not yet ready for a new packet, it can reply with an acknowledgment in channel 2. If the command station sends packets other than Busy to decoders that are still busy, the packets are discarded and acknowlegded with a response in channel 1.
+The Busy command can be used to check whether the decoder is still busy with the last packet. If a decoder is not yet ready for a new packet, it can reply with an acknowledgment in channel 2. If the command station sends packets other than Busy to decoders that are still busy, the packets are discarded and acknowledged with a response in channel 1.
 
 ### ZPP Commands
 The ZPP command set is used to update the ZPP project. It contains, among other things, an erase and update command, commands for ending the transfer and an exit command.
@@ -421,7 +421,7 @@ A ZPP-LC-DC query can be used to check whether the decoders contain a valid load
 
 With the help of ZPP-Erase, a certain memory area of the flash can be deleted. If an invalid memory area is received, an acknowledgment must be given in channel 2.
 > [!WARNING]  
-> After the command, a delay of at least 3.5s must be observed.
+> Deleting a NOR flash can take up to 200s depending on the manufacturer and type. To ensure that the operation is completed, polling can be done via the [Busy](#busy) command.
 
 #### ZPP-Update
 | Command Phase   | Description                                 |
@@ -639,7 +639,7 @@ The following example shows the skeleton code for implementing the ZPP update.
 class ZppLoad : public mdu::rx::ZppBase {
 public:
   // Ctor takes configuration struct containing serial number, decoder ID and
-  // supported tranfer rate
+  // supported transfer rate
   ZppLoad()
     : mdu::rx::ZppBase{{.serial_number = SERIAL_NUMBER,
                         .decoder_id = ID,
