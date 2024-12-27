@@ -38,7 +38,7 @@ uint32_t slow_crc32(uint32_t sum, unsigned char const* p, uint32_t len) {
 
 constexpr std::array<uint8_t, 4uz> zeros{};
 
-}  // namespace
+} // namespace
 
 static_assert(sizeof(mdu::Crc32) == 4uz);
 

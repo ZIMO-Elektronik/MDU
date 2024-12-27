@@ -48,7 +48,7 @@ struct Base : Ts... {
   /// \param  time  Time in µs
   void receive(uint32_t time) {
     auto const bit{time2bit(time, _transfer_rate_index)};
-    if (bit == Ackreq) _state = &Base::ackreq;  // Shortcut to ackreq phase
+    if (bit == Ackreq) _state = &Base::ackreq; // Shortcut to ackreq phase
     std::invoke(_state, this, time, bit);
   }
 
@@ -353,8 +353,8 @@ protected:
   }
 
   void (Base::*_state)(uint32_t, Bit){&Base::preamble};
-  size_t _bit_count{};        ///< Count received bits
-  size_t _ackreqbit_count{};  ///< Count received ackreqbits
+  size_t _bit_count{};       ///< Count received bits
+  size_t _ackreqbit_count{}; ///< Count received ackreqbits
   Config const _cfg{};
   Crc32 _crc32{};
   ztl::inplace_deque<Packet, 2uz> _deque{};
@@ -368,4 +368,4 @@ protected:
   bool _ack : 1 {};
 };
 
-}  // namespace mdu::rx
+} // namespace mdu::rx

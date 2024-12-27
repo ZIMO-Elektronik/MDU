@@ -17,4 +17,4 @@ namespace mdu::rx {
 
 using ZsuBase = Base<mixin::Zsu>;
 
-}  // namespace mdu::rx
+} // namespace mdu::rx

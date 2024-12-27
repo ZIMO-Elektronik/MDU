@@ -66,7 +66,7 @@ TEST_F(ReceiveBaseTest, nack_packet_with_crc8_error) {
   packet.preamble()
     .command(mdu::Command::Ping)
     .data(static_cast<uint32_t>(0))
-    .crc8(42u)  // Tinker with CRC8
+    .crc8(42u) // Tinker with CRC8
     .ackreq();
   Receive(packet.timingsWithoutAckreq());
   Execute();
@@ -82,7 +82,7 @@ TEST_F(ReceiveBaseTest, nack_and_ack_packet_with_crc32_error) {
     .command(mdu::Command::ZppUpdate)
     .data(static_cast<uint32_t>(0))
     .data(zpp_data)
-    .crc32(42u)  // Tinker with CRC32
+    .crc32(42u) // Tinker with CRC32
     .ackreq();
   Receive(packet.timingsWithoutAckreq());
   Execute();

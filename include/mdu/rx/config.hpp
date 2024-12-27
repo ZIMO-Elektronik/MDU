@@ -21,4 +21,4 @@ struct Config {
   TransferRate transfer_rate{TransferRate::Default};
 };
 
-}  // namespace mdu::rx
+} // namespace mdu::rx

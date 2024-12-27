@@ -56,4 +56,4 @@ constexpr uint32_t crc32(std::span<uint8_t const> bytes) {
   return crc;
 }
 
-}  // namespace mdu
+} // namespace mdu

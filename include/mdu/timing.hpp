@@ -131,4 +131,4 @@ constexpr bool is_ackreq(uint32_t time, size_t transfer_rate_index) {
          is_fallback_ackreq(time);
 }
 
-}  // namespace mdu
+} // namespace mdu

@@ -31,4 +31,4 @@ constexpr Bit time2bit(uint32_t time, size_t transfer_rate_index) {
   else return Invalid;
 }
 
-}  // namespace mdu
+} // namespace mdu

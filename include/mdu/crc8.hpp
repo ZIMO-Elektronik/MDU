@@ -32,7 +32,7 @@ protected:
   T _crc{Init};
 };
 
-}  // namespace detail
+} // namespace detail
 
 /// Dallas/Maxim CRC8 with polynomial representation 0x31u
 struct Crc8 : detail::CrcBase<uint8_t, 0u> {
@@ -68,4 +68,4 @@ constexpr uint8_t crc8(std::span<uint8_t const> bytes) {
   return crc;
 }
 
-}  // namespace mdu
+} // namespace mdu

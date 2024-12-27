@@ -23,4 +23,4 @@ private:
   bool _ignore{true};
 };
 
-}  // namespace mdu::rx
+} // namespace mdu::rx

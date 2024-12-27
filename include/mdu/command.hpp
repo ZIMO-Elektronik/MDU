@@ -37,4 +37,4 @@ enum class Command : uint32_t {
   ZppExitReset = 0xFFFF'FF0Du
 };
 
-}  // namespace mdu
+} // namespace mdu

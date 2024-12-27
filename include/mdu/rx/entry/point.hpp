@@ -37,4 +37,4 @@ private:
   ztl::inplace_deque<std::pair<uint8_t, uint8_t>, 9uz> _deque{};
 };
 
-}  // namespace mdu::rx::entry
+} // namespace mdu::rx::entry

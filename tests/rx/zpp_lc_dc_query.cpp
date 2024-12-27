@@ -10,7 +10,7 @@ bool operator==(span<uint8_t const, 4uz> lhs, span<uint8_t const, 4uz> rhs) {
   return std::equal(std::begin(lhs), std::end(lhs), std::begin(rhs));
 }
 
-}  // namespace std
+} // namespace std
 
 TEST_F(ReceiveZppTest, load_code_valid) {
   {

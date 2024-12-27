@@ -84,4 +84,4 @@ private:
   bool _zpp_valid : 1 {};
 };
 
-}  // namespace mdu::rx::mixin
+} // namespace mdu::rx::mixin

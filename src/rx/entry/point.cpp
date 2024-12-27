@@ -44,7 +44,7 @@ constexpr bool is_cv_addr(uint32_t cv_addr) {
          cv_addr == 106uz - 1uz;
 }
 
-}  // namespace
+} // namespace
 
 /// Verify
 ///
@@ -66,9 +66,9 @@ void Point::verify(uint32_t cv_addr, uint8_t byte) {
 
   // ZPP
   if (_deque.front() == std::pair<uint8_t, uint8_t>{8u - 1u, 0xFEu}) {
-    if ((n <= 5uz &&  // First four must always be 0xAA, 0x55, 0x55, 0xAA
+    if ((n <= 5uz && // First four must always be 0xAA, 0x55, 0x55, 0xAA
          std::equal(cbegin(_deque) + 1, cend(_deque), cbegin(zpp_sequence))) ||
-        (n > 5uz &&  // Second four could be SN or 0x00
+        (n > 5uz && // Second four could be SN or 0x00
          (std::equal(begin(_deque) + 5, end(_deque), begin(_sn_sequence)) ||
           std::equal(begin(_deque) + 5, end(_deque), begin(zero_sequence))))) {
       if (n == _deque.max_size()) std::invoke(_cfg.zpp_entry);
@@ -77,10 +77,10 @@ void Point::verify(uint32_t cv_addr, uint8_t byte) {
   }
   // ZSU
   else if (_deque.front() == std::pair<uint8_t, uint8_t>{8u - 1u, 0xFFu}) {
-    if ((n <= 5uz &&  //
+    if ((n <= 5uz && //
          (std::equal(begin(_deque) + 1, end(_deque), begin(_id_sequence)) ||
           std::equal(begin(_deque) + 1, end(_deque), begin(zero_sequence)))) ||
-        (n > 5uz &&  // Second four could be SN or 0x00
+        (n > 5uz && // Second four could be SN or 0x00
          (std::equal(begin(_deque) + 5, end(_deque), begin(_sn_sequence)) ||
           std::equal(begin(_deque) + 5, end(_deque), begin(zero_sequence))))) {
       if (n == _deque.max_size()) std::invoke(_cfg.zsu_entry);
@@ -91,4 +91,4 @@ void Point::verify(uint32_t cv_addr, uint8_t byte) {
   _deque.clear();
 }
 
-}  // namespace mdu::rx::entry
+} // namespace mdu::rx::entry

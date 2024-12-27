@@ -17,4 +17,4 @@ namespace mdu::rx {
 
 using ZppBase = Base<mixin::Zpp>;
 
-}  // namespace mdu::rx
+} // namespace mdu::rx

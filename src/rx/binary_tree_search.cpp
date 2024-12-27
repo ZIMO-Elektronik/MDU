@@ -43,4 +43,4 @@ bool BinaryTreeSearch::operator()(uint32_t serial_number,
   return false;
 }
 
-}  // namespace mdu::rx
+} // namespace mdu::rx

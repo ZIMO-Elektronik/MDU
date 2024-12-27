@@ -97,7 +97,7 @@ TEST_F(PointTest, zsu_wrong_index) {
   EXPECT_CALL(*this, zsuEntry()).Times(Exactly(0));
   verify({{8u - 1u, 0xFFu},
           {105u - 1u, static_cast<uint8_t>(_decoder_id >> 24u)},
-          {107u - 1u, static_cast<uint8_t>(_decoder_id >> 16u)},  // wrong
+          {107u - 1u, static_cast<uint8_t>(_decoder_id >> 16u)}, // wrong
           {105u - 1u, static_cast<uint8_t>(_decoder_id >> 8u)},
           {106u - 1u, static_cast<uint8_t>(_decoder_id >> 0u)},
           {105u - 1u, 0x00u},

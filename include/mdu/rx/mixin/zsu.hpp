@@ -170,4 +170,4 @@ private:
   bool _crc32valid{};
 };
 
-}  // namespace mdu::rx::mixin
+} // namespace mdu::rx::mixin

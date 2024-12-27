@@ -54,7 +54,7 @@ PacketBuilder::timingsWithoutAckreq(mdu::TransferRate transfer_rate) const {
 
   // Data
   std::ranges::for_each(_data, [&](uint8_t byte) {
-    retval.push_back(timings.zero);  // Start
+    retval.push_back(timings.zero); // Start
     for (auto i{sizeof(byte) * CHAR_BIT}; i-- > 0uz;)
       retval.push_back(byte & (1u << i) ? timings.one : timings.zero);
   });

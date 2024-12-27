@@ -74,4 +74,4 @@ constexpr auto uint32_2data(uint32_t word, uint8_t* data) {
   return data;
 }
 
-}  // namespace mdu
+} // namespace mdu

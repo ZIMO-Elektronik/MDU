@@ -41,7 +41,7 @@ std::array<uint8_t, 32uz> make_salsa20_key(uint32_t decoder_id,
   return crypt_key;
 }
 
-}  // namespace
+} // namespace
 
 /// Make decoder specific Salsa20 context
 ///
@@ -59,4 +59,4 @@ ECRYPT_ctx make_salsa20_context(uint32_t decoder_id,
   return ctx;
 }
 
-}  // namespace mdu
+} // namespace mdu

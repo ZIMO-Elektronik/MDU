@@ -139,4 +139,4 @@ bool Zpp::executeExit(bool reset_cvs) {
   return true;
 }
 
-}  // namespace mdu::rx::mixin
+} // namespace mdu::rx::mixin

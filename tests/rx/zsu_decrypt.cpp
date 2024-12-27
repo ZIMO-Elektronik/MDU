@@ -140,7 +140,7 @@ bool zsu_equals_bin(std::filesystem::path zsu_path,
   return true;
 }
 
-}  // namespace
+} // namespace
 
 TEST_F(ReceiveZsuTest, decrypt) {
   auto const cwd{source_location_parent_path()};

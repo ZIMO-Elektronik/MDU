@@ -22,4 +22,4 @@ struct Config {
   std::function<void()> zsu_entry{};
 };
 
-}  // namespace mdu::rx::entry
+} // namespace mdu::rx::entry

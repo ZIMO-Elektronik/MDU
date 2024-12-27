@@ -25,4 +25,4 @@ concept Executable = std::is_invocable_r_v<bool,
                                            Packet const&,
                                            uint32_t>;
 
-}  // namespace mdu::rx::mixin
+} // namespace mdu::rx::mixin

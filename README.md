@@ -565,7 +565,7 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
 > [!WARNING]  
 > Due to a bug in bootloader versions <2.10.7 of the MN/S decoder ([#21](https://github.com/ZIMO-Elektronik/MDU/issues/21)), the speed must be limited to 3 regardless of the reported capabilities.
-2. [Binary-Tree-Search](#binary-tree-search) to find all connected decoders
+2. [Binary-Tree-Search](#binary-tree-search) to find all connected decoders (optional)
 3. [Ping](#ping) the desired decoders
 4. [ZSU-Salsa20-IV](#zsu-salsa20-iv)
 5. [ZSU-Erase](#zsu-erase)

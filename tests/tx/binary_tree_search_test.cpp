@@ -10,7 +10,7 @@ uint64_t random_interval(uint64_t min, uint64_t max) {
   return dis(gen);
 }
 
-}  // namespace
+} // namespace
 
 // Generate a couple of IDs to find
 BinaryTreeSearchTest::BinaryTreeSearchTest() {

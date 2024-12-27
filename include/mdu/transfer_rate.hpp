@@ -30,4 +30,4 @@ constexpr bool operator<(TransferRate lhs, TransferRate rhs) {
            : std::to_underlying(lhs) < std::to_underlying(rhs);
 }
 
-}  // namespace mdu
+} // namespace mdu

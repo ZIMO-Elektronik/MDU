@@ -187,4 +187,4 @@ constexpr auto make_zpp_exit_packet() {
   return packet;
 }
 
-}  // namespace mdu
+} // namespace mdu
