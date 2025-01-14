@@ -18,7 +18,6 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
     <li><a href="#protocol">Protocol</a></li>
       <ul>
         <li><a href="#entry">Entry</a></li>
-        <li><a href="#alternative-entry">Alternative Entry</a></li>
         <li><a href="#transmission">Transmission</a></li>
         <li><a href="#bit-timings">Bit Timings</a></li>
         <li><a href="#structure-of-a-data-packet">Structure of a Data Packet</a></li>
@@ -58,7 +57,7 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 
 By specifying a serial number(SN), it is possible to activate only a very specific decoder. Setting the SN bytes to zero will activate the desired state in all connected decoders(ZPP), or all connected decoders with a certain ID(ZSU). Also, setting the ID and SN bytes zero will active all connected decoders(ZSU).
 
-### Alternative Entry
+#### Alternative Entry
 As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
 
 ### Transmission
