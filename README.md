@@ -114,171 +114,175 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
 
 ### Acknowledgment
 <table>
-  <tr>
-    <th style="text-align: center">Ackreq Bit</th>
-    <th style="text-align: center">0</th>
-    <th style="text-align: center">1</th>
-    <th style="text-align: center">2</th>
-    <th style="text-align: center">3</th>
-    <th style="text-align: center">4</th>
-    <th style="text-align: center">5</th>
-    <th style="text-align: center">6</th>
-    <th style="text-align: center">7</th>
-    <th style="text-align: center">8</th>
-    <th style="text-align: center">9</th>
-  </tr>
-  <tr>
-    <td><a href="#ping">Ping</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Ping successful</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#config-transfer-rate">Config-Transfer-Rate</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Bit timings are not supported</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#binary-tree-search">Binary-Tree-Search</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">See description</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#cv-read">CV-Read</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Bit in CV is set</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#cv-write">CV-Write</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Write not possible</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#busy">Busy</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Decoder busy</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zpp-valid-query">ZPP-Valid-Query</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">ZPP invalid</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zpp-lc-dc-query">ZPP-LC-DC-Query</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Load code wrong</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zpp-erase">ZPP-Erase</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Invalid memory area</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zpp-update">ZPP-Update</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Invalid address | CRC32 error</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zpp-update-end">ZPP-Update-End</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Invalid memory area</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zpp-exit">ZPP-Exit</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">-</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zpp-exitreset">ZPP-Exit&Reset</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">-</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zsu-salsa20-iv">ZSU-Salsa20-IV</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">CRC8 error</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zsu-erase">ZSU-Erase</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Invalid memory area</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zsu-update">ZSU-Update</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Invalid address | CRC32 error</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zsu-crc32-start">ZSU-CRC32-Start</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Invalid memory area</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zsu-crc32-result">ZSU-CRC32-Result</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td><a href="#zsu-crc32-resultexit">ZSU-CRC32-Result&Exit</a></td>
-    <td colspan=2 style="text-align: center">Reference</td>
-    <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-    <td></td>
-    <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
-    <td></td>
-  </tr>
+  <thead>
+    <tr>
+      <th style="text-align: center">Ackreq Bit</th>
+      <th style="text-align: center">0</th>
+      <th style="text-align: center">1</th>
+      <th style="text-align: center">2</th>
+      <th style="text-align: center">3</th>
+      <th style="text-align: center">4</th>
+      <th style="text-align: center">5</th>
+      <th style="text-align: center">6</th>
+      <th style="text-align: center">7</th>
+      <th style="text-align: center">8</th>
+      <th style="text-align: center">9</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="#ping">Ping</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Ping successful</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#config-transfer-rate">Config-Transfer-Rate</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Bit timings are not supported</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#binary-tree-search">Binary-Tree-Search</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">See description</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#cv-read">CV-Read</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Bit in CV is set</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#cv-write">CV-Write</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Write not possible</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#busy">Busy</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Decoder busy</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zpp-valid-query">ZPP-Valid-Query</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">ZPP invalid</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zpp-lc-dc-query">ZPP-LC-DC-Query</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Load code wrong</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zpp-erase">ZPP-Erase</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid memory area</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zpp-update">ZPP-Update</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid address | CRC32 error</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zpp-update-end">ZPP-Update-End</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid memory area</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zpp-exit">ZPP-Exit</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">-</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zpp-exitreset">ZPP-Exit&Reset</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">-</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-salsa20-iv">ZSU-Salsa20-IV</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">CRC8 error</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-erase">ZSU-Erase</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid memory area</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-update">ZSU-Update</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid address | CRC32 error</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-crc32-start">ZSU-CRC32-Start</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid memory area</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-crc32-result">ZSU-CRC32-Result</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-crc32-resultexit">ZSU-CRC32-Result&Exit</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
+      <td></td>
+    </tr>
+  </tbody>
 </table>
 
 ### General Commands
