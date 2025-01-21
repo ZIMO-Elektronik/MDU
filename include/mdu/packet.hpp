@@ -22,9 +22,7 @@
 
 namespace mdu {
 
-using Packet = ztl::inplace_vector<uint8_t,
-                                   sizeof(Command) + sizeof(uint32_t) + 256uz +
-                                     sizeof(Crc32)>;
+using Packet = ztl::inplace_vector<uint8_t, MDU_MAX_PACKET_SIZE>;
 
 /// Packet to command
 ///

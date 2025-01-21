@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.18.0
+- Add `MDU_MAX_PACKET_SIZE` definition
+
 ## 0.17.1
 - Bugfix CMake always includes tests
 

@@ -590,13 +590,13 @@ This library is meant to be consumed with CMake,
 
 ```cmake
 # Either by including it with CPM
-cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.17.0")
+cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.18.0")
 
 # or the FetchContent module
 FetchContent_Declare(
   MDU
   GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/MDU"
-  GIT_TAG v0.17.0)
+  GIT_TAG v0.18.0)
 
 target_link_libraries(YourTarget PRIVATE MDU::MDU)
 ```
@@ -605,7 +605,7 @@ or, on [ESP32 platforms](https://www.espressif.com/en/products/socs/esp32), with
 ```yaml
 dependencies:
   zimo-elektronik/mdu:
-    version: "0.15.4"
+    version: "0.18.0"
 ```
 
 ### Build
