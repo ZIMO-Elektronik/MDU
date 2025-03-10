@@ -1,3 +1,3 @@
 #pragma once
 
-enum class State { Preamble, Packet, ACKreq };
+enum class State { Idle, Preamble, Packet, ACKreq };
