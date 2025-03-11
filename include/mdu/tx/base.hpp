@@ -10,49 +10,73 @@
 
 #pragma once
 
-#include "../timing.hpp"
-#include "../transfer_rate.hpp"
-#include "command_station.hpp"
-#include "packet_type.hpp"
-#include "state.hpp"
-#include "typed_packet.hpp"
-
 #include <algorithm>
 #include <span>
 #include <utility>
+#include "../packet.hpp"
+#include "../timing.hpp"
+#include "../transfer_rate.hpp"
+#include "command_station.hpp"
+#include "phase.hpp"
+
+#include <dcc/dcc.hpp>
 
 namespace mdu::tx {
 
+/// Transmit Base class
+///
+/// \details
+/// Converts MDU packets to zero-cross times (in µs) "on-the-fly". Packets
+/// can be transmitted using \ref Base::packet "packet". Alternatively, a
+/// byte-span can be transmitted using \ref Base::bytes "bytes". A call to \ref
+/// Base::transmit "transmit" yields the next timing. Currently, in the
+/// Idle-phase an endlessly long preamble will be sent.
+///
+/// \tparam T Inheriting class.
 template<typename T>
 struct Base {
   friend T;
 
-  bool packet(TypedPacket const& packet) {
-    if (_state != State::Idle) return false;
-    _state = State::Preamble;
+  /// Set packet to transmit, transmitter must be idle.
+  ///
+  /// \param [in] packet  Packet to transmit
+  /// \retval             true  Packet was enqueued
+  /// \retval             false Transmission ongoing
+  bool packet(Packet const& packet) {
+    if (_phase != Phase::Idle) return false;
+
     _packet = packet;
+    _phase = Phase::Preamble;
     return true;
   }
 
-  bool bytes(std::span<uint8_t const> bytes, PacketType type) {
-    if (_state != State::Idle) return false;
-    _state = State::Preamble;
+  /// Set bytes to transmit, transmitter must be idle.
+  ///
+  /// \param [in] bytes Bytes to transmit
+  /// \param [in] type  Packet type
+  /// \retval           true  Packet was enqueued
+  /// \retval           false Transmission ongoing
+  bool bytes(std::span<uint8_t const> bytes) {
+    if (_phase != Phase::Idle) return false;
 
     // Copy bytes into package
-    _packet.packet.clear();
-    std::copy_n(
-      bytes.begin(), bytes.size(), std::back_inserter(_packet.packet));
-    _packet.type = type;
+    _packet.clear();
+    std::copy_n(bytes.begin(), bytes.size(), std::back_inserter(_packet));
+    _phase = Phase::Preamble;
     return true;
   }
 
+  /// Convert next bit to timing (in µs)
+  ///
+  /// \return Converted timing
   uint16_t transmit() {
 
-    switch (_state) {
-      case State::Idle: return preambleTiming(true);
-      case State::Preamble: return preambleTiming(false);
-      case State::Packet: return packetTiming();
-      case State::ACKreq: return ackreqTiming();
+    switch (_phase) {
+      case Phase::Idle: return idleTiming();
+      case Phase::Preamble: return preambleTiming();
+      case Phase::Packet: return packetTiming();
+      case Phase::ACKreq: return ackreqTiming();
+      // Undefined
       default: return 0u;
     }
   }
@@ -64,65 +88,90 @@ private:
     return static_cast<T const&>(*this);
   }
 
-  /// Preamble timing
+  /// Idle timing
+  ///
+  /// \return idle timing
+  uint16_t idleTiming() {
+    // Send preamble of same type as last packet
+    uint16_t timing = timings[std::to_underlying(_rate)].one;
+
+    _bits++;
+    return timing;
+  }
+
+  /// MDU Preamble timing
   ///
   /// \return preamble timing
-  uint16_t preambleTiming(bool idle) {
+  uint16_t preambleTiming() {
     uint16_t timing = timings[std::to_underlying(_rate)].one;
     _bits++;
 
-    // return here if were in idle state
-    if (idle) return timing;
-
     // Check if preamble cplte
     if (_bits >= MDU_TX_MIN_PREAMBLE_BITS) {
-      _bits = 0u;
-      _state = State::Packet;
+      // Set initial state for packet transmit
+      _bits = 8;
+      _phase = Phase::Packet;
     }
     return timing;
   }
 
-  /// Packet timing
+  /// MDU Packet timing
   ///
   /// \return next bit timing
-  /// \todo DCC / MDU packets (MDU implemented)
   uint16_t packetTiming() {
+    /*  _bits counts from 8 down to 0:
+     *  -- 8 is StartBit
+     *  -- 7..0 are Byte MSB first
+     *  -- -1 is reset condition at end
+     */
+
     // Get next bit
-    bool bit = (_packet.packet[_index] << _bits++) > 0;
+    bool bit = (_packet[_index] & (1u << _bits--)) > 0;
     uint16_t timing = bit ? timings[std::to_underlying(_rate)].one
                           : timings[std::to_underlying(_rate)].zero;
 
     // Check if byte transmit cplte
-    if (_bits >= 8) {
-      _bits = 0;
-      // Check if packet transmit cplte
-      _state = ++_index < _packet.packet.size() ? _state : State::ACKreq;
+    if (_bits < 0) {
+      // Byte cplte
+      if (++_index >= _packet.size()) {
+        // Packet cplte -> set initial state for ackreq
+        _phase = Phase::ACKreq;
+        _bits = 0;
+      } else {
+        // Reset bit counter to StartBit
+        _bits = 8;
+      }
     }
     return timing;
   }
 
-  /// ACKreq timing
+  /// MDU ACKreq timing
   ///
   /// \return ackreq timing
   uint16_t ackreqTiming() {
-    _state = ++_bits < MDU_TX_MIN_ACKREQ_BITS ? _state : State::Preamble;
-    if (_bits == MDU_TX_MIN_ACKREQ_BITS) _bits = 0u;
     uint16_t timing = timings[std::to_underlying(_rate)].ackreq;
+
+    // Check for ACKreq end
+    if (++_bits == MDU_TX_MIN_ACKREQ_BITS) {
+      // Set initial state for ACKreq
+      _bits = 0u;
+      _phase = Phase::Idle;
+    }
     return timing;
   }
 
 private:
   /// Packet
-  TypedPacket _packet{};
+  Packet _packet{};
 
   /// Transfer rate
   TransferRate _rate{TransferRate::Default};
 
   /// Transmit state
-  State _state{State::Idle};
+  Phase _phase{Phase::Idle};
 
-  /// Bits sent
-  uint16_t _bits{};
+  /// Bits counter
+  int _bits{};
 
   /// Packet index
   uint16_t _index{};

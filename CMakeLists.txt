@@ -93,7 +93,8 @@ if(NOT TARGET DCC::DCC)
   cpmaddpackage("gh:ZIMO-Elektronik/DCC@0.40.2")
 endif()
 
-target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)
+target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL
+                                 DCC::DCC)
 
 if(PROJECT_IS_TOP_LEVEL)
   include(CTest)

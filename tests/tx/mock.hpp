@@ -2,7 +2,7 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <mdu/mdu.hpp>
+#include <mdu/tx/base.hpp>
 
 namespace mdu::tx::test {
 
