@@ -15,9 +15,9 @@
 namespace mdu::tx {
 
 template<typename T>
-concept CommandStation = requires(T t) {
+concept CommandStation = requires(T t, int I) {
   { t.ackreqBegin() } -> std::same_as<void>;
-  { t.ackreqNext() } -> std::same_as<void>;
+  { t.ackreqBit(I) } -> std::same_as<bool>;
   { t.ackreqEnd() } -> std::same_as<void>;
 };
 

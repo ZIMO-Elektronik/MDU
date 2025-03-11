@@ -41,7 +41,7 @@ struct CrtpTestBase : ::testing::Test {
 
   std::array<uint16_t, 9> Byte2Timings(uint8_t byte) {
     std::array<uint16_t, 9> ret{};
-    size_t cnt = 8u;
+    size_t cnt = 8u; // MSB first
     for (auto& it : ret) {
       it = ((byte | 1) << cnt--) > 0
              ? mdu::timings[std::to_underlying(TransferRate::Default)].one
@@ -51,7 +51,7 @@ struct CrtpTestBase : ::testing::Test {
   }
   uint8_t Timings2Byte(std::array<uint16_t, 9> timings) {
     uint8_t ret = 0;
-    size_t cnt = 8u;
+    size_t cnt = 8u; // MSB first
     for (auto it : timings) {
       if (it == mdu::timings[std::to_underlying(TransferRate::Default)].one) {
         ret |= 1u << cnt;

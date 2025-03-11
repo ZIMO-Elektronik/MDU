@@ -10,4 +10,4 @@
 
 #pragma once
 
-enum class Phase { Idle, Preamble, Packet, ACKreq };
+enum class Phase { Idle, Preamble, Packet, PacketEnd, ACKreq };

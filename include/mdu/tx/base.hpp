@@ -16,6 +16,7 @@
 #include "../packet.hpp"
 #include "../timing.hpp"
 #include "../transfer_rate.hpp"
+#include "channel.hpp"
 #include "command_station.hpp"
 #include "config.hpp"
 #include "dcc/tx/track_outputs.hpp"
@@ -38,6 +39,17 @@ namespace mdu::tx {
 template<typename T>
 struct Base {
   friend T;
+
+  /// Initialize
+  ///
+  /// \param [in] cfg Configuration
+  void init(Config cfg) {
+    assert(cfg.num_preamble >= MDU_TX_MIN_PREAMBLE_BITS &&
+           cfg.num_preamble <= MDU_TX_MAX_PREAMBLE_BITS &&
+           cfg.num_ackreq >= MDU_TX_MIN_PREAMBLE_BITS &&
+           cfg.num_ackreq <= MDU_TX_MAX_PREAMBLE_BITS);
+    _cfg = cfg;
+  }
 
   /// Set packet to transmit, transmitter must be idle.
   ///
@@ -78,6 +90,7 @@ struct Base {
       case Phase::Idle: return idleTiming();
       case Phase::Preamble: return preambleTiming();
       case Phase::Packet: return packetTiming();
+      case Phase::PacketEnd: return packetEndTiming();
       case Phase::ACKreq: return ackreqTiming();
       // Undefined
       default: return 0u;
@@ -110,7 +123,7 @@ private:
     _bits++;
 
     // Check if preamble cplte
-    if (_bits >= MDU_TX_MIN_PREAMBLE_BITS) {
+    if (_bits >= _cfg.num_preamble) {
       // Set initial state for packet transmit
       _bits = 8;
       _phase = Phase::Packet;
@@ -138,7 +151,7 @@ private:
       // Byte cplte
       if (++_index >= _packet.size()) {
         // Packet cplte -> set initial state for ackreq
-        _phase = Phase::ACKreq;
+        _phase = Phase::PacketEnd;
         _bits = 0;
       } else {
         // Reset bit counter to StartBit
@@ -148,15 +161,33 @@ private:
     return timing;
   }
 
+  /// Packet end timing
+  ///
+  /// \return packet end timing
+  uint16_t packetEndTiming() {
+    uint16_t timing = timings[std::to_underlying(TransferRate::Default)].one;
+    _phase = Phase::ACKreq;
+    return timing;
+  }
+
   /// MDU ACKreq timing
   ///
   /// \return ackreq timing
   uint16_t ackreqTiming() {
     uint16_t timing = timings[std::to_underlying(_rate)].ackreq;
 
+    if (_bits == 0) {
+      impl().ackreqBegin();
+      _channel1.fill(false);
+      _channel2.fill(false);
+    }
+
+    // call ackreqBit(int)
+
     // Check for ACKreq end
-    if (++_bits == MDU_TX_MIN_ACKREQ_BITS) {
+    if (++_bits == _cfg.num_ackreq) {
       // Set initial state for ACKreq
+      impl().ackreqEnd();
       _bits = 0u;
       _phase = Phase::Idle;
     }
@@ -164,13 +195,14 @@ private:
   }
 
   void switchTrack() {
-    if constexpr (dcc::tx::TrackOutputs<T>)
+    if constexpr (dcc::tx::TrackOutputs<T>) {
       !(_pol) ? impl().trackOutputs(false ^ _cfg.invert, true ^ _cfg.invert)
               : impl().trackOutputs(true ^ _cfg.invert, false ^ _cfg.invert);
-    _pol = !_pol;
+
+      _pol = !_pol;
+    }
   }
 
-private:
   /// Packet
   Packet _packet{};
 
@@ -183,6 +215,7 @@ private:
   /// Bits counter
   int _bits{};
 
+  /// Current track polarity
   bool _pol{false};
 
   /// Packet index
@@ -190,6 +223,9 @@ private:
 
   /// Config
   Config _cfg{};
+
+  std::array<bool, 3> _channel1{};
+  std::array<bool, 3> _channel2{};
 };
 
 } // namespace mdu::tx
