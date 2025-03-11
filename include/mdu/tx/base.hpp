@@ -4,7 +4,7 @@
 
 /// Transmit base
 ///
-/// \file   mdu/tx/crtp_base.hpp
+/// \file   mdu/tx/base.hpp
 /// \author Jonas Gahlert
 /// \date   10.03.2025
 
@@ -17,6 +17,8 @@
 #include "../timing.hpp"
 #include "../transfer_rate.hpp"
 #include "command_station.hpp"
+#include "config.hpp"
+#include "dcc/tx/track_outputs.hpp"
 #include "phase.hpp"
 
 #include <dcc/dcc.hpp>
@@ -71,6 +73,7 @@ struct Base {
   /// \return Converted timing
   uint16_t transmit() {
 
+    switchTrack();
     switch (_phase) {
       case Phase::Idle: return idleTiming();
       case Phase::Preamble: return preambleTiming();
@@ -160,6 +163,13 @@ private:
     return timing;
   }
 
+  void switchTrack() {
+    if constexpr (dcc::tx::TrackOutputs<T>)
+      !(_pol) ? impl().trackOutputs(false ^ _cfg.invert, true ^ _cfg.invert)
+              : impl().trackOutputs(true ^ _cfg.invert, false ^ _cfg.invert);
+    _pol = !_pol;
+  }
+
 private:
   /// Packet
   Packet _packet{};
@@ -173,8 +183,13 @@ private:
   /// Bits counter
   int _bits{};
 
+  bool _pol{false};
+
   /// Packet index
   uint16_t _index{};
+
+  /// Config
+  Config _cfg{};
 };
 
 } // namespace mdu::tx

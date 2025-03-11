@@ -4,21 +4,22 @@
 
 /// Transmit base
 ///
-/// \file   mdu/tx/command_station.hpp
+/// \file   mdu/tx/config.hpp
 /// \author Jonas Gahlert
 /// \date   10.03.2025
 
 #pragma once
 
-#include <concepts>
+#include "../timing.hpp"
 
 namespace mdu::tx {
 
-template<typename T>
-concept CommandStation = requires(T t) {
-  { t.ackreqBegin() } -> std::same_as<void>;
-  { t.ackreqNext() } -> std::same_as<void>;
-  { t.ackreqEnd() } -> std::same_as<void>;
+struct Config {
+  uint8_t num_preamble{MDU_TX_MIN_PREAMBLE_BITS};
+
+  uint8_t num_ackreq{MDU_TX_MIN_ACKREQ_BITS};
+
+  bool invert{};
 };
 
 } // namespace mdu::tx
