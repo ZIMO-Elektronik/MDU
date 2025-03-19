@@ -14,7 +14,7 @@ TEST_F(TransmitBaseTest, config_preamble) {
 
   Config cfg{};
   cfg.num_preamble = MDU_TX_MIN_PREAMBLE_BITS + 2;
-  Init(cfg);
+  ASSERT_TRUE(Init(cfg));
 
   builder.preamble(cfg.num_preamble);
   tim = builder.timings();
@@ -36,7 +36,7 @@ TEST_F(TransmitBaseTest, config_ackreq) {
 
   Config cfg{};
   cfg.num_ackreq = MDU_TX_MIN_ACKREQ_BITS + 2;
-  Init(cfg);
+  ASSERT_TRUE(Init(cfg));
 
   builder.ackreq(cfg.num_ackreq);
   tim = builder.timings();
@@ -46,7 +46,29 @@ TEST_F(TransmitBaseTest, config_ackreq) {
   ASSERT_EQ(res, tim);
 }
 
-TEST_F(TransmitBaseTest, config_polarity) {}
+TEST_F(TransmitBaseTest, config_polarity) {
+  {
+    testing::InSequence s;
+
+    EXPECT_CALL(_mock, trackOutputs(false, true)).Times(1);
+    EXPECT_CALL(_mock, trackOutputs(true, false)).Times(1);
+  }
+
+  Transmit(2);
+
+  Config cfg;
+  cfg.invert = true;
+  Init(cfg);
+
+  {
+    testing::InSequence s;
+
+    EXPECT_CALL(_mock, trackOutputs(true, false)).Times(1);
+    EXPECT_CALL(_mock, trackOutputs(false, true)).Times(1);
+  }
+
+  Transmit(2);
+}
 
 TEST_F(TransmitBaseTest, config_no_change_while_busy) {
   auto builder = PacketBuilder::makeBusyPacket();
@@ -62,7 +84,7 @@ TEST_F(TransmitBaseTest, config_no_change_while_busy) {
   cfg.num_preamble = MDU_TX_MIN_PREAMBLE_BITS + 2;
   cfg.num_ackreq = MDU_TX_MIN_ACKREQ_BITS + 2;
 
-  Init(cfg);
+  ASSERT_FALSE(Init(cfg));
 
   auto tmp = Transmit(tim.size() - 5);
 

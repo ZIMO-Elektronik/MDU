@@ -93,10 +93,6 @@ struct CrtpTestBase : ::testing::Test {
     return true;
   }
 
-  void Enqueue4ByteDummy() {
-    impl()._mock.bytes({std::array<uint8_t, 4>{1u, 2u, 3u, 4u}});
-  }
-
   Timings::value_type Transmit() { return impl()._mock.transmit(); }
 
   Timings Transmit(int count) {
@@ -137,7 +133,11 @@ struct CrtpTestBase : ::testing::Test {
 
   bool Packet(Packet packet) { return impl()._mock.bytes(packet); }
 
-  void Init(Config cfg = {}) { impl()._mock.init(cfg); }
+  bool Init(Config cfg = {}) { return impl()._mock.init(cfg); }
+
+  bool SetTransferRate(TransferRate rate = TransferRate::Default) {
+    return impl()._mock.setTransferRate(rate);
+  }
 
 private:
   constexpr CrtpTestBase() = default;

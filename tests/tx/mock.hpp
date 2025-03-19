@@ -8,7 +8,8 @@ namespace mdu::tx::test {
 
 struct Mock : mdu::tx::Base<Mock> {
   MOCK_METHOD(void, ackreqBegin, ());
-  MOCK_METHOD(bool, ackreqBit, (int));
+  MOCK_METHOD(void, ackreqChannel1, (int));
+  MOCK_METHOD(void, ackreqChannel2, (int));
   MOCK_METHOD(void, ackreqEnd, ());
   MOCK_METHOD(void, trackOutputs, (bool, bool));
 };

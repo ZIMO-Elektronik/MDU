@@ -37,4 +37,45 @@ TEST_F(TransmitBaseTest, idle_after_ackreq) {
   ASSERT_EQ(res, eval);
 }
 
+TEST_F(TransmitBaseTest, ackreq_methods) {
+  auto builder = PacketBuilder::makeBusyPacket();
+
+  auto pkt = builder.packet();
+  auto tim = builder.timings();
+
+  Config cfg{};
+
+  Packet(pkt);
+  Transmit(tim.size() - cfg.num_ackreq);
+
+  EXPECT_CALL(_mock, ackreqBegin()).Times(1);
+  Transmit(1);
+
+  Transmit(1);
+
+  {
+    ::testing::InSequence s;
+
+    EXPECT_CALL(_mock, ackreqChannel1(2));
+    EXPECT_CALL(_mock, ackreqChannel1(3));
+    EXPECT_CALL(_mock, ackreqChannel1(4));
+  }
+  Transmit(3);
+
+  Transmit(1);
+
+  {
+    ::testing::InSequence s;
+
+    EXPECT_CALL(_mock, ackreqChannel2(6));
+    EXPECT_CALL(_mock, ackreqChannel2(7));
+    EXPECT_CALL(_mock, ackreqChannel2(8));
+  }
+
+  Transmit(3);
+
+  EXPECT_CALL(_mock, ackreqEnd());
+  Transmit(tim.size() - (cfg.num_ackreq - 8));
+}
+
 } // namespace mdu::tx::test

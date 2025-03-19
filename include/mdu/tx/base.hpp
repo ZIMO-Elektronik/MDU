@@ -35,6 +35,10 @@ namespace mdu::tx {
 /// Base::transmit "transmit" yields the next timing. Currently, in the
 /// Idle-phase an endlessly long preamble will be sent.
 ///
+/// Configuration can be done using \ref Base::init "init" and the current
+/// transfer rate can be adjusted using \ref Base::setTransferRate
+/// "setTransferRate". Both can only be done if MDU is not busy.
+///
 /// \tparam T Inheriting class.
 template<typename T>
 struct Base {
@@ -43,6 +47,8 @@ struct Base {
   /// Initialize
   ///
   /// \param [in] cfg Configuration
+  /// \retval true  Config set
+  /// \retval false Config not set
   bool init(Config cfg = {}) {
     // Only init when idle
     if (_phase != Phase::Idle) return false;
@@ -53,6 +59,19 @@ struct Base {
            cfg.num_ackreq <= MDU_TX_MAX_ACKREQ_BITS);
 
     _cfg = cfg;
+    return true;
+  }
+
+  /// Set transfer rate
+  ///
+  /// \param tRate  Transfer rate
+  /// \retval true  Transfer rate set
+  /// \retval false Transfer rate not set
+  bool setTransferRate(TransferRate tRate) {
+    // Only adjust transfer rate when idle
+    if (_phase != Phase::Idle) return false;
+
+    _rate = tRate;
     return true;
   }
 
@@ -181,13 +200,10 @@ private:
   uint16_t ackreqTiming() {
     uint16_t timing = timings[std::to_underlying(_rate)].ackreq;
 
-    if (_bits == 0) {
-      impl().ackreqBegin();
-      _channel1.fill(false);
-      _channel2.fill(false);
-    }
+    if (_bits == 0) impl().ackreqBegin();
 
-    // call ackreqBit(int)
+    if (_bits >= 2 && _bits <= 4) impl().ackreqChannel1(_bits);
+    if (_bits >= 6 && _bits <= 8) impl().ackreqChannel2(_bits);
 
     // Check for ACKreq end
     if (++_bits == _cfg.num_ackreq) {
@@ -228,9 +244,6 @@ private:
 
   /// Config
   Config _cfg{};
-
-  std::array<bool, 3> _channel1{};
-  std::array<bool, 3> _channel2{};
 };
 
 } // namespace mdu::tx
