@@ -3,45 +3,38 @@
 namespace mdu::tx::test {
 
 TEST_F(TransmitBaseTest, packet_end_bit) {
-  Enqueue4ByteDummy();
-  SkipPreamble();
-  Transmit4Bytes();
-  ASSERT_EQ(Transmit(), timings[std::to_underlying(TransferRate::Default)].one)
-    << "Packet end bit (one) was not sent";
+  auto pkt = PacketBuilder::makeBusyPacket().packet();
+
+  auto res = Transmit(pkt);
+
+  Timings::size_type offset = MDU_TX_MIN_PREAMBLE_BITS // Preamble
+                              + pkt.size() * 9;        // Bytes
+
+  ASSERT_TRUE(EvalStopBit(res, offset));
 }
 
-TEST_F(TransmitBaseTest, start_ackreq) {
-  Enqueue4ByteDummy();
-  SkipPreamble();
-  Transmit4Bytes();
-  Transmit();
-  ASSERT_EQ(Transmit(),
-            timings[std::to_underlying(TransferRate::Default)].ackreq);
-}
+TEST_F(TransmitBaseTest, ackreq) {
+  auto pkt = PacketBuilder::makeBusyPacket().packet();
 
-TEST_F(TransmitBaseTest, ackreq_bits) {
-  Enqueue4ByteDummy();
-  SkipPreamble();
-  Transmit4Bytes();
-  Transmit();
-  auto ackreq = TransmitACKreq();
-  int cnt = 0;
-  for (auto it : ackreq) {
-    ASSERT_EQ(it, timings[std::to_underlying(TransferRate::Default)].ackreq)
-      << "Expected " << MDU_TX_MIN_ACKREQ_BITS << "ACKreq bits but only got "
-      << cnt;
-    cnt++;
-  }
+  auto res = Transmit(pkt);
+
+  Timings::size_type offset = MDU_TX_MIN_PREAMBLE_BITS // Preamble
+                              + pkt.size() * 9         // Bytes
+                              + 1;                     // StopBit
+
+  ASSERT_TRUE(EvalAckReq(res, offset));
 }
 
 TEST_F(TransmitBaseTest, idle_after_ackreq) {
-  Enqueue4ByteDummy();
-  SkipPreamble();
-  Transmit4Bytes();
-  Transmit();
-  TransmitACKreq();
+  auto pkt = PacketBuilder::makeBusyPacket().packet();
 
-  ASSERT_EQ(Transmit(), timings[std::to_underlying(TransferRate::Default)].one);
+  auto res = Transmit(30);
+  Timings eval{};
+  std::ranges::fill_n(std::back_inserter(eval),
+                      30,
+                      timings[std::to_underlying(TransferRate::Default)].one);
+
+  ASSERT_EQ(res, eval);
 }
 
 } // namespace mdu::tx::test

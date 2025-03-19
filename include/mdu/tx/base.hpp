@@ -43,12 +43,17 @@ struct Base {
   /// Initialize
   ///
   /// \param [in] cfg Configuration
-  void init(Config cfg) {
+  bool init(Config cfg = {}) {
+    // Only init when idle
+    if (_phase != Phase::Idle) return false;
+
     assert(cfg.num_preamble >= MDU_TX_MIN_PREAMBLE_BITS &&
            cfg.num_preamble <= MDU_TX_MAX_PREAMBLE_BITS &&
-           cfg.num_ackreq >= MDU_TX_MIN_PREAMBLE_BITS &&
-           cfg.num_ackreq <= MDU_TX_MAX_PREAMBLE_BITS);
+           cfg.num_ackreq >= MDU_TX_MIN_ACKREQ_BITS &&
+           cfg.num_ackreq <= MDU_TX_MAX_ACKREQ_BITS);
+
     _cfg = cfg;
+    return true;
   }
 
   /// Set packet to transmit, transmitter must be idle.
@@ -165,7 +170,7 @@ private:
   ///
   /// \return packet end timing
   uint16_t packetEndTiming() {
-    uint16_t timing = timings[std::to_underlying(TransferRate::Default)].one;
+    uint16_t timing = timings[std::to_underlying(_rate)].one;
     _phase = Phase::ACKreq;
     return timing;
   }
@@ -188,7 +193,7 @@ private:
     if (++_bits == _cfg.num_ackreq) {
       // Set initial state for ACKreq
       impl().ackreqEnd();
-      _bits = 0u;
+      _bits = _index = 0u;
       _phase = Phase::Idle;
     }
     return timing;

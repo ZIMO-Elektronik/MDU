@@ -1,6 +1,6 @@
 #include <numeric>
+#include "../packet_builder.hpp"
 #include "base_test.hpp"
-#include "packet_builder.hpp"
 
 using namespace ::testing;
 

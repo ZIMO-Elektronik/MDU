@@ -36,6 +36,9 @@ public:
   // Add ackreq bits
   PacketBuilder& ackreq(size_t count = 10uz);
 
+  // Get Packet
+  std::vector<uint8_t> packet() const;
+
   // Get timings
   std::vector<uint32_t>
   timings(mdu::TransferRate transfer_rate = mdu::TransferRate::Default) const;

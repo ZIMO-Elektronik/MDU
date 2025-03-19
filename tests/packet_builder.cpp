@@ -33,6 +33,12 @@ PacketBuilder& PacketBuilder::ackreq(size_t count) {
   return *this;
 }
 
+std::vector<uint8_t> PacketBuilder::packet() const {
+  std::vector<uint8_t> retval{};
+  std::ranges::copy(_data, std::back_inserter(retval));
+  return retval;
+}
+
 std::vector<uint32_t>
 PacketBuilder::timings(mdu::TransferRate transfer_rate) const {
   std::vector<uint32_t> retval{timingsWithoutAckreq(transfer_rate)};
