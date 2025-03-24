@@ -147,7 +147,7 @@ private:
     _bits++;
 
     // Check if preamble cplte
-    if (_bits >= _cfg.num_preamble) {
+    if (_bits >= _cfg.num_preamble && !_pol) {
       // Set initial state for packet transmit
       _bits = 8;
       _phase = Phase::Packet;
