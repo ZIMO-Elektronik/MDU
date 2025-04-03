@@ -75,6 +75,11 @@ struct Base {
     return true;
   }
 
+  /// Get transfer rate
+  ///
+  /// \return Current transfer rate
+  TransferRate getTransferRate() { return _rate; }
+
   /// Set packet to transmit, transmitter must be idle.
   ///
   /// \param [in] packet  Packet to transmit
