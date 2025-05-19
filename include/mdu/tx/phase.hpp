@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Transmit base
+/// Transfer phase
 ///
 /// \file   mdu/tx/phase.hpp
 /// \author Jonas Gahlert
@@ -10,4 +10,9 @@
 
 #pragma once
 
+namespace mdu::tx::detail {
+
+/// Transfer phases
 enum class Phase { Idle, Preamble, Packet, PacketEnd, ACKreq };
+
+} // namespace mdu::tx::detail

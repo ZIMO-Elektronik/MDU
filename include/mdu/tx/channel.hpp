@@ -10,6 +10,8 @@
 
 #pragma once
 
+namespace mdu::tx::detail {
+
 /// Is reference
 ///
 /// \param [in] bit ACKreq bit pos
@@ -30,3 +32,5 @@ inline constexpr bool is_channel1(int bit) { return (bit >= 2) && (bit <= 4); }
 /// \retval         true is channel 2 bit
 /// \retval         false is not channel 2 bit
 inline constexpr bool is_channel2(int bit) { return (bit >= 6) && (bit <= 8); }
+
+} // namespace mdu::tx::detail

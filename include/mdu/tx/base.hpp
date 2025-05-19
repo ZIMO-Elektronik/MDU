@@ -51,7 +51,7 @@ struct Base {
   /// \retval false Config not set
   bool init(Config cfg = {}) {
     // Only init when idle
-    if (_phase != Phase::Idle) return false;
+    if (_phase != detail::Phase::Idle) return false;
 
     assert(cfg.num_preamble >= MDU_TX_MIN_PREAMBLE_BITS &&
            cfg.num_preamble <= MDU_TX_MAX_PREAMBLE_BITS &&
@@ -69,7 +69,7 @@ struct Base {
   /// \retval false Transfer rate not set
   bool setTransferRate(TransferRate tRate) {
     // Only adjust transfer rate when idle
-    if (_phase != Phase::Idle) return false;
+    if (_phase != detail::Phase::Idle) return false;
 
     _rate = tRate;
     return true;
@@ -86,10 +86,10 @@ struct Base {
   /// \retval             true  Packet was enqueued
   /// \retval             false Transmission ongoing
   bool packet(Packet const& packet) {
-    if (_phase != Phase::Idle) return false;
+    if (_phase != detail::Phase::Idle) return false;
 
     _packet = packet;
-    _phase = Phase::Preamble;
+    _phase = detail::Phase::Preamble;
     return true;
   }
 
@@ -100,12 +100,12 @@ struct Base {
   /// \retval           true  Packet was enqueued
   /// \retval           false Transmission ongoing
   bool bytes(std::span<uint8_t const> bytes) {
-    if (_phase != Phase::Idle) return false;
+    if (_phase != detail::Phase::Idle) return false;
 
     // Copy bytes into package
     _packet.clear();
     std::copy_n(bytes.begin(), bytes.size(), std::back_inserter(_packet));
-    _phase = Phase::Preamble;
+    _phase = detail::Phase::Preamble;
     return true;
   }
 
@@ -116,11 +116,11 @@ struct Base {
 
     switchTrack();
     switch (_phase) {
-      case Phase::Idle: return idleTiming();
-      case Phase::Preamble: return preambleTiming();
-      case Phase::Packet: return packetTiming();
-      case Phase::PacketEnd: return packetEndTiming();
-      case Phase::ACKreq: return ackreqTiming();
+      case detail::Phase::Idle: return idleTiming();
+      case detail::Phase::Preamble: return preambleTiming();
+      case detail::Phase::Packet: return packetTiming();
+      case detail::Phase::PacketEnd: return packetEndTiming();
+      case detail::Phase::ACKreq: return ackreqTiming();
       // Undefined
       default: return 0u;
     }
@@ -138,26 +138,23 @@ private:
   /// \return idle timing
   uint16_t idleTiming() {
     // Send preamble of same type as last packet
-    uint16_t timing = timings[std::to_underlying(_rate)].one;
-
     _bits++;
-    return timing;
+    return timings[std::to_underlying(_rate)].one;
   }
 
   /// MDU Preamble timing
   ///
   /// \return preamble timing
   uint16_t preambleTiming() {
-    uint16_t timing = timings[std::to_underlying(_rate)].one;
     _bits++;
 
     // Check if preamble cplte
     if ((_bits >= _cfg.num_preamble) && (_bits % 2 == 0)) {
       // Set initial state for packet transmit
       _bits = 8;
-      _phase = Phase::Packet;
+      _phase = detail::Phase::Packet;
     }
-    return timing;
+    return timings[std::to_underlying(_rate)].one;
   }
 
   /// MDU Packet timing
@@ -171,55 +168,52 @@ private:
      */
 
     // Get next bit
-    bool bit = (_packet[_index] & (1u << _bits--)) > 0;
-    uint16_t timing = bit ? timings[std::to_underlying(_rate)].one
-                          : timings[std::to_underlying(_rate)].zero;
+    bool bit{(_packet[_index] & (1u << _bits--)) > 0};
 
     // Check if byte transmit cplte
     if (_bits < 0) {
       // Byte cplte
       if (++_index >= _packet.size()) {
         // Packet cplte -> set initial state for ackreq
-        _phase = Phase::PacketEnd;
+        _phase = detail::Phase::PacketEnd;
         _bits = 0;
       } else {
         // Reset bit counter to StartBit
         _bits = 8;
       }
     }
-    return timing;
+    return bit ? timings[std::to_underlying(_rate)].one
+               : timings[std::to_underlying(_rate)].zero;
   }
 
   /// Packet end timing
   ///
   /// \return packet end timing
   uint16_t packetEndTiming() {
-    uint16_t timing = timings[std::to_underlying(_rate)].one;
-    _phase = Phase::ACKreq;
-    return timing;
+    _phase = detail::Phase::ACKreq;
+    return timings[std::to_underlying(_rate)].one;
   }
 
   /// MDU ACKreq timing
   ///
   /// \return ackreq timing
   uint16_t ackreqTiming() {
-    uint16_t timing = timings[std::to_underlying(_rate)].ackreq;
-
     if (_bits == 0) impl().ackreqBegin();
 
-    if (_bits >= 2 && _bits <= 4) impl().ackreqChannel1(_bits);
-    if (_bits >= 6 && _bits <= 8) impl().ackreqChannel2(_bits);
+    if (detail::is_channel1(_bits)) impl().ackreqChannel1(_bits);
+    if (detail::is_channel2(_bits)) impl().ackreqChannel2(_bits);
 
     // Check for ACKreq end
     if (++_bits == _cfg.num_ackreq) {
       // Set initial state for ACKreq
       impl().ackreqEnd();
       _bits = _index = 0u;
-      _phase = Phase::Idle;
+      _phase = detail::Phase::Idle;
     }
-    return timing;
+    return timings[std::to_underlying(_rate)].ackreq;
   }
 
+  /// Switch track output
   void switchTrack() {
     if constexpr (dcc::tx::TrackOutputs<T>) {
       !(_pol) ? impl().trackOutputs(false ^ _cfg.invert, true ^ _cfg.invert)
@@ -236,7 +230,7 @@ private:
   TransferRate _rate{TransferRate::Default};
 
   /// Transmit state
-  Phase _phase{Phase::Idle};
+  detail::Phase _phase{detail::Phase::Idle};
 
   /// Bits counter
   int _bits{};
