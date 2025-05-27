@@ -86,7 +86,7 @@ if(NOT TARGET Salsa20::Salsa20)
 endif()
 
 if(NOT TARGET ZTL::ZTL)
-  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.20.0")
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.21.0")
 endif()
 
 if(NOT TARGET DCC::DCC)

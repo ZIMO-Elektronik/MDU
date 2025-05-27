@@ -550,6 +550,8 @@ With the help of the ZSU-CRC32-Result command, the command station queries the r
 | Acknowledgement | Received CRC32 not equal own       |
 
 See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a reset.
+> [!WARNING]  
+> Sending this command is mandatory. Updated decoders only mark the received software as complete upon receipt of this command.
 
 ### Typical processes
 #### ZPP Update
@@ -574,8 +576,9 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 5. [ZSU-Erase](#zsu-erase)
 6. [ZSU-Update](#zsu-update)
 7. [ZSU-CRC32-Start](#zsu-crc32-start)
-8. [ZSU-CRC32-Result](#zsu-crc32-result) | [ZSU-CRC32-Result&Exit](#zsu-crc32-resultexit)
-9. Leave track voltage switched on for at least 1s
+8. [ZSU-CRC32-Result](#zsu-crc32-result) (optional)
+9. [ZSU-CRC32-Result&Exit](#zsu-crc32-resultexit)
+10. Leave track voltage switched on for at least 1s
 
 ## Getting Started
 ### Prerequisites

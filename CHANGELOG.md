@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.18.1
+- Bugfix place `rmt_mdu_encoder_reset` in IRAM_ATTR
+
 ## 0.18.0
 - Add `MDU_MAX_PACKET_SIZE` definition
 
