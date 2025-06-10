@@ -30,13 +30,13 @@ set(MDU_MAX_PACKET_SIZE
     CACHE STRING "Maximum size of a packet in bytes")
 set(MDU_RX_MIN_PREAMBLE_BITS
     10u
-    CACHE STRING "Minimum number of preambel bits of decoder")
+    CACHE STRING "Minimum number of preamble bits of decoder")
 set(MDU_TX_MIN_PREAMBLE_BITS
     14u
-    CACHE STRING "Minimum number of preambel bits of command station")
+    CACHE STRING "Minimum number of preamble bits of command station")
 set(MDU_TX_MAX_PREAMBLE_BITS
     30u
-    CACHE STRING "Maximum number of preambel bits of command station")
+    CACHE STRING "Maximum number of preamble bits of command station")
 set(MDU_TX_MIN_ACKREQ_BITS
     10u
     CACHE STRING "Minimum number of ackreq bits of command station")
