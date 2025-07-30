@@ -57,8 +57,10 @@ Activation of the MDU protocol is accomplished through a sequence of commands to
 
 By specifying a serial number(SN), it is possible to activate only a very specific decoder. Setting the SN bytes to zero will activate the desired state in all connected decoders(ZPP), or all connected decoders with a certain ID(ZSU). Also, setting the ID and SN bytes zero will active all connected decoders(ZSU).
 
-#### Alternative Entry
+#### Alternative ZSU Entry
 As an alternative to entry via DCC CV verify commands, MDU commands with [default bit timings](#bit-timings) can be sent directly after switching on the track voltage. It is recommended to send out the shortest command, [Busy](#busy), for at least 200ms.
+> [!NOTE]  
+> This entry **only** works for ZSU, i.e. for the bootloader.
 
 ### Transmission
 Bit transmission takes place MSB-first similar to the DCC protocol described in [RCN-210](https://normen.railcommunity.de/RCN-210.pdf) through zero crossings (change of polarity) of the track signal. In contrast to DCC, the transmission of a bit does not require two, but only one zero crossing. The decision as to whether a received bit represents a zero bit, one bit or acknowledgment bit is determined by the time interval between the zero crossings. This time interval has a default value at the beginning, but can be varied using a separate command (see [Config-Transfer-Rate command](#config-transfer-rate)). In addition, there are so-called fallback timings that must be able to be received at any time.
