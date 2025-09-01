@@ -10,14 +10,14 @@ template<typename T>
 struct CrtpTestBase : ::testing::Test {
   friend T;
 
-  void Receive(std::vector<uint32_t> times) {
-    std::ranges::for_each(
-      times, [this](uint32_t time) { impl()._mock->receive(time); });
+  void Receive(mdu::tx::Timings timings) {
+    std::ranges::for_each(timings,
+                          [this](uint32_t t) { impl()._mock->receive(t); });
   }
 
-  void ReceiveAndExecute(std::vector<uint32_t> times) {
-    std::ranges::for_each(times, [this](uint32_t time) {
-      impl()._mock->receive(time);
+  void ReceiveAndExecute(mdu::tx::Timings timings) {
+    std::ranges::for_each(timings, [this](uint32_t t) {
+      impl()._mock->receive(t);
       impl()._mock->execute();
     });
   }

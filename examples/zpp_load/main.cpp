@@ -46,9 +46,6 @@ private:
 
   // Exit (eventually perform CV reset)
   [[noreturn]] void exitZpp(bool reset_cvs) final {}
-
-  // Timer interrupt calls receive with captured value
-  void interrupt() { receive(TIMER_VALUE); }
 };
 
 void enter_zpp_update() {}

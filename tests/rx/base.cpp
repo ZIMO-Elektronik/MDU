@@ -1,8 +1,8 @@
 #include <numeric>
+#include "../packet_builder.hpp"
 #include "base_test.hpp"
-#include "packet_builder.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(ReceiveBaseTest, shiftIn) {
   bool retval{};
@@ -94,8 +94,7 @@ TEST_F(ReceiveBaseTest, nack_incomplete_packet) {
   auto packet{PacketBuilder::makePingPacket(0u)};
   auto timings_without_ackreq{packet.timingsWithoutAckreq()};
   // Tinker with packet length
-  timings_without_ackreq.erase(end(timings_without_ackreq) - 4,
-                               end(timings_without_ackreq));
+  timings_without_ackreq.resize(size(timings_without_ackreq) - 4uz);
   Receive(timings_without_ackreq);
   Execute();
   Receive(packet.timingsAckreqOnly(5uz));
@@ -130,8 +129,9 @@ TEST_F(ReceiveBaseTest, receive_multiple_packets) {
 
 TEST_F(ReceiveBaseTest, active_after_receiving_one_preamble) {
   EXPECT_FALSE(_mock->active());
-  std::vector<uint32_t> times(10u, mdu::timings[0u].one);
-  times.push_back(mdu::timings[0u].zero);
-  Receive(times);
+  mdu::tx::Timings timings;
+  std::ranges::fill_n(std::back_inserter(timings), 10uz, mdu::timings[0uz].one);
+  timings.push_back(mdu::timings[0u].zero);
+  Receive(timings);
   EXPECT_TRUE(_mock->active());
 }

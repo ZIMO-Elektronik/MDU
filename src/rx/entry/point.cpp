@@ -40,8 +40,7 @@ consteval auto make_zero_sequence() {
 /// \retval true    Right CV address
 /// \retval false   Wrong CV address
 constexpr bool is_cv_addr(uint32_t cv_addr) {
-  return cv_addr == 8uz - 1uz || cv_addr == 105uz - 1uz ||
-         cv_addr == 106uz - 1uz;
+  return cv_addr == 8u - 1u || cv_addr == 105u - 1u || cv_addr == 106u - 1u;
 }
 
 } // namespace

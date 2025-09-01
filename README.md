@@ -35,6 +35,11 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
         <li><a href="#build">Build</a></li>
       </ul>
     <li><a href="#usage">Usage</a></li>
+      <ul>
+        <li><a href="#receiver">Receiver</a></li>
+        <li><a href="#transmitter">Transmitter</a></li>
+        <li><a href="#esp32-rmt-encoder">ESP32 RMT Encoder</a></li>
+      </ul>
     <li><a href="#configuration">Configuration</a></li>
   </ol>
 </details>
@@ -595,13 +600,13 @@ This library is meant to be consumed with CMake,
 
 ```cmake
 # Either by including it with CPM
-cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.18.0")
+cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.19.0")
 
 # or the FetchContent module
 FetchContent_Declare(
   MDU
   GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/MDU"
-  GIT_TAG v0.18.0)
+  GIT_TAG v0.19.0)
 
 target_link_libraries(YourTarget PRIVATE MDU::MDU)
 ```
@@ -610,7 +615,7 @@ or, on [ESP32 platforms](https://www.espressif.com/en/products/socs/esp32), with
 ```yaml
 dependencies:
   zimo-elektronik/mdu:
-    version: "0.18.0"
+    version: "0.19.0"
 ```
 
 ### Build
@@ -631,11 +636,12 @@ cmake --build build --target MDUZppLoad
 On [ESP32 platforms](https://www.espressif.com/en/products/socs/esp32) examples from the [examples](https://github.com/ZIMO-Elektronik/MDU/raw/master/examples) subfolder can be built directly using the [IDF Frontend](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/tools/idf-py.html).
 
 ```sh
-idf.py create-project-from-example "zimo-elektronik/mdu^0.15.4:esp32"
+idf.py create-project-from-example "zimo-elektronik/mdu^0.19.0:esp32"
 ```
 
 ## Usage
-To use the MDU library, a number of virtual functions must be implemented. Depending on whether ZPP or ZSU is to be transferred, one of the following abstract classes must be derived:
+### Receiver
+To create a receiver (decoder) class and depending on whether ZPP, ZSU or both are to be transferred, it is necessary to derive from one of the following classes:
 - `mdu::rx::ZppBase`
 - `mdu::rx::ZsuBase`
 - `mdu::rx::ZppZsuBase`
@@ -680,13 +686,32 @@ private:
 
   // Exit (eventually perform CV reset)
   [[noreturn]] void exitZpp(bool reset_cvs) final {}
-
-  // Timer interrupt calls receive with captured value
-  void interrupt() { receive(TIMER_VALUE); }
 };
 ```
 
-The entry into the MDU protocol can be handled by the `rx::entry::Point` class. The ctor takes the decoder SN, ID and two optional function objects hooks to call before starting the ZPP or ZSU update.
+Implementing any of the bases alone is not enough to get a working receiver though. The following points are also necessary:
+1. The MDU signal on the track must be used as input. At the receiving end, decoding is done by measuring the time between two consecutive zero crossings of the signal. Typically this is done using the capture/compare unit of a hardware timer. The timer triggers a hardware interrupt in which the captured value must be read and passed to the `receive` method. `receive` expects a time in **microseconds**.
+    ```cpp
+    // Timer interrupt handler
+    void isr() {
+      auto const ccr{TIM->CCR};  // Read capture/compare register
+      decoder.receive(ccr);      // Pass captured value in µs
+    }
+    ```
+
+2. In order to keep the time in handler mode (interrupt context) as short as possible, received packets are **not executed immediately**. For received packets to be executed, the `execute` method must be called **periodically**. This could either be done either inside a super-loop or, as in the snippet below, in an RTOS task.
+    ```cpp
+    // RTOS task
+    void task(void*) {
+      for (;;) {
+        decoder.execute();
+        vTaskDelay(pdMS_TO_TICKS(5u));
+      }
+    }
+    ```
+
+#### Entry
+The entry into the MDU protocol can be handled by a small helper class called `rx::entry::Point`. It's ctor takes a decoder SN, ID and two optional function objects hooks to call before starting a ZPP or ZSU update. Simply create an object of type `mdu::rx::entry::Point` and forward [DCC](https://github.com/ZIMO-Elektronik/DCC) CV verify instructions to it.
 ```cpp
 // Ctor takes SN, ID und function object hooks with void() signature
 mdu::rx::entry::Point entry_point{{.serial_number = SN,
@@ -697,3 +722,65 @@ mdu::rx::entry::Point entry_point{{.serial_number = SN,
 // Forward DCC verifies
 entry_point.verify(index, byte);
 ```
+
+## Transmitter
+As before for the receiver, for the transmitter (command station) we need to derive from a class, this time from `mdu::tx::Base`. In contrast to the receiver, this is a class that requires static polymorphism ([CRTP](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)). The corresponding concept for implementation is called [CommandStation](include/mdu/tx/command_station.hpp). This concept verifies that the following methods can be called from the base.
+```cpp
+#include <dcc/dcc.hpp>
+
+struct CommandStation : mdu::tx::Base<CommandStation> {
+  friend mdu::tx::Base<CommandStation>;
+
+private:
+  // Begin of acknowledgment phase
+  void ackreqBegin();
+
+  // Channel 1 acknowledgment
+  void ackreqChannel1(size_t ackreq_count);
+
+  // Channel 2 acknowledgment
+  void ackreqChannel2(size_t ackreq_count);
+
+  // End of acknowledgment phase
+  void ackreqEnd();
+};
+```
+
+Again, inheriting from the base class isn't sufficient:
+1. The MDU signal must be generated as output. A transmitter usually uses an H-bridge for this, in which the left and right sides are switched at dedicated times. The switching times are best maintained with a hardware timer interrupt. The times between the interrupts, i.e. the periods, correspond to the return value of the `transmit` method. Each time a new period is returned, the hardware timer must be reloaded with it. In order to comply with the tolerance, it is advisable to assign this interrupt a very high priority.
+    ```cpp
+    // Timer interrupt handler
+    void isr() {
+      auto const arr{command_station.transmit()};  // Get next timer period
+      TIM->ARR = arr;                              // Set timer period register
+    }
+    ```
+
+#### Packet vs. Timings
+If you look at the signature of the transmitter base, you will see that it has a second template parameter which can be either `mdu::Packet` or `mdu::tx::Timings`.
+```cpp
+template<typename T, typename D = Packet>
+requires(std::same_as<D, Packet> || std::same_as<D, Timings>)
+struct Base
+```
+
+This parameter determines whether the transmitter stores packets to be sent as bytes or as bit timings. The trade-off is simple, packets require **less RAM** but **more instructions** in the interrupt, timings require **more RAM** but **fewer instructions** in the interrupt.
+
+## ESP32 RMT Encoder
+Similar to the other encoders of the [ESP-IDF](https://github.com/espressif/esp-idf) framework, the RMT encoder has only one function to create a new instance. For more information on how to use the encoder please refer to the [ESP-IDF Programming Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/rmt.html) or the RMT example.
+```cpp
+#include <rmt_mdu_encoder.h>
+
+mdu_encoder_config_t encoder_config{
+  .transfer_rate = 0u,
+  .num_preamble = 20u,
+  .num_ackreq = 10u,
+};
+rmt_encoder_handle_t rmt_encoder{};
+ESP_ERROR_CHECK(rmt_new_mdu_encoder(&encoder_config, &rmt_encoder));
+```
+
+The following members of `mdu_encoder_config_t` may require some explanation.
+
+#### Transfer Rate
+`transfer_rate` corresponds to the index in the [bit timings table](#bit-timings).

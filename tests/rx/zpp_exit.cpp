@@ -1,8 +1,8 @@
 #include <numeric>
-#include "packet_builder.hpp"
+#include "../packet_builder.hpp"
 #include "zpp_test.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(ReceiveZppTest, exit_when_nothing_was_written) {
   Expectation exit_zpp{EXPECT_CALL(*_mock, exitZpp(false)).Times(Exactly(1))};

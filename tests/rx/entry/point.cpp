@@ -1,6 +1,6 @@
 #include "point_test.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(PointTest, zpp_entry_all) {
   EXPECT_CALL(*this, zppEntry()).Times(Exactly(1));
