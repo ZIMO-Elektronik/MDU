@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.19.0
+- Add `mdu::tx::Base`
+
 ## 0.18.1
 - Bugfix place `rmt_mdu_encoder_reset` in IRAM_ATTR
 
