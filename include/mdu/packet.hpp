@@ -147,8 +147,17 @@ constexpr auto make_zsu_update_packet(uint32_t addr,
 }
 
 /// TODO
-constexpr auto make_zpp_valid_query_packet(std::string_view zpp_id,
-                                           size_t zpp_flash_size) {
+constexpr auto
+make_zpp_valid_query_packet([[maybe_unused]] std::string_view zpp_id,
+                            [[maybe_unused]] size_t zpp_flash_size) {
+  Packet packet{};
+  // TODO
+  return packet;
+}
+
+/// TODO
+constexpr auto make_zpp_lc_dc_query_packet(
+  [[maybe_unused]] std::span<uint8_t const, 4uz> developer_code) {
   Packet packet{};
   // TODO
   return packet;
@@ -156,23 +165,16 @@ constexpr auto make_zpp_valid_query_packet(std::string_view zpp_id,
 
 /// TODO
 constexpr auto
-make_zpp_lc_dc_query_packet(std::span<uint8_t const, 4uz> developer_code) {
+make_zpp_update_packet([[maybe_unused]] uint32_t addr,
+                       [[maybe_unused]] std::span<uint8_t const> bytes) {
   Packet packet{};
   // TODO
   return packet;
 }
 
 /// TODO
-constexpr auto make_zpp_update_packet(uint32_t addr,
-                                      std::span<uint8_t const> bytes) {
-  Packet packet{};
-  // TODO
-  return packet;
-}
-
-/// TODO
-constexpr auto make_zpp_update_end_packet(uint32_t begin_addr,
-                                          uint32_t end_addr) {
+constexpr auto make_zpp_update_end_packet([[maybe_unused]] uint32_t begin_addr,
+                                          [[maybe_unused]] uint32_t end_addr) {
   Packet packet{};
   // TODO
   return packet;

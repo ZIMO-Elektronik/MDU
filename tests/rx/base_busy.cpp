@@ -1,7 +1,7 @@
+#include "../packet_builder.hpp"
 #include "base_test.hpp"
-#include "packet_builder.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(ReceiveBaseTest, ignore_busy_when_not_busy) {
   Expectation nack_sent{EXPECT_CALL(*_mock, ackbit(100u)).Times(Exactly(0))};

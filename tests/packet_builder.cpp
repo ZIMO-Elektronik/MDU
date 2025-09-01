@@ -11,21 +11,21 @@ PacketBuilder& PacketBuilder::command(mdu::Command cmd) {
 }
 
 PacketBuilder& PacketBuilder::data(std::span<uint8_t const> bytes) {
-  _data.insert(end(_data), cbegin(bytes), cend(bytes));
+  std::ranges::copy(bytes, std::back_inserter(_packet));
   return *this;
 }
 
 PacketBuilder& PacketBuilder::data(std::string_view sv) {
-  _data.insert(end(_data), cbegin(sv), cend(sv));
+  std::ranges::copy(sv, std::back_inserter(_packet));
   return *this;
 }
 
 PacketBuilder& PacketBuilder::crc8(std::optional<uint8_t> overwrite_crc8) {
-  return data(overwrite_crc8.value_or(mdu::crc8(_data)));
+  return data(overwrite_crc8.value_or(mdu::crc8(_packet)));
 }
 
 PacketBuilder& PacketBuilder::crc32(std::optional<uint32_t> overwrite_crc32) {
-  return data(overwrite_crc32.value_or(mdu::crc32(_data)));
+  return data(overwrite_crc32.value_or(mdu::crc32(_packet)));
 }
 
 PacketBuilder& PacketBuilder::ackreq(size_t count) {
@@ -33,9 +33,10 @@ PacketBuilder& PacketBuilder::ackreq(size_t count) {
   return *this;
 }
 
-std::vector<uint32_t>
-PacketBuilder::timings(mdu::TransferRate transfer_rate) const {
-  std::vector<uint32_t> retval{timingsWithoutAckreq(transfer_rate)};
+mdu::Packet PacketBuilder::packet() const { return _packet; }
+
+mdu::tx::Timings PacketBuilder::timings(mdu::TransferRate transfer_rate) const {
+  mdu::tx::Timings retval{timingsWithoutAckreq(transfer_rate)};
   auto const& timings{mdu::timings[std::to_underlying(transfer_rate)]};
 
   // Ackreq
@@ -44,32 +45,35 @@ PacketBuilder::timings(mdu::TransferRate transfer_rate) const {
   return retval;
 }
 
-std::vector<uint32_t>
+mdu::tx::Timings
 PacketBuilder::timingsWithoutAckreq(mdu::TransferRate transfer_rate) const {
-  std::vector<uint32_t> retval;
+  mdu::tx::Timings retval;
   auto const& timings{mdu::timings[std::to_underlying(transfer_rate)]};
 
   // Preamble
   for (auto i{0uz}; i < _preamble_count; ++i) retval.push_back(timings.one);
 
   // Data
-  std::ranges::for_each(_data, [&](uint8_t byte) {
+  std::ranges::for_each(_packet, [&](uint8_t byte) {
     retval.push_back(timings.zero); // Start
     for (auto i{sizeof(byte) * CHAR_BIT}; i-- > 0uz;)
       retval.push_back(byte & (1u << i) ? timings.one : timings.zero);
   });
 
   // End
-  if (size(_data)) retval.push_back(timings.one);
+  if (size(_packet)) retval.push_back(timings.one);
 
   return retval;
 }
 
-std::vector<uint32_t>
+mdu::tx::Timings
 PacketBuilder::timingsAckreqOnly(size_t count,
                                  mdu::TransferRate transfer_rate) const {
-  return std::vector<uint32_t>(
-    count, mdu::timings[std::to_underlying(transfer_rate)].ackreq);
+  mdu::tx::Timings retval;
+  std::ranges::fill_n(std::back_inserter(retval),
+                      count,
+                      mdu::timings[std::to_underlying(transfer_rate)].ackreq);
+  return retval;
 }
 
 PacketBuilder PacketBuilder::makePingPacket(uint8_t decoder_id) {

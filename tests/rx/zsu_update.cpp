@@ -1,8 +1,8 @@
 #include <numeric>
-#include "packet_builder.hpp"
+#include "../packet_builder.hpp"
 #include "zsu_test.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(ReceiveZsuTest, write_single_update_packet) {
   Expectation write_zsu{EXPECT_CALL(*_mock, writeZsu(0u, _))

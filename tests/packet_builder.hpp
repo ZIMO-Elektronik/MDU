@@ -22,7 +22,7 @@ public:
 
   PacketBuilder& data(std::unsigned_integral auto value) {
     for (auto i{sizeof(value)}; i-- > 0uz;)
-      _data.push_back(static_cast<uint8_t>(value >> i * CHAR_BIT));
+      _packet.push_back(static_cast<uint8_t>(value >> i * CHAR_BIT));
     return *this;
   }
 
@@ -36,16 +36,19 @@ public:
   // Add ackreq bits
   PacketBuilder& ackreq(size_t count = 10uz);
 
+  // Get Packet
+  mdu::Packet packet() const;
+
   // Get timings
-  std::vector<uint32_t>
+  mdu::tx::Timings
   timings(mdu::TransferRate transfer_rate = mdu::TransferRate::Default) const;
 
   // Get timings without ackreq
-  std::vector<uint32_t> timingsWithoutAckreq(
+  mdu::tx::Timings timingsWithoutAckreq(
     mdu::TransferRate transfer_rate = mdu::TransferRate::Default) const;
 
   // Get ackreq timings
-  std::vector<uint32_t> timingsAckreqOnly(
+  mdu::tx::Timings timingsAckreqOnly(
     size_t count = MDU_TX_MIN_ACKREQ_BITS,
     mdu::TransferRate transfer_rate = mdu::TransferRate::Default) const;
 
@@ -71,5 +74,5 @@ public:
 private:
   size_t _preamble_count{};
   size_t _ackreq_count{};
-  std::vector<uint8_t> _data{};
+  mdu::Packet _packet{};
 };

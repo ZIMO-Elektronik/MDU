@@ -1,7 +1,7 @@
+#include "../packet_builder.hpp"
 #include "base_test.hpp"
-#include "packet_builder.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(ReceiveBaseTest, initial_state_of_selected_is_true) {
   EXPECT_TRUE(_mock->selected());

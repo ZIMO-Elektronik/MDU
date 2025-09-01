@@ -7,7 +7,7 @@
 #include "zsu_test.hpp"
 
 #if defined(MDU_TESTS_MASTER_KEY)
-using namespace ::testing;
+using namespace testing;
 
 namespace {
 

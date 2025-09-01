@@ -1,8 +1,8 @@
 #include <numeric>
-#include "packet_builder.hpp"
+#include "../packet_builder.hpp"
 #include "zpp_test.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(ReceiveZppTest, end_address_check_succeeds) {
   std::array<uint8_t, 64uz> sound_data;

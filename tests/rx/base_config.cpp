@@ -1,7 +1,7 @@
+#include "../packet_builder.hpp"
 #include "base_test.hpp"
-#include "packet_builder.hpp"
 
-using namespace ::testing;
+using namespace testing;
 
 TEST_F(ReceiveBaseTest, receive_packet_after_changing_transfer_rate) {
   auto cfg{_cfg};
