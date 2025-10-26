@@ -2,12 +2,26 @@ cmake_minimum_required(VERSION 3.25 FATAL_ERROR)
 include(FetchContent)
 
 if(ESP_PLATFORM)
-  file(GLOB_RECURSE SRC src/*.c)
-  idf_component_register(SRCS ${SRC} INCLUDE_DIRS include REQUIRES driver)
+  # >5.3.0 requires esp_driver_rmt
+  if(IDF_VERSION_MAJOR GREATER 5 OR (IDF_VERSION_MAJOR EQUAL 5
+                                     AND IDF_VERSION_MINOR GREATER_EQUAL 3))
+    set(ESP_DRIVER_RMT_COMPONENT esp_driver_rmt)
+  endif()
+  idf_component_register(
+    SRCS
+    src/rmt_mdu_encoder.c
+    INCLUDE_DIRS
+    include
+    REQUIRES
+    driver
+    ${ESP_DRIVER_RMT_COMPONENT})
+
+  # Change OUTPUT_NAME from MDU to lib__idf_MDU to avoid conflicts
   set_target_properties(${COMPONENT_LIB} PROPERTIES PREFIX "")
   set_target_properties(
     ${COMPONENT_LIB} PROPERTIES OUTPUT_NAME
                                 ${CMAKE_STATIC_LIBRARY_PREFIX}${COMPONENT_LIB})
+
   target_link_libraries(${COMPONENT_LIB} PUBLIC MDU)
 endif()
 
@@ -59,19 +73,19 @@ target_compile_definitions(
          MDU_TX_MIN_ACKREQ_BITS=${MDU_TX_MIN_ACKREQ_BITS}
          MDU_TX_MAX_ACKREQ_BITS=${MDU_TX_MAX_ACKREQ_BITS})
 
-if(PROJECT_IS_TOP_LEVEL)
+# https://github.com/espressif/esp-idf/issues/17773
+if(PROJECT_IS_TOP_LEVEL AND NOT ESP_PLATFORM)
   target_include_directories(
     MDU
     INTERFACE include
     PRIVATE include/mdu)
+  target_common_warnings(MDU PUBLIC)
 else()
   target_include_directories(
     MDU SYSTEM
     INTERFACE include
     PRIVATE include/mdu)
 endif()
-
-target_common_warnings(MDU PRIVATE)
 
 if(MDU_UNITY_BUILD)
   target_unity_build(MDU)
@@ -82,11 +96,11 @@ if(NOT TARGET Microsoft.GSL::GSL)
 endif()
 
 if(NOT TARGET Salsa20::Salsa20)
-  cpmaddpackage("gh:ZIMO-Elektronik/Salsa20@0.3.1")
+  cpmaddpackage("gh:ZIMO-Elektronik/Salsa20@0.3.2")
 endif()
 
 if(NOT TARGET ZTL::ZTL)
-  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.21.1")
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.23.1")
 endif()
 
 target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)

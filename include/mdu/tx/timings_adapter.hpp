@@ -83,12 +83,12 @@ public:
 
   constexpr bool operator==(Sentinel) const { return _count >= _max_count; }
 
-  TimingsAdapter& begin() { return *this; }
-  TimingsAdapter const& begin() const { return *this; }
-  Sentinel end() { return {}; }
-  Sentinel end() const { return {}; }
-  Sentinel cend() { return {}; }
-  Sentinel cend() const { return {}; }
+  constexpr TimingsAdapter& begin() { return *this; }
+  constexpr TimingsAdapter const& begin() const { return *this; }
+  constexpr Sentinel end() { return {}; }
+  constexpr Sentinel end() const { return {}; }
+  constexpr Sentinel cend() { return {}; }
+  constexpr Sentinel cend() const { return {}; }
 
 private:
   Packet _packet;                ///< MDU packet
