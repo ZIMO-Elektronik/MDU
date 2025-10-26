@@ -94,7 +94,8 @@ TEST_F(ReceiveBaseTest, nack_incomplete_packet) {
   auto packet{PacketBuilder::makePingPacket(0u)};
   auto timings_without_ackreq{packet.timingsWithoutAckreq()};
   // Tinker with packet length
-  timings_without_ackreq.resize(size(timings_without_ackreq) - 4uz);
+  timings_without_ackreq.resize(static_cast<mdu::tx::Timings::size_type>(
+    size(timings_without_ackreq) - 4uz));
   Receive(timings_without_ackreq);
   Execute();
   Receive(packet.timingsAckreqOnly(5uz));

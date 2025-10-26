@@ -70,9 +70,10 @@ mdu::tx::Timings
 PacketBuilder::timingsAckreqOnly(size_t count,
                                  mdu::TransferRate transfer_rate) const {
   mdu::tx::Timings retval;
-  std::ranges::fill_n(std::back_inserter(retval),
-                      count,
-                      mdu::timings[std::to_underlying(transfer_rate)].ackreq);
+  std::ranges::fill_n(
+    std::back_inserter(retval),
+    static_cast<std::iter_difference_t<mdu::tx::Timings>>(count),
+    mdu::timings[std::to_underlying(transfer_rate)].ackreq);
   return retval;
 }
 
