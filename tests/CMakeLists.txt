@@ -12,7 +12,7 @@ target_compile_definitions(
 )
 
 target_common_warnings(MDUTests PRIVATE)
-target_compile_options(MDUTests PRIVATE -Werror)
+target_common_errors(MDUTests PRIVATE -Werror)
 
 cpmaddpackage(URI "gh:google/googletest#main" OPTIONS "INSTALL_GTEST OFF")
 cpmaddpackage("gh:ericniebler/range-v3#0.12.0")

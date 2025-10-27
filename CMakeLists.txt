@@ -28,7 +28,7 @@ endif()
 FetchContent_Declare(
   CMakeModules
   GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/CMakeModules"
-  GIT_TAG v0.9.5
+  GIT_TAG v0.10.0
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
@@ -79,7 +79,8 @@ if(PROJECT_IS_TOP_LEVEL AND NOT ESP_PLATFORM)
     MDU
     INTERFACE include
     PRIVATE include/mdu)
-  target_common_warnings(MDU PUBLIC)
+  target_common_warnings(MDU PRIVATE)
+  target_common_errors(MDU PRIVATE)
 else()
   target_include_directories(
     MDU SYSTEM
