@@ -28,7 +28,7 @@ endif()
 FetchContent_Declare(
   CMakeModules
   GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/CMakeModules"
-  GIT_TAG v0.10.0
+  GIT_TAG v0.12.0
   SOURCE_DIR ${CMAKE_BINARY_DIR}/CMakeModules)
 FetchContent_MakeAvailable(CMakeModules)
 
@@ -93,7 +93,7 @@ if(MDU_UNITY_BUILD)
 endif()
 
 if(NOT TARGET Microsoft.GSL::GSL)
-  cpmaddpackage("gh:microsoft/GSL@4.2.0")
+  cpmaddpackage("gh:microsoft/GSL@4.2.1")
 endif()
 
 if(NOT TARGET Salsa20::Salsa20)
@@ -101,7 +101,7 @@ if(NOT TARGET Salsa20::Salsa20)
 endif()
 
 if(NOT TARGET ZTL::ZTL)
-  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.23.1")
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.24.0")
 endif()
 
 target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)
@@ -116,6 +116,8 @@ if(PROJECT_IS_TOP_LEVEL)
   file(GLOB_RECURSE SRC examples/*.[ch]pp include/*.[ch]pp src/*.[ch]pp
        tests/*.[ch]pp)
   add_clang_format_target(MDUFormat OPTIONS -i FILES ${SRC})
+  add_include_what_you_must_target(MDUIncludeWhatYouMust TARGET MDU
+                                   EXCLUDE_HEADERS "rmt_mdu_encoder.h")
 endif()
 
 if(BUILD_TESTING

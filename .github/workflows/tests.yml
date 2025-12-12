@@ -11,5 +11,5 @@ jobs:
     uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.2.1
     with:
       args: -DCMAKE_BUILD_TYPE=Debug
-      target: MDUTests
+      target: MDUIncludeWhatYouMust MDUTests
       post-build: ctest --test-dir build --schedule-random --timeout 86400
