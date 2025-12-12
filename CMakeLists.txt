@@ -93,7 +93,7 @@ if(MDU_UNITY_BUILD)
 endif()
 
 if(NOT TARGET Microsoft.GSL::GSL)
-  cpmaddpackage("gh:microsoft/GSL@4.2.0")
+  cpmaddpackage("gh:microsoft/GSL@4.2.1")
 endif()
 
 if(NOT TARGET Salsa20::Salsa20)
