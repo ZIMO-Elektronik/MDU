@@ -9,6 +9,8 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
   - [ZIMO KLUG](https://www.zimo.at/web2010/products/KLUG-Kompaktes_Lade_und_Update-Geraet_EN.htm)
   - [ZIMO MXULF](https://www.zimo.at/web2010/products/MXULF-Decoder-Updater_EN.htm)
   - [Z21](https://www.z21.eu/en)
+  - [Open|Remise S3Main](https://openremise.at)
+  - [RTB](https://rtb4dcc.de)
 - Decoders
   - [ZIMO small-](https://www.zimo.at/web2010/products/ms-sound-decoder_EN.htm) and [large-scale MS decoders](https://www.zimo.at/web2010/products/ms-sound-decoder-grossbahn_EN.htm)
   - [ZIMO MN decoders](https://www.zimo.at/web2010/products/mn-nicht-sound-decoder_EN.htm)
