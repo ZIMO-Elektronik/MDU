@@ -48,8 +48,8 @@ TEST_F(ReceiveZsuTest, dont_write_to_same_update_address_twice) {
   std::array<uint8_t, 64uz> zsu_data;
   std::iota(begin(zsu_data), end(zsu_data), 0u);
 
-  // Packet to address 64 is only written once
-  for (auto i{0u}; i < 2u; ++i) {
+  // Packet to address 0 is only written once
+  for (auto i{0uz}; i < 2uz; ++i) {
     auto packet{PacketBuilder::makeZsuUpdatePacket(0u, zsu_data)};
     Receive(packet.timingsWithoutAckreq());
     Execute();

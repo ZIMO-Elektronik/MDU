@@ -8,14 +8,14 @@ on:
 
 jobs:
   tests:
-    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.2.1
+    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.3.0
     with:
       args: -DCMAKE_BUILD_TYPE=Debug
       target: MDUTests
       post-build: ctest --test-dir build --schedule-random --timeout 86400
 
   include-what-you-must:
-    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.2.1
+    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.3.0
     with:
       args: -DCMAKE_BUILD_TYPE=Debug
       target: MDUIncludeWhatYouMust

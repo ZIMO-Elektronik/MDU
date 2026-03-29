@@ -159,7 +159,7 @@ TEST_F(ReceiveZsuTest, decrypt) {
 TEST_F(ReceiveZsuTest, crc32_of_encrypted_bin) {
   auto const cwd{source_location_parent_path()};
   auto zsu_encrypted_bin{zsu2encrypted_bin(cwd / "./firmwares/MS440_test.zsu")};
-  while (size(zsu_encrypted_bin) % 64u) zsu_encrypted_bin.push_back(0u);
+  while (size(zsu_encrypted_bin) % 64uz) zsu_encrypted_bin.push_back(0u);
   mdu::Crc32 crc32;
   crc32.next(zsu_encrypted_bin);
   uint32_t crc32_result = crc32.value();

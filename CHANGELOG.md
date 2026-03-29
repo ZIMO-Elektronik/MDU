@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.19.1
+- Bugfix allow retries ([#28](https://github.com/ZIMO-Elektronik/MDU/issues/28))
+
 ## 0.19.0
 - Add `mdu::tx::Base`
 

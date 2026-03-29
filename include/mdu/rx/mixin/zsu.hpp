@@ -108,6 +108,10 @@ private:
   /// \retval true        Transmit ackbit in channel2
   /// \retval false       Do not transmit ackbit in channel2
   bool executeErase(uint32_t begin_addr, uint32_t end_addr) {
+    _crc32.reset();
+    _first_addr.reset();
+    _last_addr.reset();
+    _crc32valid = false;
     auto const success{eraseZsu(begin_addr, end_addr)};
     return !success;
   }
