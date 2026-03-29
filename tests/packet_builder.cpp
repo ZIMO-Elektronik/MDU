@@ -115,6 +115,17 @@ PacketBuilder PacketBuilder::makeBusyPacket() {
   return packet;
 }
 
+PacketBuilder PacketBuilder::makeZsuErasePacket(uint32_t begin_addr,
+                                                uint32_t end_addr) {
+  PacketBuilder packet;
+  packet.preamble()
+    .command(mdu::Command::ZsuErase)
+    .data(begin_addr, end_addr)
+    .crc8()
+    .ackreq();
+  return packet;
+}
+
 PacketBuilder
 PacketBuilder::makeZsuUpdatePacket(uint32_t addr,
                                    std::span<uint8_t const, 64uz> bytes) {

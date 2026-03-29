@@ -59,6 +59,8 @@ public:
   static PacketBuilder
   makeConfigTransferRatePacket(mdu::TransferRate transfer_rate);
   static PacketBuilder makeBusyPacket();
+  static PacketBuilder makeZsuErasePacket(uint32_t begin_addr,
+                                          uint32_t end_addr);
   static PacketBuilder
   makeZsuUpdatePacket(uint32_t addr, std::span<uint8_t const, 64uz> bytes);
   static PacketBuilder makeZppValidQueryPacket(std::string_view zpp_id,

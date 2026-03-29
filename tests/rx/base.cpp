@@ -7,7 +7,7 @@ using namespace testing;
 TEST_F(ReceiveBaseTest, shiftIn) {
   bool retval{};
 
-  for (auto i{0u}; i < 7u; ++i) {
+  for (auto i{0uz}; i < 7uz; ++i) {
     retval = _mock->shiftIn(1u);
     EXPECT_FALSE(retval);
   }

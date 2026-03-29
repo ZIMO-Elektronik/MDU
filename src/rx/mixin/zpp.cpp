@@ -86,6 +86,9 @@ bool Zpp::executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const {
 /// \retval true        Transmit ackbit in channel2
 /// \retval false       Do not transmit ackbit in channel2
 bool Zpp::executeErase(uint32_t begin_addr, uint32_t end_addr) {
+  _addrs_valid = false;
+  _first_addr.reset();
+  _last_addr.reset();
   auto const success{eraseZpp(begin_addr, end_addr)};
   return !success;
 }
