@@ -234,7 +234,8 @@ constexpr auto make_zsu_crc32_result_exit_packet() {
 constexpr auto make_zpp_valid_query_packet(std::string_view zpp_id,
                                            uint32_t zpp_flash_size) {
   Packet packet{};
-  packet.resize(sizeof(Command) + size(zpp_id) + sizeof(zpp_flash_size));
+  packet.resize(static_cast<Packet::size_type>(sizeof(Command) + size(zpp_id) +
+                                               sizeof(zpp_flash_size)));
   auto first{begin(packet)};
   auto last{uint32_2data(std::to_underlying(Command::ZppValidQuery), first)};
   last = std::copy(begin(zpp_id), end(zpp_id), last);
