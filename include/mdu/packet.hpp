@@ -32,17 +32,11 @@ constexpr Command packet2command(Packet const& packet) {
   return static_cast<Command>(data2uint32(data(packet)));
 }
 
-/// TODO
-constexpr auto make_ping_packet(uint8_t decoder_id) {
-  Packet packet{};
-  packet.resize(sizeof(Command) + sizeof(decoder_id) + sizeof(Crc8));
-  uint32_2data(std::to_underlying(Command::Ping), begin(packet));
-  packet[4uz] = decoder_id;
-  packet[5uz] = crc8({cbegin(packet), 5uz});
-  return packet;
-}
-
-/// TODO
+/// Make ping packet long
+///
+/// \param  serial_number Decoder serial number
+/// \param  decoder_id    Decoder ID
+/// \return Ping packet long
 constexpr auto make_ping_packet(uint32_t serial_number, uint32_t decoder_id) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(serial_number) + sizeof(decoder_id) +
@@ -55,7 +49,23 @@ constexpr auto make_ping_packet(uint32_t serial_number, uint32_t decoder_id) {
   return packet;
 }
 
-/// TODO
+/// Make ping packet short
+///
+/// \param  decoder_id  Decoder ID
+/// \return Ping packet short
+constexpr auto make_ping_packet(uint8_t decoder_id) {
+  Packet packet{};
+  packet.resize(sizeof(Command) + sizeof(decoder_id) + sizeof(Crc8));
+  uint32_2data(std::to_underlying(Command::Ping), begin(packet));
+  packet[4uz] = decoder_id;
+  packet[5uz] = crc8({cbegin(packet), 5uz});
+  return packet;
+}
+
+/// Make config transfer rate packet
+///
+/// \param  transfer_rate Transfer Rate
+/// \return Config transfer rate packet
 constexpr auto make_config_transfer_rate_packet(TransferRate transfer_rate) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(transfer_rate) + sizeof(Crc8));
@@ -65,7 +75,10 @@ constexpr auto make_config_transfer_rate_packet(TransferRate transfer_rate) {
   return packet;
 }
 
-/// TODO
+/// Make binary tree search packet
+///
+/// \param  byte  Byte
+/// \return Binary tree search packet
 constexpr auto make_binary_tree_search_packet(uint8_t byte) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(byte) + sizeof(Crc8));
@@ -75,7 +88,11 @@ constexpr auto make_binary_tree_search_packet(uint8_t byte) {
   return packet;
 }
 
-/// TODO
+/// Make CV read packet
+///
+/// \param  cv_number CV number
+/// \param  pos       Bit position
+/// \return CV read packet
 constexpr auto make_cv_read_packet(uint16_t cv_number, uint8_t pos) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(cv_number) + sizeof(pos) +
@@ -88,7 +105,11 @@ constexpr auto make_cv_read_packet(uint16_t cv_number, uint8_t pos) {
   return packet;
 }
 
-/// TODO
+/// Make CV write packet
+///
+/// \param  cv_number CV number
+/// \param  byte      CV value
+/// \return CV write packet
 constexpr auto make_cv_write_packet(uint16_t cv_number, uint8_t byte) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(cv_number) + sizeof(byte) +
@@ -101,7 +122,9 @@ constexpr auto make_cv_write_packet(uint16_t cv_number, uint8_t byte) {
   return packet;
 }
 
-/// TODO
+/// Make busy packet
+///
+/// \return Busy packet
 constexpr auto make_busy_packet() {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(Crc8));
@@ -110,7 +133,119 @@ constexpr auto make_busy_packet() {
   return packet;
 }
 
-/// TODO
+/// Make ZPP valid query
+///
+/// \param  zpp_id          ZPP ID
+/// \param  zpp_flash_size  ZPP flash size
+/// \return ZPP valid query packet
+constexpr auto make_zpp_valid_query_packet(std::string_view zpp_id,
+                                           uint32_t zpp_flash_size) {
+  Packet packet{};
+  packet.resize(static_cast<Packet::size_type>(
+    sizeof(Command) + size(zpp_id) + sizeof(zpp_flash_size) + sizeof(Crc8)));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZppValidQuery), first)};
+  last = std::copy(begin(zpp_id), end(zpp_id), last);
+  last = uint32_2data(zpp_flash_size, last);
+  *last = crc8({first, last});
+  return packet;
+}
+
+/// Make ZPP LC DC query packet
+///
+/// \param  developer_code  Developer code
+/// \return ZPP LC DC query packet
+constexpr auto
+make_zpp_lc_dc_query_packet(std::span<uint8_t const, 4uz> developer_code) {
+  Packet packet{};
+  packet.resize(sizeof(Command) + size(developer_code) + sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZppLcDcQuery), first)};
+  last = std::copy(begin(developer_code), end(developer_code), last);
+  *last = crc8({first, last});
+  return packet;
+}
+
+/// Make ZPP erase packet
+///
+/// \param  begin_addr  Begin address
+/// \param  end_addr    End address
+/// \return ZPP erase packet
+constexpr auto make_zpp_erase_packet(uint32_t begin_addr, uint32_t end_addr) {
+  Packet packet{};
+  packet.resize(sizeof(Command) + sizeof(begin_addr) + sizeof(end_addr) +
+                sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZppErase), first)};
+  last = uint32_2data(begin_addr, last);
+  last = uint32_2data(end_addr, last);
+  *last = crc8({first, last});
+  return packet;
+}
+
+/// Make ZPP update packet
+///
+/// \param  addr  Block address
+/// \param  bytes Block
+/// \return ZPP update packet
+constexpr auto make_zpp_update_packet(uint32_t addr,
+                                      std::span<uint8_t const, 256uz> bytes) {
+  Packet packet{};
+  packet.resize(sizeof(Command) + sizeof(addr) + size(bytes) + sizeof(Crc32));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZppUpdate), first)};
+  last = uint32_2data(addr, last);
+  last = std::copy(cbegin(bytes), cend(bytes), last);
+  last = uint32_2data(crc32({first, last}), last);
+  return packet;
+}
+
+/// Make ZPP update end packet
+///
+/// \param  begin_addr  Begin address
+/// \param  end_addr    End address
+/// \return ZPP update end packet
+constexpr auto make_zpp_update_end_packet(uint32_t begin_addr,
+                                          uint32_t end_addr) {
+  Packet packet{};
+  packet.resize(sizeof(Command) + sizeof(begin_addr) + sizeof(end_addr) +
+                sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZppUpdateEnd), first)};
+  last = uint32_2data(begin_addr, last);
+  last = uint32_2data(end_addr, last);
+  *last = crc8({first, last});
+  return packet;
+}
+
+/// Make ZPP exit packet
+///
+/// \return ZPP exit packet
+constexpr auto make_zpp_exit_packet() {
+  Packet packet{};
+  packet.resize(sizeof(Command) + sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZppExit), first)};
+  *last = crc8({first, last});
+  return packet;
+}
+
+/// Make ZPP exit and reset packet
+///
+/// \return ZPP exit and reset packet
+constexpr auto make_zpp_exit_reset_packet() {
+  Packet packet{};
+  packet.resize(sizeof(Command) + sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZppExitReset), first)};
+  *last = crc8({first, last});
+  return packet;
+}
+
+/// Make ZSU salsa20 IV packet
+///
+/// \param  iv  Salsa20 IV
+/// \return ZSU salsa20 IV packet
 constexpr auto make_zsu_salsa20_iv_packet(std::span<uint8_t const, 8uz> iv) {
   Packet packet{};
   packet.resize(sizeof(Command) + size(iv) + sizeof(Crc8));
@@ -121,7 +256,11 @@ constexpr auto make_zsu_salsa20_iv_packet(std::span<uint8_t const, 8uz> iv) {
   return packet;
 }
 
-/// TODO
+/// Make ZSU erase packet
+///
+/// \param  begin_addr  Begin address
+/// \param  end_addr    End address
+/// \return ZSU erase packet
 constexpr auto make_zsu_erase_packet(uint32_t begin_addr, uint32_t end_addr) {
   Packet packet{};
   packet.resize(sizeof(Command) + sizeof(begin_addr) + sizeof(end_addr) +
@@ -134,7 +273,11 @@ constexpr auto make_zsu_erase_packet(uint32_t begin_addr, uint32_t end_addr) {
   return packet;
 }
 
-/// TODO
+/// Make ZSU update packet
+///
+/// \param  addr  Block address
+/// \param  bytes Block
+/// \return ZSU update packet
 constexpr auto make_zsu_update_packet(uint32_t addr,
                                       std::span<uint8_t const, 64uz> bytes) {
   Packet packet{};
@@ -146,44 +289,49 @@ constexpr auto make_zsu_update_packet(uint32_t addr,
   return packet;
 }
 
-/// TODO
-constexpr auto
-make_zpp_valid_query_packet([[maybe_unused]] std::string_view zpp_id,
-                            [[maybe_unused]] size_t zpp_flash_size) {
+/// Make ZSU CRC32 start packet
+///
+/// \param  begin_addr  Begin address
+/// \param  end_addr    End address
+/// \param  crc         CRC32
+/// \return ZSU CRC32 start packet
+constexpr auto make_zsu_crc32_start_packet(uint32_t begin_addr,
+                                           uint32_t end_addr,
+                                           uint32_t crc) {
   Packet packet{};
-  // TODO
+  packet.resize(sizeof(Command) + sizeof(begin_addr) + sizeof(end_addr) +
+                sizeof(crc) + sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZsuCrc32Start), first)};
+  last = uint32_2data(begin_addr, last);
+  last = uint32_2data(end_addr, last);
+  last = uint32_2data(crc, last);
+  *last = crc8({first, last});
   return packet;
 }
 
-/// TODO
-constexpr auto make_zpp_lc_dc_query_packet(
-  [[maybe_unused]] std::span<uint8_t const, 4uz> developer_code) {
+/// Make ZSU CRC32 result packet
+///
+/// \return ZSU CRC32 result packet
+constexpr auto make_zsu_crc32_result_packet() {
   Packet packet{};
-  // TODO
+  packet.resize(sizeof(Command) + sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{uint32_2data(std::to_underlying(Command::ZsuCrc32Result), first)};
+  *last = crc8({first, last});
   return packet;
 }
 
-/// TODO
-constexpr auto
-make_zpp_update_packet([[maybe_unused]] uint32_t addr,
-                       [[maybe_unused]] std::span<uint8_t const> bytes) {
+/// Make ZSU CRC32 result and exit packet
+///
+/// \return ZSU CRC32 result and exit packet
+constexpr auto make_zsu_crc32_result_exit_packet() {
   Packet packet{};
-  // TODO
-  return packet;
-}
-
-/// TODO
-constexpr auto make_zpp_update_end_packet([[maybe_unused]] uint32_t begin_addr,
-                                          [[maybe_unused]] uint32_t end_addr) {
-  Packet packet{};
-  // TODO
-  return packet;
-}
-
-/// TODO
-constexpr auto make_zpp_exit_packet() {
-  Packet packet{};
-  // TODO
+  packet.resize(sizeof(Command) + sizeof(Crc8));
+  auto first{begin(packet)};
+  auto last{
+    uint32_2data(std::to_underlying(Command::ZsuCrc32ResultExit), first)};
+  *last = crc8({first, last});
   return packet;
 }
 
