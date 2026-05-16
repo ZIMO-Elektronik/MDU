@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.19.2
+- Add missing `make_*_packet` functions ([#30](https://github.com/ZIMO-Elektronik/MDU/pull/30))
+
 ## 0.19.1
 - Bugfix allow retries ([#28](https://github.com/ZIMO-Elektronik/MDU/issues/28))
 
