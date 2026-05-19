@@ -284,6 +284,7 @@ constexpr auto make_zsu_update_packet(uint32_t addr,
   packet.resize(sizeof(Command) + sizeof(addr) + size(bytes) + sizeof(Crc32));
   auto first{begin(packet)};
   auto last{uint32_2data(std::to_underlying(Command::ZsuUpdate), first)};
+  last = uint32_2data(addr, last);
   last = std::copy(cbegin(bytes), cend(bytes), last);
   uint32_2data(crc32({first, last}), last);
   return packet;

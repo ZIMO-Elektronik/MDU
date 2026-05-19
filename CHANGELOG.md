@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.19.3
+- Bugfix missing address in `make_zsu_update_packet` ([#31](https://github.com/ZIMO-Elektronik/MDU/issues/31))
+
 ## 0.19.2
 - Add missing `make_*_packet` functions ([#30](https://github.com/ZIMO-Elektronik/MDU/pull/30))
 

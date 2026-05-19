@@ -604,13 +604,13 @@ This library is meant to be consumed with CMake,
 
 ```cmake
 # Either by including it with CPM
-cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.19.0")
+cpmaddpackage("gh:ZIMO-Elektronik/MDU@0.19.3")
 
 # or the FetchContent module
 FetchContent_Declare(
   MDU
   GIT_REPOSITORY "https://github.com/ZIMO-Elektronik/MDU"
-  GIT_TAG v0.19.0)
+  GIT_TAG v0.19.3)
 
 target_link_libraries(YourTarget PRIVATE MDU::MDU)
 ```
@@ -619,7 +619,7 @@ or, on [ESP32 platforms](https://www.espressif.com/en/products/socs/esp32), with
 ```yaml
 dependencies:
   zimo-elektronik/mdu:
-    version: "0.19.0"
+    version: "0.19.3"
 ```
 
 ### Build
@@ -640,7 +640,7 @@ cmake --build build --target MDUZppLoad
 On [ESP32 platforms](https://www.espressif.com/en/products/socs/esp32) examples from the [examples](https://github.com/ZIMO-Elektronik/MDU/raw/master/examples) subfolder can be built directly using the [IDF Frontend](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/tools/idf-py.html).
 
 ```sh
-idf.py create-project-from-example "zimo-elektronik/mdu^0.19.0:esp32"
+idf.py create-project-from-example "zimo-elektronik/mdu^0.19.3:esp32"
 ```
 
 ## Usage
