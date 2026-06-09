@@ -575,7 +575,7 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 5. [ZPP-Update](#zpp-update)
 6. [ZPP-Update-End](#zpp-update-end)
 7. [ZPP-Exit](#zpp-exit) | [ZPP-Exit&Reset](#zpp-exitreset)
-8. Leave track voltage switched on for at least 1s
+8. Leave track voltage switched on for at least 2s
 
 #### ZSU Update
 1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
@@ -589,7 +589,7 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 7. [ZSU-CRC32-Start](#zsu-crc32-start)
 8. [ZSU-CRC32-Result](#zsu-crc32-result) (optional)
 9. [ZSU-CRC32-Result&Exit](#zsu-crc32-resultexit)
-10. Leave track voltage switched on for at least 1s
+10. Leave track voltage switched on for at least 2s
 
 ## Getting Started
 ### Prerequisites
