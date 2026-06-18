@@ -2,9 +2,9 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-/// Receive ZPP & ZSU base
+/// Receive ZSU & ZPP base
 ///
-/// \file   mdu/rx/zpp_zsu_base.hpp
+/// \file   mdu/rx/zsu_zpp_base.hpp
 /// \author Vincent Hamp
 /// \date   29/10/2023
 
@@ -15,6 +15,6 @@
 
 namespace mdu::rx {
 
-using ZppZsuBase = Base<mixin::Zpp, mixin::Zsu>;
+using ZsuZppBase = Base<mixin::Zsu, mixin::Zpp>;
 
 } // namespace mdu::rx

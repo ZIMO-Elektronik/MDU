@@ -4,7 +4,7 @@
 
 <img src="https://github.com/ZIMO-Elektronik/MDU/raw/master/data/images/logo.png" align="right">
 
-MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.com/ZIMO-Elektronik/ZPP) and [ZSU](https://github.com/ZIMO-Elektronik/ZSU) updates over the track. The protocol is currently supported by the following products:
+MDU is an acronym for Multi Decoder Update, a protocol for [ZSU](https://github.com/ZIMO-Elektronik/ZSU) and [ZPP](https://github.com/ZIMO-Elektronik/ZPP) updates over the track. The protocol is currently supported by the following products:
 - Command stations
   - [ZIMO KLUG](https://www.zimo.at/web2010/products/KLUG-Kompaktes_Lade_und_Update-Geraet_EN.htm)
   - [ZIMO MXULF](https://www.zimo.at/web2010/products/MXULF-Decoder-Updater_EN.htm)
@@ -28,8 +28,8 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
         <li><a href="#commands">Commands</a></li>
         <li><a href="#acknowledgment">Acknowledgment</a></li>
         <li><a href="#general-commands">General Commands</a></li>
-        <li><a href="#zpp-commands">ZPP Commands</a></li>
         <li><a href="#zsu-commands">ZSU commands</a></li>
+        <li><a href="#zpp-commands">ZPP Commands</a></li>
         <li><a href="#typical-processes">Typical processes</a></li>
       </ul>
     <li><a href="#getting-started">Getting Started</a></li>
@@ -50,15 +50,15 @@ MDU is an acronym for Multi Decoder Update, a protocol for [ZPP](https://github.
 
 ## Protocol
 ### Entry
-Activation of the MDU protocol is accomplished through a sequence of commands to **verify** configuration variables (CVs) in [DCC](https://github.com/ZIMO-Elektronik/DCC) operations mode. The entire sequence must be broadcast and thus sent to broadcast address 0. Details on the command structure can be found in [RCN-214](https://normen.railcommunity.de/RCN-214.pdf), especially point 2 ("Configuration variable access command - long form"). Depending on the type of update desired, ZPP or ZSU, the following sequences are to be sent:
+Activation of the MDU protocol is accomplished through a sequence of commands to **verify** configuration variables (CVs) in [DCC](https://github.com/ZIMO-Elektronik/DCC) operations mode. The entire sequence must be broadcast and thus sent to broadcast address 0. Details on the command structure can be found in [RCN-214](https://normen.railcommunity.de/RCN-214.pdf), especially point 2 ("Configuration variable access command - long form"). Depending on the type of update desired, ZSU or ZPP, the following sequences are to be sent:
 
-| ZPP           | ZSU           |
+| ZSU           | ZPP           |
 | ------------- | ------------- |
-| CV8   == 0xFE | CV8   == 0xFF |
-| CV105 == 0xAA | CV105 == ID   |
-| CV106 == 0x55 | CV106 == ID   |
-| CV105 == 0x55 | CV105 == ID   |
-| CV106 == 0xAA | CV106 == ID   |
+| CV8   == 0xFF | CV8   == 0xFE |
+| CV105 == ID   | CV105 == 0xAA |
+| CV106 == ID   | CV106 == 0x55 |
+| CV105 == ID   | CV105 == 0x55 |
+| CV106 == ID   | CV106 == 0xAA |
 | CV105 == SN   | CV105 == SN   |
 | CV106 == SN   | CV106 == SN   |
 | CV105 == SN   | CV105 == SN   |
@@ -111,17 +111,17 @@ In principle, each command packet contains the phases preamble, data and acknowl
 | Acknowledgement (optional) | Optional acknowledgement depending on command package          |
 
 ### Commands
-The supported commands of the MDU protocol are divided into 3 categories: general, ZPP and ZSU. Devices that only want to support either ZPP or ZSU updates only have to support the command set actually used. However, the general command set must be implemented.
+The supported commands of the MDU protocol are divided into 3 categories: general, ZSU and ZPP. Devices that only want to support either ZSU or ZPP updates only have to support the command set actually used. However, the general command set must be implemented.
 
-| [General Commands](#general-commands)         | Coding      | [ZPP Commands](#zpp-commands)       | Coding      | [ZSU Commands](#zsu-commands)                  | Coding      |
-| --------------------------------------------- | ----------- | ----------------------------------- | ----------- | ---------------------------------------------- | ----------- |
-|                                               |             | [ZPP-Valid-Query](#zpp-valid-query) | 0xFFFF'FF06 |                                                |             |
-| [Ping](#ping)                                 | 0xFFFF'FFFF | [ZPP-LC-DC-Query](#zpp-lc-dc-query) | 0xFFFF'FF07 | [ZSU-Salsa20-IV](#zsu-salsa20-iv)              | 0xFFFF'FFF7 |
-| [Config-Transfer-Rate](#config-transfer-rate) | 0xFFFF'FFFE | [ZPP-Erase](#zpp-erase)             | 0xFFFF'FF05 | [ZSU-Erase](#zsu-erase)                        | 0xFFFF'FFF5 |
-| [Binary-Tree-Search](#binary-tree-search)     | 0xFFFF'FFFA | [ZPP-Update](#zpp-update)           | 0xFFFF'FF08 | [ZSU-Update](#zsu-update)                      | 0xFFFF'FFF8 |
-| [CV-Read](#cv-read)                           | 0xFFFF'FFF6 | [ZPP-Update-End](#zpp-update-end)   | 0xFFFF'FF0B | [ZSU-CRC32-Start](#zsu-crc32-start)            | 0xFFFF'FFFB |
-| [CV-Write](#cv-write)                         | 0xFFFF'FFF9 | [ZPP-Exit](#zpp-exit)               | 0xFFFF'FF0C | [ZSU-CRC32-Result](#zsu-crc32-result)          | 0xFFFF'FFFC |
-| [Busy](#busy)                                 | 0xFFFF'FFF2 | [ZPP-Exit&Reset](#zpp-exitreset)    | 0xFFFF'FF0D | [ZSU-CRC32-Result&Exit](#zsu-crc32-resultexit) | 0xFFFF'FFFD |
+| [General Commands](#general-commands)         | Coding      | [ZSU Commands](#zsu-commands)                  | Coding      | [ZPP Commands](#zpp-commands)       | Coding      |
+| --------------------------------------------- | ----------- | ---------------------------------------------- | ----------- | ----------------------------------- | ----------- |
+|                                               |             |                                                |             | [ZPP-Valid-Query](#zpp-valid-query) | 0xFFFF'FF06 |
+| [Ping](#ping)                                 | 0xFFFF'FFFF | [ZSU-Salsa20-IV](#zsu-salsa20-iv)              | 0xFFFF'FFF7 | [ZPP-LC-DC-Query](#zpp-lc-dc-query) | 0xFFFF'FF07 |
+| [Config-Transfer-Rate](#config-transfer-rate) | 0xFFFF'FFFE | [ZSU-Erase](#zsu-erase)                        | 0xFFFF'FFF5 | [ZPP-Erase](#zpp-erase)             | 0xFFFF'FF05 |
+| [Binary-Tree-Search](#binary-tree-search)     | 0xFFFF'FFFA | [ZSU-Update](#zsu-update)                      | 0xFFFF'FFF8 | [ZPP-Update](#zpp-update)           | 0xFFFF'FF08 |
+| [CV-Read](#cv-read)                           | 0xFFFF'FFF6 | [ZSU-CRC32-Start](#zsu-crc32-start)            | 0xFFFF'FFFB | [ZPP-Update-End](#zpp-update-end)   | 0xFFFF'FF0B |
+| [CV-Write](#cv-write)                         | 0xFFFF'FFF9 | [ZSU-CRC32-Result](#zsu-crc32-result)          | 0xFFFF'FFFC | [ZPP-Exit](#zpp-exit)               | 0xFFFF'FF0C |
+| [Busy](#busy)                                 | 0xFFFF'FFF2 | [ZSU-CRC32-Result&Exit](#zsu-crc32-resultexit) | 0xFFFF'FFFD | [ZPP-Exit&Reset](#zpp-exitreset)    | 0xFFFF'FF0D |
 
 ### Acknowledgment
 <table>
@@ -190,6 +190,54 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
       <td></td>
     </tr>
     <tr>
+      <td><a href="#zsu-salsa20-iv">ZSU-Salsa20-IV</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">CRC8 error</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-erase">ZSU-Erase</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid memory area</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-update">ZSU-Update</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid address | CRC32 error</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-crc32-start">ZSU-CRC32-Start</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Invalid memory area</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-crc32-result">ZSU-CRC32-Result</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="#zsu-crc32-resultexit">ZSU-CRC32-Result&Exit</a></td>
+      <td colspan=2 style="text-align: center">Reference</td>
+      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
+      <td></td>
+      <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
+      <td></td>
+    </tr>
+    <tr>
       <td><a href="#zpp-valid-query">ZPP-Valid-Query</a></td>
       <td colspan=2 style="text-align: center">Reference</td>
       <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
@@ -243,54 +291,6 @@ The supported commands of the MDU protocol are divided into 3 categories: genera
       <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
       <td></td>
       <td colspan=3 style="text-align: center">-</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><a href="#zsu-salsa20-iv">ZSU-Salsa20-IV</a></td>
-      <td colspan=2 style="text-align: center">Reference</td>
-      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-      <td></td>
-      <td colspan=3 style="text-align: center">CRC8 error</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><a href="#zsu-erase">ZSU-Erase</a></td>
-      <td colspan=2 style="text-align: center">Reference</td>
-      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-      <td></td>
-      <td colspan=3 style="text-align: center">Invalid memory area</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><a href="#zsu-update">ZSU-Update</a></td>
-      <td colspan=2 style="text-align: center">Reference</td>
-      <td colspan=3 style="text-align: center">Incomplete package | CRC32 error | buffer full</td>
-      <td></td>
-      <td colspan=3 style="text-align: center">Invalid address | CRC32 error</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><a href="#zsu-crc32-start">ZSU-CRC32-Start</a></td>
-      <td colspan=2 style="text-align: center">Reference</td>
-      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-      <td></td>
-      <td colspan=3 style="text-align: center">Invalid memory area</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><a href="#zsu-crc32-result">ZSU-CRC32-Result</a></td>
-      <td colspan=2 style="text-align: center">Reference</td>
-      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-      <td></td>
-      <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><a href="#zsu-crc32-resultexit">ZSU-CRC32-Result&Exit</a></td>
-      <td colspan=2 style="text-align: center">Reference</td>
-      <td colspan=3 style="text-align: center">Incomplete package | CRC8 error | buffer full</td>
-      <td></td>
-      <td colspan=3 style="text-align: center">Received CRC32 not equal own</td>
       <td></td>
     </tr>
   </tbody>
@@ -397,6 +397,87 @@ CV-Write writes a configuration variable with the received number-value pair. An
 
 The Busy command can be used to check whether the decoder is still busy with the last packet. If a decoder is not yet ready for a new packet, it can reply with an acknowledgment in channel 2. If the command station sends packets other than Busy to decoders that are still busy, the packets are discarded and acknowledged with a response in channel 1.
 
+### ZSU commands
+The ZSU command set is used to update the decoder software. Among other things, it contains an update command, commands for a final CRC32 check and a command for transmitting the initialization vector of the [Salsa20](https://en.wikipedia.org/wiki/Salsa20) encryption used.
+
+#### ZSU-Salsa20-IV
+| Command Phase   | Description                          |
+| --------------- | ------------------------------------ |
+| Preamble        | Identification and synchronization   |
+| Data (coding)   | 0xFFFF'FFF7                          |
+| Data            | 8-byte Salsa20 initialization vector |
+| Data (CRC)      | 1-byte CRC8                          |
+| Acknowledgement | CRC8 error                           |
+
+ZSU-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa20 encryption.
+> [!WARNING]  
+> For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.
+
+#### ZSU-Erase
+| Command Phase   | Description                        |
+| --------------- | ---------------------------------- |
+| Preamble        | Identification and synchronization |
+| Data (coding)   | 0xFFFF'FFF5                        |
+| Data            | 4-byte start address               |
+| Data            | 4-byte end address                 |
+| Data (CRC)      | 1-byte CRC8                        |
+| Acknowledgement | Invalid memory area                |
+
+The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2.
+> [!WARNING]  
+> After the command, a delay of at least 3.5s must be observed.
+
+#### ZSU-Update
+| Command Phase   | Description                        |
+| --------------- | ---------------------------------- |
+| Preamble        | Identification and synchronization |
+| Data (coding)   | 0xFFFF'FFF8                        |
+| Data            | 4-byte start address               |
+| Data            | N-byte payload                     |
+| Data (CRC)      | 4-byte CRC32                       |
+| Acknowledgement | Invalid address or CRC32 error     |
+
+ZSU-Update is used to transfer firmware data. If an invalid address or a CRC32 error is received, there must be an acknowledgment in channel 2.
+> [!WARNING]  
+> Current implementations only support payloads of exactly 64 bytes. Smaller payloads must contain appropriate padding.
+
+#### ZSU-CRC32-Start
+| Command Phase   | Description                        |
+| --------------- | ---------------------------------- |
+| Preamble        | Identification and synchronization |
+| Data (coding)   | 0xFFFF'FFFB                        |
+| Data            | 4-byte start address               |
+| Data            | 4-byte end address                 |
+| Data            | 4-byte CRC32                       |
+| Data (CRC)      | 1-byte CRC8                        |
+| Acknowledgement | Invalid memory area                |
+
+ZSU-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via ZSU-Update packets, then a response must be made in channel 2.
+> [!WARNING]  
+> The transferred memory area is a closed interval. The last address actually written corresponds to the end address!
+
+#### ZSU-CRC32-Result
+| Command Phase   | Description                        |
+| --------------- | ---------------------------------- |
+| Preamble        | Identification and synchronization |
+| Data (coding)   | 0xFFFF'FFFC                        |
+| Data (CRC)      | 1-byte CRC8                        |
+| Acknowledgement | Received CRC32 not equal own       |
+
+With the help of the ZSU-CRC32-Result command, the command station queries the result of the checksum previously transmitted via ZSU-CRC32-Start. If the checksum is not correct, there must be an acknowledgment in channel 2.
+
+#### ZSU-CRC32-Result&Exit
+| Command Phase   | Description                        |
+| --------------- | ---------------------------------- |
+| Preamble        | Identification and synchronization |
+| Data (coding)   | 0xFFFF'FFFD                        |
+| Data (CRC)      | 1-byte CRC8                        |
+| Acknowledgement | Received CRC32 not equal own       |
+
+See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a reset.
+> [!WARNING]  
+> Sending this command is mandatory. Updated decoders only mark the received software as complete upon receipt of this command.
+
 ### ZPP Commands
 The ZPP command set is used to update the ZPP project. It contains, among other things, an erase and update command, commands for ending the transfer and an exit command.
 
@@ -483,100 +564,7 @@ ZPP-Exit is used to reset the decoder. The reset is only carried out if the memo
 
 See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 
-### ZSU commands
-The ZSU command set is used to update the decoder software. Among other things, it contains an update command, commands for a final CRC32 check and a command for transmitting the initialization vector of the [Salsa20](https://en.wikipedia.org/wiki/Salsa20) encryption used.
-
-#### ZSU-Salsa20-IV
-| Command Phase   | Description                          |
-| --------------- | ------------------------------------ |
-| Preamble        | Identification and synchronization   |
-| Data (coding)   | 0xFFFF'FFF7                          |
-| Data            | 8-byte Salsa20 initialization vector |
-| Data (CRC)      | 1-byte CRC8                          |
-| Acknowledgement | CRC8 error                           |
-
-ZSU-Salsa20-IV is used to transmit the 8-byte initialization vector of the Salsa20 encryption.
-> [!WARNING]  
-> For reasons of backward compatibility, CRC8 errors must be answered in both channel 1 and channel 2.
-
-#### ZSU-Erase
-| Command Phase   | Description                        |
-| --------------- | ---------------------------------- |
-| Preamble        | Identification and synchronization |
-| Data (coding)   | 0xFFFF'FFF5                        |
-| Data            | 4-byte start address               |
-| Data            | 4-byte end address                 |
-| Data (CRC)      | 1-byte CRC8                        |
-| Acknowledgement | Invalid memory area                |
-
-The processor flash is deleted before an update package is written. If an invalid memory area is received, an acknowledgment must be given in channel 2.
-> [!WARNING]  
-> After the command, a delay of at least 3.5s must be observed.
-
-#### ZSU-Update
-| Command Phase   | Description                        |
-| --------------- | ---------------------------------- |
-| Preamble        | Identification and synchronization |
-| Data (coding)   | 0xFFFF'FFF8                        |
-| Data            | 4-byte start address               |
-| Data            | N-byte payload                     |
-| Data (CRC)      | 4-byte CRC32                       |
-| Acknowledgement | Invalid address or CRC32 error     |
-
-ZSU-Update is used to transfer firmware data. If an invalid address or a CRC32 error is received, there must be an acknowledgment in channel 2.
-> [!WARNING]  
-> Current implementations only support payloads of exactly 64 bytes. Smaller payloads must contain appropriate padding.
-
-#### ZSU-CRC32-Start
-| Command Phase   | Description                        |
-| --------------- | ---------------------------------- |
-| Preamble        | Identification and synchronization |
-| Data (coding)   | 0xFFFF'FFFB                        |
-| Data            | 4-byte start address               |
-| Data            | 4-byte end address                 |
-| Data            | 4-byte CRC32                       |
-| Data (CRC)      | 1-byte CRC8                        |
-| Acknowledgement | Invalid memory area                |
-
-ZSU-CRC32-Start transfers the written memory area and the CRC32 of the encrypted firmware again at the end of the update. **It should be noted that the checksum to be compared must be calculated using the encrypted data!** If the transferred memory area does not match the one received via ZSU-Update packets, then a response must be made in channel 2.
-> [!WARNING]  
-> The transferred memory area is a closed interval. The last address actually written corresponds to the end address!
-
-#### ZSU-CRC32-Result
-| Command Phase   | Description                        |
-| --------------- | ---------------------------------- |
-| Preamble        | Identification and synchronization |
-| Data (coding)   | 0xFFFF'FFFC                        |
-| Data (CRC)      | 1-byte CRC8                        |
-| Acknowledgement | Received CRC32 not equal own       |
-
-With the help of the ZSU-CRC32-Result command, the command station queries the result of the checksum previously transmitted via ZSU-CRC32-Start. If the checksum is not correct, there must be an acknowledgment in channel 2.
-
-#### ZSU-CRC32-Result&Exit
-| Command Phase   | Description                        |
-| --------------- | ---------------------------------- |
-| Preamble        | Identification and synchronization |
-| Data (coding)   | 0xFFFF'FFFD                        |
-| Data (CRC)      | 1-byte CRC8                        |
-| Acknowledgement | Received CRC32 not equal own       |
-
-See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a reset.
-> [!WARNING]  
-> Sending this command is mandatory. Updated decoders only mark the received software as complete upon receipt of this command.
-
 ### Typical processes
-#### ZPP Update
-1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
-2. [ZPP-Valid-Query](#zpp-valid-query)
-   - [ZPP-Exit](#zpp-exit) on answer
-3. [ZPP-LC-DC-Query](#zpp-lc-dc-query) (optional)
-   - [ZPP-Exit](#zpp-exit) on answer
-4. [ZPP-Erase](#zpp-erase)
-5. [ZPP-Update](#zpp-update)
-6. [ZPP-Update-End](#zpp-update-end)
-7. [ZPP-Exit](#zpp-exit) | [ZPP-Exit&Reset](#zpp-exitreset)
-8. Leave track voltage switched on for at least 2s
-
 #### ZSU Update
 1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
 > [!WARNING]  
@@ -590,6 +578,18 @@ See ZSU-CRC32-Result. If the checksum is correct, the decoder must perform a res
 8. [ZSU-CRC32-Result](#zsu-crc32-result) (optional)
 9. [ZSU-CRC32-Result&Exit](#zsu-crc32-resultexit)
 10. Leave track voltage switched on for at least 2s
+
+#### ZPP Update
+1. [Config-Transfer-Rate](#config-transfer-rate) to find a transmission speed that is supported by all decoders
+2. [ZPP-Valid-Query](#zpp-valid-query)
+   - [ZPP-Exit](#zpp-exit) on answer
+3. [ZPP-LC-DC-Query](#zpp-lc-dc-query) (optional)
+   - [ZPP-Exit](#zpp-exit) on answer
+4. [ZPP-Erase](#zpp-erase)
+5. [ZPP-Update](#zpp-update)
+6. [ZPP-Update-End](#zpp-update-end)
+7. [ZPP-Exit](#zpp-exit) | [ZPP-Exit&Reset](#zpp-exitreset)
+8. Leave track voltage switched on for at least 2s
 
 ## Getting Started
 ### Prerequisites
@@ -645,9 +645,9 @@ idf.py create-project-from-example "zimo-elektronik/mdu^0.19.3:esp32"
 
 ## Usage
 ### Receiver
-To create a receiver (decoder) class and depending on whether ZPP, ZSU or both are to be transferred, it is necessary to derive from one of the following classes:
-- `mdu::rx::ZppBase`
+To create a receiver (decoder) class and depending on whether ZSU, ZPP or both are to be transferred, it is necessary to derive from one of the following classes:
 - `mdu::rx::ZsuBase`
+- `mdu::rx::ZppBase`
 - `mdu::rx::ZppZsuBase`
 
 The following example shows the skeleton code for implementing the ZPP update.
