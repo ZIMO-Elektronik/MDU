@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.19.4
+- Bugfix `esp_linux_helper.h` is deprecated ([#33](https://github.com/ZIMO-Elektronik/MDU/issues/33))
+
 ## 0.19.3
 - Bugfix missing address in `make_zsu_update_packet` ([#31](https://github.com/ZIMO-Elektronik/MDU/issues/31))
 
