@@ -291,7 +291,7 @@ protected:
     uint32_t serial_number{};
     uint32_t decoder_id{};
     if (size(packet) < 9uz)
-      decoder_id = packet[4uz] ? static_cast<uint32_t>(packet[4uz] << 24u) |
+      decoder_id = packet[4uz] ? (static_cast<uint32_t>(packet[4uz]) << 24u) |
                                    (_cfg.decoder_id & 0x00FF'FFFFu)
                                : 0u;
     else {
