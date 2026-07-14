@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.19.5
+- Bugfix UB shifts ([#35](https://github.com/ZIMO-Elektronik/MDU/issues/35))
+
 ## 0.19.4
 - Bugfix `esp_linux_helper.h` is deprecated ([#33](https://github.com/ZIMO-Elektronik/MDU/issues/33))
 
