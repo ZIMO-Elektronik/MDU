@@ -171,9 +171,7 @@ private:
 
   /// Toggle track output
   void toggleTrackOutputs() {
-    if constexpr (requires(T t, bool N, bool P) {
-                    { t.trackOutputs(N, P) };
-                  }) {
+    if constexpr (requires(T t, bool N, bool P) { t.trackOutputs(N, P); }) {
       // By default the phase is "positive", so P > N for the first half bit.
       impl().trackOutputs(_polarity, !_polarity);
       _polarity = !_polarity;

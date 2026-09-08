@@ -8,25 +8,25 @@ on:
 
 jobs:
   arm-none-eabi-gcc:
-    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/arm-none-eabi-gcc.yml@v0.3.2
+    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/arm-none-eabi-gcc.yml@v0.4.0
     with:
       arch: -mcpu=cortex-m4
       target: MDU
 
   esp-elf-gcc:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     strategy:
       matrix:
-        esp_idf_version: [latest, v5.5.4, v5.4.3, v5.3.4, v5.2.6, v5.1.6]
+        esp_idf_version: [latest, v6.1, v5.5.5, v5.4.4, v5.3.5, v5.2.7]
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: espressif/esp-idf-ci-action@v1.2.0
+      - uses: espressif/esp-idf-ci-action@v1
         with:
           path: examples/esp32
           esp_idf_version: ${{ matrix.esp_idf_version }}
           target: esp32
 
   x86_64-linux-gnu-gcc:
-    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.3.2
+    uses: ZIMO-Elektronik/.github-workflows/.github/workflows/x86_64-linux-gnu-gcc.yml@v0.4.0

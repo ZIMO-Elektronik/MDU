@@ -93,7 +93,7 @@ if(MDU_UNITY_BUILD)
 endif()
 
 if(NOT TARGET Microsoft.GSL::GSL)
-  cpmaddpackage("gh:microsoft/GSL@4.2.2")
+  cpmaddpackage("gh:microsoft/GSL@5.0.0")
 endif()
 
 if(NOT TARGET Salsa20::Salsa20)
@@ -101,7 +101,7 @@ if(NOT TARGET Salsa20::Salsa20)
 endif()
 
 if(NOT TARGET ZTL::ZTL)
-  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.25.0")
+  cpmaddpackage("gh:ZIMO-Elektronik/ZTL@0.25.2")
 endif()
 
 target_link_libraries(MDU PUBLIC Microsoft.GSL::GSL Salsa20::Salsa20 ZTL::ZTL)
