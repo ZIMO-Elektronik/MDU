@@ -16,21 +16,21 @@ namespace mdu::tx::detail {
 
 /// Is reference
 ///
-/// \param  bit   ACKreq bit pos
+/// \param  bit   Ackreq bit pos
 /// \retval true  Is reference bit
 /// \retval false Is not reference bit
 constexpr bool is_reference(size_t bit) { return bit == 0uz || bit == 1uz; }
 
 /// Is channel 1
 ///
-/// \param  bit   ACKreq bit pos
+/// \param  bit   Ackreq bit pos
 /// \retval true  Is channel 1 bit
 /// \retval false Is not channel 1 bit
 constexpr bool is_channel1(size_t bit) { return bit >= 2uz && bit <= 4uz; }
 
 /// Is channel 2
 ///
-/// \param  bit   ACKreq bit pos
+/// \param  bit   Ackreq bit pos
 /// \retval true  is channel 2 bit
 /// \retval false is not channel 2 bit
 constexpr bool is_channel2(size_t bit) { return bit >= 6uz && bit <= 8uz; }

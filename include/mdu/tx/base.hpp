@@ -35,17 +35,13 @@ namespace mdu::tx {
 /// can be adjusted using Base::setTransferRate(). Both can only be done if MDU
 /// is not busy.
 ///
-/// \tparam T Type to downcast to
-/// \tparam D Deque value type
-/// \arg      Packet  Calculate on-the-fly
-/// \arg      Timings Pre-calculate timings
-template<typename T, typename D = Packet>
-requires(std::same_as<D, Packet> || std::same_as<D, Timings>)
+///
+/// \tparam T Deque value type
+template<typename T>
+requires(std::same_as<T, Packet> || std::same_as<T, Timings>)
 struct Base {
-  friend T;
-
   using value_type =
-    std::conditional_t<std::same_as<D, Packet>, TimingsAdapter, Timings>;
+    std::conditional_t<std::same_as<T, Packet>, TimingsAdapter, Timings>;
 
   /// Initialize
   ///
@@ -107,7 +103,7 @@ struct Base {
     assert(std::size(bytes) <= MDU_MAX_PACKET_SIZE);
 
     // Copy bytes into package
-    if constexpr (std::same_as<D, Packet>)
+    if constexpr (std::same_as<T, Packet>)
       _packet = {bytes, _cfg, _transfer_rate};
     else {
       auto tmp{
@@ -129,20 +125,18 @@ struct Base {
   /// Get next bit duration to transmit in µs
   ///
   /// \return Bit duration in µs
-  Timings::value_type transmit() {
-    toggleTrackOutputs();
-    if (_iter != _last) return packetTiming();
-    else if (_ackreq_count < _cfg.num_ackreq) return ackreqTiming();
-    else return timings[std::to_underlying(_transfer_rate)].one;
+  Timings::value_type transmit(this CommandStation auto&& self) {
+    self.toggleTrackOutputs();
+    if (self._iter != self._last) return self.packetTiming();
+    else if (self._ackreq_count < self._cfg.num_ackreq)
+      return self.ackreqTiming();
+    else return timings[std::to_underlying(self._transfer_rate)].one;
   }
+
+protected:
+  constexpr Base() = default;
 
 private:
-  constexpr Base() = default;
-  CommandStation auto& impl() { return static_cast<T&>(*this); }
-  CommandStation auto const& impl() const {
-    return static_cast<T const&>(*this);
-  }
-
   /// Packet timing
   ///
   /// \return Next bit timing
@@ -152,29 +146,31 @@ private:
     return retval;
   }
 
-  /// ACKreq timing
+  /// Ackreq timing
   ///
   /// \return Ackreq timing
-  Timings::value_type ackreqTiming() {
-    if (!_ackreq_count) impl().ackreqBegin();
-    else if (detail::is_channel1(_ackreq_count))
-      impl().ackreqChannel1(_ackreq_count);
-    else if (detail::is_channel2(_ackreq_count))
-      impl().ackreqChannel2(_ackreq_count);
+  Timings::value_type ackreqTiming(this CommandStation auto&& self) {
+    if (!self._ackreq_count) self.ackreqBegin();
+    else if (detail::is_channel1(self._ackreq_count))
+      self.ackreqChannel1(self._ackreq_count);
+    else if (detail::is_channel2(self._ackreq_count))
+      self.ackreqChannel2(self._ackreq_count);
 
-    // Check for ACKreq end
-    if (++_ackreq_count == _cfg.num_ackreq)
-      impl().ackreqEnd(); // Set initial state for ACKreq
+    // Check for Ackreq end
+    if (++self._ackreq_count == self._cfg.num_ackreq)
+      self.ackreqEnd(); // Set initial state for ackreq
 
-    return timings[std::to_underlying(_transfer_rate)].ackreq;
+    return timings[std::to_underlying(self._transfer_rate)].ackreq;
   }
 
   /// Toggle track output
-  void toggleTrackOutputs() {
-    if constexpr (requires(T t, bool N, bool P) { t.trackOutputs(N, P); }) {
+  void toggleTrackOutputs(this CommandStation auto&& self) {
+    if constexpr (requires(bool N, bool P) {
+                    { self.trackOutputs(N, P) } -> std::same_as<void>;
+                  }) {
       // By default the phase is "positive", so P > N for the first half bit.
-      impl().trackOutputs(_polarity, !_polarity);
-      _polarity = !_polarity;
+      self.trackOutputs(self._polarity, !self._polarity);
+      self._polarity = !self._polarity;
     }
   }
 
