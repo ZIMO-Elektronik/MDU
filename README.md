@@ -597,7 +597,7 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 - [CMake](https://cmake.org/) ( >= 3.25 )
 - Optional
   - for building [ESP32](https://www.espressif.com/en/products/socs/esp32) [RMT](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/rmt.html) encoder example
-    - [ESP-IDF](https://github.com/espressif/esp-idf) ( >= 5.4.0 )
+    - [ESP-IDF](https://github.com/espressif/esp-idf) ( >= 5.5.0 )
 
 ### Installation
 This library is meant to be consumed with CMake,

@@ -19,12 +19,6 @@
 #  include <esp_linux_helper.h>
 #endif
 
-#if defined(CONFIG_RMT_TX_ISR_HANDLER_IN_IRAM)
-#  define RMT_IRAM_ATTR IRAM_ATTR
-#else
-#  define RMT_IRAM_ATTR
-#endif
-
 static char const* TAG = "rmt";
 
 /// MDU encoder
@@ -49,7 +43,7 @@ typedef struct {
 /// \param  ret_state     Returned current encoder state
 /// \param  symbols       Symbols representing current bit
 /// \return Number of RMT symbols that the primary data has been encoded into
-static size_t RMT_IRAM_ATTR
+static size_t RMT_ENCODER_FUNC_ATTR
 rmt_encode_mdu_bit(rmt_mdu_encoder_t* mdu_encoder,
                    rmt_channel_handle_t channel,
                    rmt_encode_state_t* ret_state,
@@ -77,7 +71,7 @@ rmt_encode_mdu_bit(rmt_mdu_encoder_t* mdu_encoder,
 /// \param  data_size     Size of primary_data, in bytes
 /// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
-static size_t RMT_IRAM_ATTR
+static size_t RMT_ENCODER_FUNC_ATTR
 rmt_encode_mdu_preamble(rmt_mdu_encoder_t* mdu_encoder,
                         rmt_channel_handle_t channel,
                         size_t data_size,
@@ -114,7 +108,7 @@ rmt_encode_mdu_preamble(rmt_mdu_encoder_t* mdu_encoder,
 /// \param  channel       RMT TX channel handle
 /// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
-static size_t RMT_IRAM_ATTR
+static size_t RMT_ENCODER_FUNC_ATTR
 rmt_encode_mdu_start(rmt_mdu_encoder_t* mdu_encoder,
                      rmt_channel_handle_t channel,
                      rmt_encode_state_t* ret_state) {
@@ -135,11 +129,12 @@ rmt_encode_mdu_start(rmt_mdu_encoder_t* mdu_encoder,
 /// \param  data_size     Size of primary_data, in bytes
 /// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
-static size_t RMT_IRAM_ATTR rmt_encode_mdu_data(rmt_mdu_encoder_t* mdu_encoder,
-                                                rmt_channel_handle_t channel,
-                                                void const* primary_data,
-                                                size_t data_size,
-                                                rmt_encode_state_t* ret_state) {
+static size_t RMT_ENCODER_FUNC_ATTR
+rmt_encode_mdu_data(rmt_mdu_encoder_t* mdu_encoder,
+                    rmt_channel_handle_t channel,
+                    void const* primary_data,
+                    size_t data_size,
+                    rmt_encode_state_t* ret_state) {
   size_t encoded_symbols = 0u;
   rmt_encode_state_t state = RMT_ENCODING_RESET;
   rmt_encoder_handle_t copy_encoder = mdu_encoder->copy_encoder;
@@ -179,9 +174,10 @@ out:
 /// \param  channel       RMT TX channel handle
 /// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
-static size_t RMT_IRAM_ATTR rmt_encode_mdu_end(rmt_mdu_encoder_t* mdu_encoder,
-                                               rmt_channel_handle_t channel,
-                                               rmt_encode_state_t* ret_state) {
+static size_t RMT_ENCODER_FUNC_ATTR
+rmt_encode_mdu_end(rmt_mdu_encoder_t* mdu_encoder,
+                   rmt_channel_handle_t channel,
+                   rmt_encode_state_t* ret_state) {
   size_t encoded_symbols = 0u;
   rmt_encode_state_t state = RMT_ENCODING_RESET;
   encoded_symbols +=
@@ -197,7 +193,7 @@ static size_t RMT_IRAM_ATTR rmt_encode_mdu_end(rmt_mdu_encoder_t* mdu_encoder,
 /// \param  channel       RMT TX channel handle
 /// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
-static size_t RMT_IRAM_ATTR
+static size_t RMT_ENCODER_FUNC_ATTR
 rmt_encode_mdu_ackreq(rmt_mdu_encoder_t* mdu_encoder,
                       rmt_channel_handle_t channel,
                       rmt_encode_state_t* ret_state) {
@@ -245,11 +241,12 @@ rmt_encode_mdu_ackreq(rmt_mdu_encoder_t* mdu_encoder,
 /// \param  data_size     Size of primary_data, in bytes
 /// \param  ret_state     Returned current encoder state
 /// \return Number of RMT symbols that the primary data has been encoded into
-static size_t RMT_IRAM_ATTR rmt_encode_mdu(rmt_encoder_t* encoder,
-                                           rmt_channel_handle_t channel,
-                                           void const* primary_data,
-                                           size_t data_size,
-                                           rmt_encode_state_t* ret_state) {
+static size_t RMT_ENCODER_FUNC_ATTR
+rmt_encode_mdu(rmt_encoder_t* encoder,
+               rmt_channel_handle_t channel,
+               void const* primary_data,
+               size_t data_size,
+               rmt_encode_state_t* ret_state) {
   size_t encoded_symbols = 0u;
   rmt_encode_state_t state = RMT_ENCODING_RESET;
   rmt_encode_state_t session_state = RMT_ENCODING_RESET;
@@ -334,7 +331,8 @@ static esp_err_t rmt_del_mdu_encoder(rmt_encoder_t* encoder) {
 ///                             argument
 /// \retval ESP_FAIL            Reset RMT MDU encoder failed because of other
 ///                             error
-static esp_err_t RMT_IRAM_ATTR rmt_mdu_encoder_reset(rmt_encoder_t* encoder) {
+static esp_err_t RMT_ENCODER_FUNC_ATTR
+rmt_mdu_encoder_reset(rmt_encoder_t* encoder) {
   rmt_mdu_encoder_t* mdu_encoder =
     __containerof(encoder, rmt_mdu_encoder_t, base);
   rmt_encoder_reset(mdu_encoder->copy_encoder);
