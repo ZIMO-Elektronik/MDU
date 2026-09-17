@@ -519,14 +519,14 @@ With the help of ZPP-Erase, a certain memory area of the flash can be deleted. I
 > Deleting a NOR flash can take up to 200s depending on the manufacturer and type. To ensure that the operation is completed, polling can be done via the [Busy](#busy) command.
 
 #### ZPP-Update
-| Command Phase   | Description                                 |
-| --------------- | ------------------------------------------- |
-| Preamble        | Identification and synchronization          |
-| Data (coding)   | 0xFFFF'FF08                                 |
-| Data            | 4-byte start address                        |
-| Data            | N-byte payload                              |
-| Data (CRC)      | 4-byte CRC32                                |
-| Acknowledgement | Invalid address or CRC32 error              |
+| Command Phase   | Description                        |
+| --------------- | ---------------------------------- |
+| Preamble        | Identification and synchronization |
+| Data (coding)   | 0xFFFF'FF08                        |
+| Data            | 4-byte start address               |
+| Data            | N-byte payload                     |
+| Data (CRC)      | 4-byte CRC32                       |
+| Acknowledgement | Invalid address or CRC32 error     |
 
 ZPP-Update is used to transfer ZPP data. If an invalid memory area or a CRC32 error is received, there must be an acknowledgment in channel 2.
 > [!WARNING]  
@@ -597,7 +597,7 @@ See ZPP-Exit. In addition, decoders reset their configuration variables (CV8=8).
 - [CMake](https://cmake.org/) ( >= 3.25 )
 - Optional
   - for building [ESP32](https://www.espressif.com/en/products/socs/esp32) [RMT](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/rmt.html) encoder example
-    - [ESP-IDF](https://github.com/espressif/esp-idf) ( >= 5.0.3 )
+    - [ESP-IDF](https://github.com/espressif/esp-idf) ( >= 5.4.0 )
 
 ### Installation
 This library is meant to be consumed with CMake,
@@ -728,12 +728,12 @@ entry_point.verify(index, byte);
 ```
 
 ## Transmitter
-As before for the receiver, for the transmitter (command station) we need to derive from a class, this time from `mdu::tx::Base`. In contrast to the receiver, this is a class that requires static polymorphism ([CRTP](https://en.wikipedia.org/wiki/Curiously_recurring_template_pattern)). The corresponding concept for implementation is called [CommandStation](include/mdu/tx/command_station.hpp). This concept verifies that the following methods can be called from the base.
+As before for the receiver, for the transmitter (command station) we need to derive from a class, this time from `mdu::tx::Base` (or one of its aliases). The class relies on [deducing **this**](https://cppreference.com/cpp/language/function#Explicit_object_parameter) to implement static polymorphism. The explicit object parameter in the base is checked with a concept called [CommandStation](include/mdu/tx/command_station.hpp). This concept verifies that the following methods can be called from the base.
 ```cpp
 #include <dcc/dcc.hpp>
 
-struct CommandStation : mdu::tx::Base<CommandStation> {
-  friend mdu::tx::Base<CommandStation>;
+struct CommandStation : mdu::tx::PacketsBase {
+  friend mdu::tx::PacketsBase; // Only necessary if methods called from base are private
 
 private:
   // Begin of acknowledgment phase
@@ -761,14 +761,17 @@ Again, inheriting from the base class isn't sufficient:
     ```
 
 #### Packet vs. Timings
-If you look at the signature of the transmitter base, you will see that it has a second template parameter which can be either `mdu::Packet` or `mdu::tx::Timings`.
+If you look at the signature of the transmitter base, you will see that it has a template parameter which can be either `mdu::Packet` or `mdu::tx::Timings`.
 ```cpp
-template<typename T, typename D = Packet>
-requires(std::same_as<D, Packet> || std::same_as<D, Timings>)
+template<typename T>
+requires(std::same_as<T, Packet> || std::same_as<T, Timings>)
 struct Base
 ```
 
 This parameter determines whether the transmitter stores packets to be sent as bytes or as bit timings. The trade-off is simple, packets require **less RAM** but **more instructions** in the interrupt, timings require **more RAM** but **fewer instructions** in the interrupt.
+
+> [!TIP]
+> `mdu::tx::PacketsBase` and `mdu::tx::TimingsBase` are available as corresponding aliases.
 
 ## ESP32 RMT Encoder
 Similar to the other encoders of the [ESP-IDF](https://github.com/espressif/esp-idf) framework, the RMT encoder has only one function to create a new instance. For more information on how to use the encoder please refer to the [ESP-IDF Programming Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/rmt.html) or the RMT example.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.20.0
+- Switch from CRTP to [deducing **this**](https://cppreference.com/cpp/language/function#Explicit_object_parameter) ([#23](https://github.com/ZIMO-Elektronik/MDU/issues/23))
+- Add `tx::PacketsBase` and `tx::TimingsBase` aliases
+
 ## 0.19.5
 - Bugfix UB shifts ([#35](https://github.com/ZIMO-Elektronik/MDU/issues/35))
 
