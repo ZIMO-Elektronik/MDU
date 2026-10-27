@@ -10,17 +10,12 @@
 
 #pragma once
 
-#include <concepts>
-#include <cstddef>
+#include "ackreq.hpp"
+#include "track_outputs.hpp"
 
 namespace mdu::tx {
 
 template<typename T>
-concept CommandStation = requires(T t, size_t ackreq_count) {
-  { t.ackreqBegin() } -> std::same_as<void>;
-  { t.ackreqChannel1(ackreq_count) } -> std::same_as<void>;
-  { t.ackreqChannel2(ackreq_count) } -> std::same_as<void>;
-  { t.ackreqEnd() } -> std::same_as<void>;
-};
+concept CommandStation = Ackreq<T> && TrackOutputs<T>;
 
 } // namespace mdu::tx

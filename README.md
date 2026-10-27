@@ -728,7 +728,7 @@ entry_point.verify(index, byte);
 ```
 
 ## Transmitter
-As before for the receiver, for the transmitter (command station) we need to derive from a class, this time from `mdu::tx::Base` (or one of its aliases). The class relies on [deducing **this**](https://cppreference.com/cpp/language/function#Explicit_object_parameter) to implement static polymorphism. The explicit object parameter in the base is checked with a concept called [CommandStation](include/mdu/tx/command_station.hpp). This concept verifies that the following methods can be called from the base.
+As before for the receiver, for the transmitter (command station) we need to derive from a class, this time from `mdu::tx::Base` (or one of its aliases). The class relies on [deducing **this**](https://cppreference.com/cpp/language/function#Explicit_object_parameter) to implement static polymorphism. The explicit object parameter in the base is checked with a concept called [CommandStation](include/mdu/tx/command_station.hpp). This concept verifies that the following methods (with the exception of the optional `trackOutputs`) can be called from the base.
 ```cpp
 #include <dcc/dcc.hpp>
 
@@ -747,6 +747,9 @@ private:
 
   // End of acknowledgment phase
   void ackreqEnd();
+
+  // Write track outputs
+  void trackOutputs(bool P, bool N);
 };
 ```
 
