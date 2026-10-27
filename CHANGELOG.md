@@ -1,5 +1,8 @@
 # Changelog
 
+##
+- More fine-grained concepts for transmitter (e.g. `Ackreq` or `TrackOutputs`) ([#37](https://github.com/ZIMO-Elektronik/MDU/issues/37))
+
 ## 0.20.0
 - Switch from CRTP to [deducing **this**](https://cppreference.com/cpp/language/function#Explicit_object_parameter) ([#23](https://github.com/ZIMO-Elektronik/MDU/issues/23))
 - Add `tx::PacketsBase` and `tx::TimingsBase` aliases

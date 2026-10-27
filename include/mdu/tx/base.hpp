@@ -125,7 +125,7 @@ struct Base {
   /// Get next bit duration to transmit in µs
   ///
   /// \return Bit duration in µs
-  Timings::value_type transmit(this CommandStation auto&& self) {
+  Timings::value_type transmit(this Ackreq auto&& self) {
     self.toggleTrackOutputs();
     if (self._iter != self._last) return self.packetTiming();
     else if (self._ackreq_count < self._cfg.num_ackreq)
@@ -149,7 +149,7 @@ private:
   /// Ackreq timing
   ///
   /// \return Ackreq timing
-  Timings::value_type ackreqTiming(this CommandStation auto&& self) {
+  Timings::value_type ackreqTiming(this Ackreq auto&& self) {
     if (!self._ackreq_count) self.ackreqBegin();
     else if (detail::is_channel1(self._ackreq_count))
       self.ackreqChannel1(self._ackreq_count);
@@ -164,11 +164,8 @@ private:
   }
 
   /// Toggle track output
-  void toggleTrackOutputs(this CommandStation auto&& self) {
-    if constexpr (requires(bool N, bool P) {
-                    { self.trackOutputs(N, P) } -> std::same_as<void>;
-                  }) {
-      // By default the phase is "positive", so P > N for the first half bit.
+  void toggleTrackOutputs(this auto&& self) {
+    if constexpr (TrackOutputs<decltype(self)>) {
       self.trackOutputs(self._polarity, !self._polarity);
       self._polarity = !self._polarity;
     }
