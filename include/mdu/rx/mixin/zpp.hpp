@@ -72,7 +72,7 @@ private:
   [[noreturn]] virtual void exitZpp(bool reset_cvs) = 0;
 
   bool executeValidQuery(std::string_view zpp_id, size_t zpp_size);
-  bool executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const;
+  bool executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code);
   bool executeErase(uint32_t begin_addr, uint32_t end_addr);
   bool executeUpdate(uint32_t addr, std::span<uint8_t const> bytes);
   bool executeEnd(uint32_t begin_addr, uint32_t end_addr);
@@ -80,6 +80,7 @@ private:
 
   std::optional<uint32_t> _first_addr{};
   std::optional<uint32_t> _last_addr{};
+  size_t _lc_dc_query_count{};
   bool _addrs_valid : 1 {};
   bool _zpp_valid : 1 {};
 };

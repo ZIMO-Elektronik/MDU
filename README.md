@@ -502,7 +502,7 @@ A ZPP-Valid-Query can be used to check whether the decoders are able to load the
 | Data (CRC)      | 1-byte CRC8                        |
 | Acknowledgement | Load code wrong                    |
 
-A ZPP-LC-DC query can be used to check whether the decoders contain a valid load code before deleting the flash. If the received load code is not correct, an acknowledgment must be sent in channel 2.
+A ZPP-LC-DC query can be used to check whether the decoders contain a valid load code before deleting the flash. If the received load code is not correct, an acknowledgment must be sent in channel 2. After `MDU_MAX_LC_DC_QUERY_ATTEMPTS` queries (default: 8, configurable in CMake), all subsequent queries signal an invalid load code in channel 2, even if the load code is valid.
 
 #### ZPP-Erase
 | Command Phase   | Description                        |

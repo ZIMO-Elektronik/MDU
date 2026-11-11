@@ -37,6 +37,9 @@ option(MDU_UNITY_BUILD "Combine source files into single batch" ON)
 set(MDU_MAX_PACKET_SIZE
     268u
     CACHE STRING "Maximum size of a packet in bytes")
+set(MDU_MAX_LC_DC_QUERY_ATTEMPTS
+    8u
+    CACHE STRING "Maximum number of attempts for LC DC query")
 set(MDU_RX_MIN_PREAMBLE_BITS
     10u
     CACHE STRING "Minimum number of preamble bits of decoder")
@@ -62,6 +65,7 @@ target_compile_features(MDU PUBLIC cxx_std_23)
 target_compile_definitions(
   MDU
   PUBLIC MDU_MAX_PACKET_SIZE=${MDU_MAX_PACKET_SIZE}
+         MDU_MAX_LC_DC_QUERY_ATTEMPTS=${MDU_MAX_LC_DC_QUERY_ATTEMPTS}
          MDU_RX_MIN_PREAMBLE_BITS=${MDU_RX_MIN_PREAMBLE_BITS}
          MDU_TX_MIN_PREAMBLE_BITS=${MDU_TX_MIN_PREAMBLE_BITS}
          MDU_TX_MAX_PREAMBLE_BITS=${MDU_TX_MAX_PREAMBLE_BITS}

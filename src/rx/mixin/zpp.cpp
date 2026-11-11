@@ -74,9 +74,10 @@ bool Zpp::executeValidQuery(std::string_view zpp_id, size_t zpp_flash_size) {
 /// \param  developer_code  Developer code
 /// \retval true            Transmit ackbit in channel2
 /// \retval false           Do not transmit ackbit in channel2
-bool Zpp::executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) const {
-  bool const valid{loadCodeValid(developer_code)};
-  return !valid;
+bool Zpp::executeLcDcQuery(std::span<uint8_t const, 4uz> developer_code) {
+  return ++_lc_dc_query_count <= MDU_MAX_LC_DC_QUERY_ATTEMPTS
+           ? !loadCodeValid(developer_code)
+           : !false;
 }
 
 /// Execute ZppErase command
