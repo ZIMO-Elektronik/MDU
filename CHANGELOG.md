@@ -1,12 +1,10 @@
 # Changelog
 
-## 0.20.1
-- More fine-grained concepts for transmitter (e.g. `Ackreq` or `TrackOutputs`) ([#37](https://github.com/ZIMO-Elektronik/MDU/issues/37))
-- Bugfix mitigate LC-DC brute force attacks ([#41](https://github.com/ZIMO-Elektronik/MDU/issues/41))
-
 ## 0.20.0
 - Switch from CRTP to [deducing **this**](https://cppreference.com/cpp/language/function#Explicit_object_parameter) ([#23](https://github.com/ZIMO-Elektronik/MDU/issues/23))
 - Add `tx::PacketsBase` and `tx::TimingsBase` aliases
+- More fine-grained concepts for transmitter (e.g. `Ackreq` or `TrackOutputs`) ([#37](https://github.com/ZIMO-Elektronik/MDU/issues/37))
+- Bugfix mitigate LC-DC brute force attacks ([#41](https://github.com/ZIMO-Elektronik/MDU/issues/41))
 
 ## 0.19.5
 - Bugfix UB shifts ([#35](https://github.com/ZIMO-Elektronik/MDU/issues/35))
